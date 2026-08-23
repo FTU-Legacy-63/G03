@@ -71,10 +71,10 @@ Previous decisions influence future economic conditions and scenarios. Players t
 
 ## 2\. Target User
 
-High school and university students interested in banking, finance, economics, or central banking but without deep knowledge.
+University students interested in banking, finance, economics, or central banking but without deep knowledge.
 
 
-## 3\. User Task
+## 3\. User Taskvbbbbbbbbbb
 
 The user observes the economic condition, interprets key indicators, and makes a monetary-policy decision.
 
