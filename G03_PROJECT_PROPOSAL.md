@@ -2,20 +2,76 @@
 
 ## 1\. Problem Direction
 
-Students interested in central banking and monetary policy may understand individual concepts such as inflation, GDP growth, unemployment, interest rates, but find it difficult to understand how these variables interact and how monetary-policy decisions create trade-offs across the economy.
+Students interested in central banking and monetary policy often learn economic indicators and policy concepts separately, but find it difficult to understand how these variables interact and how monetary-policy decisions create trade-offs across the economy.
 
-The project therefore focuses on an interactive learning experience in which users make central-bank monerary-policy decisions and observe their economic consequences.
+**Core Learning Loop**
+
+_Observe Economic Situation → Analyze Indicators → Make Policy Decision → Experience Economic Consequences → Evaluate Outcome → Learn → Adjust Future Decisions_
+
+This learning loop is the core reason for using gamification in the product. The game is not only adding game elements to existing learning content; the decision-and-consequence mechanic is used to directly address the learning difficulties identified above.
+
+
+### Pain Point 1: Difficulty understanding interactions between economic indicators
+
+Students may know individual relationships such as "higher interest rates can reduce inflation" but have difficulty understanding the broader consequences of the same decision.
+
+For example, raising the policy rate may help reduce inflation but can also slow GDP growth and increase unemployment.
+
+**How the game replicates the problem:**
+
+The game presents the player with an economic scenario containing multiple indicators. The player must make a policy decision while considering the overall economic conditions and analyzing the relevant indicators in greater depth.
+
+**How the game addresses the problem:**
+
+After the player changes the interest rate, the Economic Engine simulates the resulting changes in inflation, GDP growth, unemployment, and other relevant indicators. The player can therefore observe the interactions between variables rather than learning each relationship separately.
+
+
+### Pain Point 2: Difficulty understanding monetary-policy trade-offs
+
+Students may understand that a central bank wants to control inflation and support economic growth, but may not understand why achieving one objective can come at the expense of another. Monetary-policy decisions are therefore not always straightforward or easy to solve.
+
+**How the game replicates the problem:**
+
+The player is placed in situations where there is no perfect policy decision. Improving one economic objective may create a negative effect on another.
+
+For example, aggressively raising interest rates may improve inflation but weaken economic growth, resulting in a lower overall score.
+
+**How the game addresses the problem:**
+
+The game evaluates the player's decision across multiple economic objectives. Reports and performance indicators show both the positive and negative consequences of the decision, allowing players to understand monetary-policy trade-offs through experimentation.
+
+
+### Pain Point 3: Lack of opportunity to experiment with policy decisions
+
+Traditional learning materials mainly allow students to study concepts and observe examples. Students have limited opportunities to make their own monetary-policy decisions and immediately observe what would happen. 
+
+**How the game replicates the problem:**
+
+The player directly takes the role of the Central Bank and must decide how to respond to changing economic conditions.
+
+**How the game addresses the problem:**
+
+Players can change the policy rate, observe the simulated outcome, and compare the result with their expectations. This creates a learning cycle of:
+
+**Decision → Consequence → Evaluation → Adjustment**
+
+
+### Pain Point 4: Difficulty understanding the cumulative effects of policy decisions
+
+Students may find it difficult to understand that monetary-policy decisions can affect the economy beyond the immediate period and that their effects can persist over time.
+
+**How the game replicates the problem:**
+
+The game consists of multiple economic phases. The economic condition resulting from one phase becomes the starting condition for the next phase.
+
+**How the game addresses the problem:**
+
+Previous decisions influence future economic conditions and scenarios. Players therefore experience how repeated policy decisions can accumulate and create future consequences.
 
 
 ## 2\. Target User
 
-### Primary users
-
 High school and university students interested in banking, finance, economics, or central banking but without deep knowledge.
-
-### Secondary users
-
-Teachers or lecturers who want to teach basic central banking and monetary policy through gamification.
 
 
 ## 3\. User Task
