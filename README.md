@@ -33,8 +33,7 @@ WHO RUNS THE WORLD? biến các khái niệm về chính sách tiền tệ thàn
 
 ## Người dùng mục tiêu
 
-- Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản trị ngân hàng và chính sách tiền tệ nhưng chưa có kiến thức chuyên sâu.
-- Giảng viên muốn sử dụng một công cụ gamification để giới thiệu các khái niệm cơ bản về monetary policy và macroeconomic management.
+Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản trị ngân hàng và chính sách tiền tệ nhưng chưa có kiến thức chuyên sâu.
 
 ## Tính năng chính
 
