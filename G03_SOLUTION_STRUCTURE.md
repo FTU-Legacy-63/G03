@@ -1,205 +1,242 @@
 # SOLUTION STRUCTURE
 
-## 1\. Product Direction
+## 1. Product Direction
 
-The product is an interactive educational simulation in which the user acts as the Central Bank of Country X.
+- Sản phẩm là một ứng dụng mô phỏng giáo dục, trong đó người chơi đóng vai **Ban Điều hành Nghiệp vụ Thị trường mở của NHTW tại Quốc gia X**.
+- Mục tiêu cốt lõi: giúp người chơi hiểu cách NHTW sử dụng **Nghiệp vụ Thị trường Mở (OMO)**, cụ thể là **đấu thầu tín phiếu**, để điều tiết thanh khoản và tác động đến lãi suất thị trường tiền tệ.
 
-The stated goal in the current concept is to maintain price stability, support sustainable economic growth and safeguard financial-system stability. Government actions and global events form part of the simulated environment rather than player-controlled decisions.
+---
 
+## 2. Core User Flow
 
+**Scenario → Economic Data → User Analysis → OMO Decision → Auction → Economic Engine → Updated Indicators → Outcome & Report → Next Phase**
 
-## 2\. Core User Flow
+Kết quả của phase trước được giữ lại và trở thành trạng thái ban đầu của phase tiếp theo.
 
-User → Input → Process → Output → User Action Scenario → Indicators → User Analysis → Policy Decision → Economic Engine → Updated Indicators → Outcome/Report → Market Reaction → Next Phase
+---
 
+## 3. Initial Required Information
 
+### Macroeconomic Indicators
 
-## 3\. Initial Required Information
+- Real GDP Growth
+- Inflation
+- Credit Growth
 
-### Economic indicators
+### Banking & Money Market Indicators
 
-* GDP growth
-* Inflation
-* Unemployment rate
-* Public debt
+- Thanh khoản hệ thống ngân hàng
+- Lãi suất liên ngân hàng
+- Xu hướng lãi suất liên ngân hàng
+- Khối lượng giao dịch liên ngân hàng
+- Các nghiệp vụ OMO đang đáo hạn nếu có
 
-### Banking indicators
+### Auction Information
 
-* Credit growth
-* Liquidity ratio
-* Deposit growth
+- Mua/Bán tín phiếu
+- Khối lượng
+- Kỳ hạn
+- Phương thức đấu thầu
+- Lãi suất áp dụng nếu sử dụng đấu thầu khối lượng
 
-### Financial-market indicators
+### Thông tin ẩn của NHTM
 
-* 10Y Government Bond Yield
-* Equity Market Index
-* Real Estate Price Index
+Game mô phỏng:
 
-### Government information
+- Nhu cầu thanh khoản
+- Khối lượng muốn giao dịch
+- Mức lãi suất chấp nhận
+- Chiến lược đặt thầu
 
-* Public Debt/GDP
-* Government Spending Growth
+---
 
-Not every indicator needs to appear in every phase.
+## 4. Core Process Type
 
+**State(t) + Scenario(t) + User Decision(t) → Auction Engine → Economic Engine → State(t+1)**
 
+Quy trình:
 
-## 4\. Core Process Type
+**Phân tích → Quyết định → Đấu thầu → Mô phỏng → Giải thích**
 
-The product uses a multi-stage economic decision simulation. State(t) + Scenario/Shock(t) + User Decision(t) → Economic Engine → State(t+1)
+Auction Engine xác định:
 
-The updated state is carried forward rather than resetting after each phase.
+- Khối lượng đặt thầu
+- Khối lượng trúng thầu
+- Lãi suất áp dụng/trúng thầu
+- Kết quả phân bổ
 
+Economic Engine sau đó cập nhật:
 
+**OMO → Thanh khoản → Lãi suất liên ngân hàng**
 
-## 5\. MVP Flow
+Tác động dài hạn được thể hiện theo hướng:
 
-The first implementation can demonstrate one complete decision cycle:
+**Lãi suất → Tín dụng/Cung tiền → Tổng cầu → GDP/Lạm phát**
 
-1. Scenario: inflation-related economic situation.
-2. Data: show the most relevant indicators.
-3. Learning support: indicator explanations using "What is it?", "Why does it matter?", "What happens if it rises/falls?", and "What should I watch with it?"
-4. Decision: user chooses a monetary-policy response by changing interest rate and setting expected inflation
-5. Economic Engine: simplified relationships estimate changes.
-6. Output: updated indicators, market reaction, and decision assessment.
-7. Continue: updated state becomes the next starting point.
+---
 
+## 5. MVP Flow for Each Phase
 
+### Phase 1 – Đấu thầu khối lượng
 
-## 6\. Target Product Direction
+1. Người chơi nhận Market Dashboard và scenario.
+2. Game quy định phương thức **đấu thầu khối lượng**.
+3. Người chơi đưa ra quyết định OMO.
+4. NHTW xác định lãi suất.
+5. NHTM mô phỏng quyết định khối lượng đặt thầu.
+6. Game xác định khối lượng trúng thầu.
+7. Thanh khoản và lãi suất liên ngân hàng được cập nhật.
+8. Game giải thích kết quả.
 
-The current concept proposes approximately 5--7 phases: 
+### Phase 2 – Đấu thầu lãi suất
 
-\- Phase 1: Inflation 
+1. Người chơi nhận scenario mới.
+2. Game quy định phương thức **đấu thầu lãi suất**.
+3. Người chơi đưa ra quyết định OMO.
+4. NHTM mô phỏng gửi khối lượng và lãi suất dự thầu.
+5. Game xác định khối lượng và lãi suất trúng thầu.
+6. Các chỉ số thị trường được cập nhật.
+7. Game giải thích cơ chế hình thành lãi suất.
 
-\- Phase 2: Stimulate the Economy 
+### Phase 3 – Auction Trade-off
 
-\- Phase 3: Credit \& Housing Boom 
+1. Người chơi nhận Market Dashboard và mục tiêu điều hành.
+2. Phân tích điều kiện thị trường.
+3. Quyết định mua/bán tín phiếu.
+4. Quyết định khối lượng và kỳ hạn.
+5. Tự lựa chọn **đấu thầu khối lượng hoặc đấu thầu lãi suất**.
+6. NHTM phản ứng và gửi lệnh dự thầu.
+7. Game chạy Auction Engine.
+8. Xác định kết quả đấu thầu.
+9. Economic Engine cập nhật thanh khoản và lãi suất.
+10. Game trả về Decision-Consequence Card.
+11. Người chơi điều chỉnh chiến lược cho vòng tiếp theo.
 
-\- Phase 4: Banking Crisis 
+---
 
-\- Phase 5: Government Bond 
+## 6. Target Product Direction
 
-\- Phase 6: Global Shocks
+Game gồm 3 phase:
 
-The concept also allows crises to arise from accumulated player decisions, otherwise external problems will cause the same issue.
+- **Phase 1:** Học cơ chế đấu thầu khối lượng.
+- **Phase 2:** Học cơ chế đấu thầu lãi suất.
+- **Phase 3:** Tự lựa chọn phương thức đấu thầu dựa trên điều kiện thị trường.
 
+Phase 3 tập trung vào trade-off giữa:
 
+**Rate Control ↔ Price Discovery**
 
-## 7\. Product Interface
+và:
 
-The current concept proposes three main tabs: 
+**Policy Signaling ↔ Market Efficiency**
 
-\- Scenario 
+Không có một phương thức đấu thầu luôn tối ưu trong mọi scenario.
 
-\- Decisions 
+---
 
-\- Reports (Dashboard)
+## 7. Product Interface
 
+### 3 tabs chính
 
+**Scenario**
 
-## 8\. MVP Scope
+- Bối cảnh kinh tế
+- Market Dashboard
+- Mục tiêu điều hành
+- Thông tin hướng dẫn
 
-Recommended first working scope: 
+**Decisions**
 
-\- one fictional country 
+- Mua/Bán tín phiếu
+- Khối lượng
+- Kỳ hạn
+- Phương thức đấu thầu
+- Lãi suất nếu cần
 
-\- one Central Bank player 
+**Reports**
 
-\- common starting economic condition 
+- Kết quả đấu thầu
+- Khối lượng OMO thực tế
+- Lãi suất sau đấu thầu
+- Thanh khoản hệ thống
+- Lãi suất liên ngân hàng
+- Decision-Consequence Card
+- Các tác động kinh tế ở những kỳ tiếp theo
 
-\- Phase 1: Inflation 
+---
 
-&#x20; + a limited set of key indicators
+## 8. MVP Scope
 
-&#x20; + interest rate and expected inflation decision
+- Giả lập một quốc gia duy nhất.
+- Người chơi đóng vai Ban Điều hành Nghiệp vụ Thị trường mở.
+- Công cụ quyết định giới hạn ở **mua/bán tín phiếu thông qua đấu thầu**.
+- Đấu thầu khối lượng.
+- Đấu thầu lãi suất.
+- Mô phỏng hành vi đặt thầu của NHTM.
+- Auction Engine.
+- Economic Engine tập trung vào:
 
-&#x20; + outcome dashboard/report
+**OMO → Thanh khoản → Lãi suất liên ngân hàng**
 
-&#x20; + educational explanation
+- Decision-Consequence Card.
+- Ba phase có trạng thái liên kết với nhau.
 
-The purpose is to prove the complete chain: Scenario → Decision → Economic Calculation → Outcome → Learning
+---
 
+## 9. Target Scope
 
+Nếu có đủ thời gian và dữ liệu:
 
-## 9\. Target Scope
+- Mở rộng số lượng scenario.
+- Calibration Auction Engine bằng dữ liệu Việt Nam.
+- Mô phỏng hành vi NHTM chi tiết hơn.
+- Mở rộng consequence layer:
 
-After the MVP works, expansion may include: 
+**OMO → Lãi suất → Tín dụng/Cung tiền → GDP/Lạm phát**
 
-\- additional phases
+- Bổ sung nhiều loại shock và điều kiện thị trường khác nhau.
 
-\- more monetary-policy tools
+---
 
-\- banking and credit conditions
+## 10. Fallback Scope
 
-\- government bond market
+Nếu dữ liệu hoặc mô hình quá phức tạp:
 
-\- banking crisis
+- Giữ nguyên cấu trúc 3 phase.
+- Đơn giản hóa hành vi đặt thầu của NHTM.
+- Sử dụng rule-based simulation cho một số biến không có dữ liệu.
+- Mô hình định lượng cốt lõi chỉ tập trung vào:
 
-\- external shocks
+**OMO → Thanh khoản → Lãi suất liên ngân hàng**
 
-\- performance comparison/community functions.
+- GDP và lạm phát chỉ được thể hiện dưới dạng consequence/scenario.
 
+---
 
+## 11. Out of Scope for MVP
 
-## 10\. Fallback Scope
+- Dự trữ bắt buộc.
+- Can thiệp tỷ giá.
+- Trần tăng trưởng tín dụng.
+- Quyết định lãi suất chính sách.
+- Chính sách tài khóa.
+- Mô phỏng bảng cân đối chi tiết của từng NHTM.
+- Dự báo chính xác GDP/CPI từ một phiên OMO.
+- Tái hiện chính xác 100% nền kinh tế thực.
+- Multiplayer.
 
-If implementation becomes too complex: 
+---
 
-\- a small set of core indicators
+## 12. Initial Route Hypothesis
 
-\- increase / hold / decrease decisions 
+1. Làm bản demo Excel để kiểm tra quy tắc đấu thầu và cách tính kết quả.
+2. Thu thập dữ liệu OMO và thị trường liên ngân hàng Việt Nam.
+3. Xây dựng Auction Engine cho đấu thầu khối lượng và đấu thầu lãi suất.
+4. Xây dựng Economic Engine cho:
 
-\- rule-based calculations 
+   **OMO → Thanh khoản → Lãi suất liên ngân hàng**
 
-\- one result dashboard
-
-\- short educational explanation
-
-
-
-## 11\. Out of Scope for MVP
-
-* full replication of a real economy
-* real-world forecasting
-* detailed simulation of every commercial bank
-* direct player control of Government decisions
-* detailed global-market simulation
-* multiplayer decisions affecting one another
-
-
-
-## 12\. Initial Rule Hypothesis
-
-The economic engine will use simplified relationships whose coefficients/elasticities are treated as assumptions initially.
-
-Examples of relationships to model include: 
-
-\- interest rate ↔ inflation
-
-\- interest rate ↔ GDP growth
-
-\- GDP growth ↔ unemployment, public debt/GDP
-
-Exact formulas and coefficients still require final validation/calibration.
-
-
-
-## 13\. Responsibility by Output
-
-\- Vũ Lưu Minh Ngọc: Developer 
-
-Output: MVP Web Application (Functional implementation of the simulation, game logic, events, progression and game state have been designed by others), connect backend and frontend
-
-\- Nguyễn Bảo Hiền: Economic Analyst
-
-Output: Excel Simulation Model \& Parameter set (economic models, formulas and thresholds), Economic decision matrix (Policy actions available to players with corresponding effects on GDP, inflation, debt and other indicators) - work with game logic member
-
-\- Nguyễn Minh Trang: UI/UX design + Learning experience
-
-Output: Interactive Web Dashboard (Interface for economic indicators, scenarios, decisions, outcomes and player progress), Learning experience system (Contextual knowledge explanations and signals)
-
-\- Nguyễn Khánh Linh: Game Logic \& Scenario 
-
-(Output: Scenario tree \& Event script (Step-by-step branching narrative across economic phases, with news, economic situations, crises), Scenario-specific expected outcomes)
-
+5. Xây Phase 1 để kiểm tra cơ chế đấu thầu khối lượng.
+6. Xây Phase 2 để kiểm tra cơ chế đấu thầu lãi suất.
+7. Xây Phase 3 để kiểm tra trade-off giữa hai phương thức.
+8. Sau khi logic và mô hình ổn định, chuyển sang giao diện game.
