@@ -1,187 +1,66 @@
 # PROJECT PROPOSAL
 
-## 1\. Problem Direction
+**1.  Problem Direction**
 
-Students interested in central banking and monetary policy often learn economic indicators and policy concepts separately, but find it difficult to understand how these variables interact and how monetary-policy decisions create trade-offs across the economy.
+_Pain point:_ Sinh viên hiểu các khái niệm về cung tiền và các công cụ thực hiện chính sách tiền tệ như nghiệp vụ thị trường mở (OMO) ở mức lý thuyết, nhưng khó hình dung cách NHTW thực hiện và cách các quyết định dẫn đến thay đổi về thanh khoản, cung tiền và các biến số kinh tế vĩ mô.
 
-**Core Learning Loop**
+_Giải pháp của game:_ Tạo lập môi trường cho sinh viên có thể thực hiện các quyết định liên quan đến Nghiệp vụ Thị trường Mở (OMO) để điều tiếtcung tiền và thanh khoản hệ thống.
 
-_Observe Economic Situation → Analyze Indicators → Make Policy Decision → Experience Economic Consequences → Evaluate Outcome → Learn → Adjust Future Decisions_
+**2.  Target User**
 
-This learning loop is the core reason for using gamification in the product. The game is not only adding game elements to existing learning content; the decision-and-consequence mechanic is used to directly address the learning difficulties identified above.
+Sinh viên khối ngành Kinh tế, Tài chính - Ngân hàng tại Việt Nam muốn tìm hiểu về công cụ thực hiện chính sách tiền tệ của NHTWVN Nghiệp vụ Thị trường Mở (OMO) nhưng chưa có kiến thức sâu.
 
+**3.  User task**
 
-### Pain Point 1: Difficulty understanding interactions between economic indicators
+_Người chơi sẽ đóng vai trò là Ban Điều hành Nghiệp vụ Thị trường mở của NHTW. Trong mỗi Phase người chơi đối mặt với một kịch bản vĩ mô cụ thể và phải thực thi nhiệm vụ đưa nền kinh tế về trạng thái cân bằng mục tiêu thông qua:_
 
-Students may know individual relationships such as "higher interest rates can reduce inflation" but have difficulty understanding the broader consequences of the same decision.
+**Phân tích báo cáo vĩ mô:** Đọc các chỉ số vĩ mô thực tế (Tăng trưởng GDP, Lạm phát, Thất nghiệp, Nợ công/GDP), các thông tin thị trường, chỉ số thị trường tiền tệ (Thanh
+khoản hệ thống ngân hàng, Lãi suất liên ngân hàng).
 
-For example, raising the policy rate may help reduce inflation but can also slow GDP growth and increase unemployment.
+**Đưa ra quyết định OMO: Người chơi đưa ra quyết định can thiệp lượng tiền thông qua OMO:**
 
-**How the game replicates the problem:**
+- Mua/Bán có kỳ hạn: Quyết định mua/bán tín phiếu từ các NHTM để bơm thêm lượng dự trữ khả dụng/Hút tiền từ hệ thống. Người chơi chọn đấu thầu lãi suất hoặc đấu thầu khối lượng và kỳ hạn.
 
-The game presents the player with an economic scenario containing multiple indicators. The player must make a policy decision while considering the overall economic conditions and analyzing the relevant indicators in greater depth.
+- Phát hành/Mua lại Tín phiếu NHTW: Mua/Bán tín phiếu ngắn hạn để bơm/thu hồi tiền mặt khả dụng từ hệ thống NHTM. Người chơi chọn đấu thầu lãi suất hoặc đấu thầu khối lượng.
 
-**How the game addresses the problem:**
+- Xử lý sự kiện đặc biệt (Scenario-specific decision): Đưa ra các quyết định phụ để đối phó với các cú sốc (như cú sốc thuế, thiên tai, đóng băng tín dụng, khủng hoảng địa chính trị).
 
-After the player changes the interest rate, the Economic Engine simulates the resulting changes in inflation, GDP growth, unemployment, and other relevant indicators. The player can therefore observe the interactions between variables rather than learning each relationship separately.
+**4.  Desired User Outcome**
 
+- Hiểu bản chất Cung tiền là một dòng chảy được điều tiết liên tục qua OMO.
 
-### Pain Point 2: Difficulty understanding monetary-policy trade-offs
+- Hiểu được cơ chế vận hành của Nghiệp vụ Thị trường mở và kết quả, ảnh hưởng của các quyết định lên các kênh truyền dẫn.
 
-Students may understand that a central bank wants to control inflation and support economic growth, but may not understand why achieving one objective can come at the expense of another. Monetary-policy decisions are therefore not always straightforward or easy to solve.
+**5.  Product Statement**
 
-**How the game replicates the problem:**
+Một trò chơi mô phỏng nghiệp vụ thị trường mở (OMO), trong đó người chơi đóng vai Ban Điều hành Nghiệp vụ Thị trường mở của NHTW, phân tích tình hình thị trường tiền tệ, thực hiện quyết định đấu thầu tín phiếu và quan sát tác động của quyết định đến thanh khoản hệ thống ngân hàng, lãi suất thị trường, cùng nền kinh tế nói chung.
 
-The player is placed in situations where there is no perfect policy decision. Improving one economic objective may create a negative effect on another.
+**6.  Main Output**
 
-For example, aggressively raising interest rates may improve inflation but weaken economic growth, resulting in a lower overall score.
+- Giao diện Dashboard, bảng Chỉ số: Giao diện Web hiển thị các chỉ số tài chính - kinh tế
 
-**How the game addresses the problem:**
+- Economic Engine: Tính toán tự động dựa trên các phương trình vĩ mô cốt lõi, phản hồi kết quả và vẽ đồ thị xu hướng vĩ mô sau mỗi lượt chơi.
 
-The game evaluates the player's decision across multiple economic objectives. Reports and performance indicators show both the positive and negative consequences of the decision, allowing players to understand monetary-policy trade-offs through experimentation.
+- Report: KPI Card và Chart thể hiện performance của người chơi qua các phases, giải thích kênh truyền dẫn nào đã hoạt động hiệu quả hoặc thất bại trong lượt chơi của họ.
 
+**7.  Product Pattern**
 
-### Pain Point 3: Lack of opportunity to experiment with policy decisions
+Scenario → Economic Data → User Analysis → Policy Decision → Economic Engine → Updated Economic Indicators → Outcome and Report → Next Phase
 
-Traditional learning materials mainly allow students to study concepts and observe examples. Students have limited opportunities to make their own monetary-policy decisions and immediately observe what would happen. 
+_Each phase represents a new economic condition and the outcome of the previous phase is carried forward._
 
-**How the game replicates the problem:**
+**8.  Finance and Banking Relevance**
 
-The player directly takes the role of the Central Bank and must decide how to respond to changing economic conditions.
+Trò chơi mô phỏng các nguyên lý và nghiệp vụ thực tế của NHTW thông qua các mô hình kinh tế như New Keynesian IS Curve, New Keynesian Phillips Curve, Okun's Law
 
-**How the game addresses the problem:**
+2 Kênh truyền dẫn được mô phỏng:
 
-Players can change the policy rate, observe the simulated outcome, and compare the result with their expectations. This creates a learning cycle of:
+- Kênh Lãi suất (main focus): Quyết định đấu thầu mua tín phiếu nói chung bơm tiền làm giảm lãi suất liên ngân hàng, kéo lãi suất cho vay thực xuống, ... thúc đẩy GDP tăng trưởng.
 
-**Decision → Consequence → Evaluation → Adjustment**
+- Kênh Tín dụng: Quyết định đấu thầu bán Tín phiếu nói chung hút tiền làm cạn kiệt thanh khoản, các NHTM bắt buộc phải siết chặt vòi tín dụng đối với nền kinh tế kiềm chế tổng cầu hạ nhiệt lạm phát.
 
+**9.  Feasibility**
 
-### Pain Point 4: Difficulty understanding the cumulative effects of policy decisions
+-   Tính khả thi về công nghệ: Game được xây dựng bằng các công nghệ Web (HTML, CSS cho giao diện tương tác; Chart.js hoặc D3.js để vẽ đồ thị động). Economic Engine chỉ bao gồm các phương trình đại số cơ bản.
 
-Students may find it difficult to understand that monetary-policy decisions can affect the economy beyond the immediate period and that their effects can persist over time.
-
-**How the game replicates the problem:**
-
-The game consists of multiple economic phases. The economic condition resulting from one phase becomes the starting condition for the next phase.
-
-**How the game addresses the problem:**
-
-Previous decisions influence future economic conditions and scenarios. Players therefore experience how repeated policy decisions can accumulate and create future consequences.
-
-
-## 2\. Target User
-
-University students interested in banking, finance, economics, or central banking but without deep knowledge.
-
-
-## 3\. User Taskvbbbbbbbbbb
-
-The user observes the economic condition, interprets key indicators, and makes a monetary-policy decision.
-
-Typical flow:
-
-1\. Read the economic scenario.
-
-2\. Review economic and financial indicators.
-
-3\. Identify the main economic problem.
-
-4\. Make a monetary-policy action through mainly changing interest rate.
-
-5\. Observe the simulated outcome.
-
-6\. Evaluate the result.
-
-7\. Continue to the next phase using the updated economic condition.
-
-
-
-## 4\. Desired User Outcome
-
-Users should be able to:
-
-\- understand basic monetary-policy transmission
-
-\- explain why a central bank may raise or lower interest rates
-
-\- recognize trade-offs among inflation, GDP growth, and unemployment
-
-\- understand how credit conditions and liquidity relate to financial stability
-
-\- interpret major indicators before making a policy decision.
-
-
-
-## 5\. Product Statement
-
-A gamified central-bank policy simulation where users act as the Central Bank of a fictional country, respond to changing economic scenarios, make monetary-policy decisions and observe how those decisions affect the economy over multiple phases.
-
-
-
-## 6\. Main Output
-
-The main output is an interactive simulation result showing:
-
-\- the player's monetary-policy decision
-
-\- changes in major economic indicators
-
-\- economic and financial consequences
-
-\- market reaction
-
-\- explanation or recommendation related to the decision; - performance across phases
-
-
-
-## 7\. Product Pattern
-
-Scenario → Economic Data → User Analysis → Policy Decision → Economic Engine → Updated Economic Indicators → Outcome and Report → Market
-Reaction → Next Phase
-
-Each phase represents a new economic condition, and the outcome of the previous phase is carried forward.
-
-
-
-## 8\. Finance and Banking Relevance
-
-The project focuses directly on central banking and monetary policy.
-
-Key variables in the current concept include:
-
-\- GDP growth
-
-\- Inflation
-
-\- Unemployment rate
-
-\- Public debt/GDP
-
-Policy tools considered in the current concept include the policy rate, open market operations and forward guidance.
-
-
-
-## 9\. Feasibility
-
-The initial version does not attempt to reproduce a full real-world economy. The economic engine can use simplified relationships and assumptions. Coefficients and elasticities can initially be treated as assumptions and refined later.
-
-
-
-## 10\. Revision Notes
-
-After feedbacks, we decided to:
-
-\- Scale down to monetary only instead of including Central Bank's all scopes of work
-
-\- Reduce the number of economic variables
-
-
-
-## 11\. Open Questions
-
-\- Can you suggest reliable sources where we can take as references for economic formulas?
-
-\- Do you recommend some specific economic phenomenon / events we should simulate in the game?
-
-\- How many phases would be suitable for our implementation capability?
-
+-   Tính khả thi về học thuật: Hệ thống phương trình cốt lõi (IS, Phillips, Okun, Debt Dynamics) được xây dựng trên cơ sở lý thuyết kinh tế học New Keynesian. Các tham số nhạy cảm có thể được chuẩn hóa qua các bước calibration dựa trên dữ liệu lịch sử thực tế của Việt Nam và các nền kinh tế mới nổi.
