@@ -27,8 +27,6 @@ Kết quả của phase trước được giữ lại và trở thành trạng t
 
 - Thanh khoản hệ thống ngân hàng
 - Lãi suất liên ngân hàng
-- Xu hướng lãi suất liên ngân hàng
-- Khối lượng giao dịch liên ngân hàng
 - Các nghiệp vụ OMO đang đáo hạn nếu có
 
 ### Auction Information
