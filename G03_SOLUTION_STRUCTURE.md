@@ -118,7 +118,7 @@ Game gồm 3 phase:
 
 - **Phase 1:** Học cơ chế đấu thầu khối lượng.
 - **Phase 2:** Học cơ chế đấu thầu lãi suất.
-- **Phase 3:** Tự lựa chọn phương thức đấu thầu dựa trên điều kiện thị trường.
+- **Phase 3:** Tự lựa chọn phương thức đấu thầu và kỳ hạn dựa trên điều kiện thị trường.
 
 Phase 3 tập trung vào trade-off giữa:
 
