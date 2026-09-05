@@ -37,23 +37,16 @@ Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản tr
 
 ## Tính năng chính
 
-- Cho phép người chơi đóng vai Central Bank và điều hành chính sách tiền tệ của một quốc gia.
-- Mô phỏng nền kinh tế thông qua nhiều giai đoạn (phases), trong đó kết quả của phase trước được carry forward sang phase tiếp theo.
-- Mỗi phase cung cấp một economic scenario với các chỉ số kinh tế và tài chính khác nhau.
-- Cho phép người chơi thiết lập Interest Rate dựa trên tình hình kinh tế.
-- Cho phép người chơi đưa ra Expected Inflation để thể hiện quan điểm/dự báo của mình về nền kinh tế.
-- Mỗi phase có thêm một scenario-specific decision để người chơi xử lý vấn đề đặc biệt của nền kinh tế.
-- Sử dụng Economic Engine để mô phỏng tác động của quyết định chính sách lên nền kinh tế.
-- Tính toán và cập nhật các chỉ số như:
-  - GDP Growth
-  - Inflation
-  - Unemployment
-  - Public Debt/GDP
-- Cung cấp Report sau mỗi phase để người chơi đánh giá kết quả chính sách.
-- Hiển thị sự khác biệt giữa player forecast và actual economic outcome.
-- Cung cấp Learning Cards giúp người chơi tìm hiểu:
-  - Chỉ số có ý nghĩa gì?
-  - Vì sao Central Bank cần quan tâm?
-  - Chỉ số tăng/giảm sẽ gây ra tác động gì?
-  - Nên theo dõi chỉ số nào cùng với nó?
-- Tạo các economic events/crises dựa trên trạng thái của nền kinh tế và các quyết định trước đó.
+- Cho phép người chơi đóng vai Central Bank và điều hành chính sách tiền tệ thông qua nghiệp vụ thị trường mở (OMO).
+- Mô phỏng nền kinh tế thông qua nhiều giai đoạn (phases), trong đó mỗi phase tương đương 7 ngày và kết quả của phase trước được carry forward sang phase tiếp theo.
+- Mỗi phase cung cấp một economic scenario với các thông tin như Deposit Rate, Lending Rate, Liquidity Demand, Interbank Rate, Inflation, Real GDP Growth, Unemployment Rate, Nominal Interest Rate và News/Event.
+- Cho phép người chơi lựa chọn OMO Auction Method: Interest-rate auction hoặc Volume auction.
+- Cho phép người chơi lựa chọn OMO Action nhằm bơm hoặc hút thanh khoản: Reverse Repo/Repo/Buy Securities/Sell Securities.
+- Cho phép người chơi quyết định Volume; đối với đấu thầu khối lượng, người chơi/NHTW ấn định Discount rate/Repo rate.
+- Cho phép người chơi đưa ra Expected Inflation để thể hiện dự báo của mình về nền kinh tế.
+- Mô phỏng phản ứng và lệnh dự thầu của các NHTM; MVP giả định các NHTM có phản ứng tương đối giống nhau.
+- Với đấu thầu lãi suất, hệ thống xếp lệnh theo lãi suất, cộng dồn khối lượng, xác định mức cắt và khối lượng trúng thầu; MVP hiện áp dụng phương thức xét thầu đơn giá.
+- Với đấu thầu khối lượng, NHTW ấn định lãi suất và các NHTM quyết định khối lượng đặt thầu; nếu tổng cầu lớn hơn khối lượng chào thầu, hệ thống phân bổ theo tỷ lệ.
+- Sử dụng Economic Engine để mô phỏng chuỗi tác động: OMO → System Liquidity → Interbank Rate → Lending/Deposit Rate, Liquidity và Macroeconomic Indicators.
+- Sử dụng real data làm cơ sở cho các biến kinh tế và dữ liệu OMO; sample/simulated data được sử dụng cho dữ liệu dự thầu NHTM khi dữ liệu thực tế không sẵn có.
+- Áp dụng các logic test để kiểm tra các điều kiện như khối lượng trúng không vượt khối lượng đặt, tổng khối lượng trúng không vượt khối lượng chào thầu và phân bổ đúng trong trường hợp dư cầu/thiếu cầu.
