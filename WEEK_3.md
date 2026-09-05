@@ -126,7 +126,7 @@ Tổng khối lượng đặt thầu \= 1.200 tỷ đồng; khối lượng chà
 
 – Mỗi lệnh trúng thầu được hưởng đúng mức lãi suất mà lệnh đó đã đăng ký (đặc trưng của đấu thầu đa giá).
 
-| STT | Nhà đầu tư | Lãi suất đăng ký (%/năm) | Khối lượng đăng ký (Tỷ đồng) | Khối lượng cộng dồn (Tỷ đồng) | Khối lượng trúng thầu (Tỷ đồng) | Lãi suất trúng thầu (%/năm) |
+| STT | Nhà đầu tư | Lãi suất đăng ký (%/năm) | Khối lượng đăng ký (Tỷ đồng) | Khối lượng cộng dồn (Tỷ đồng) | Khối lượng trúng thầu (Tỷ đồng) | Lãi suất trúng thầu (%/năm) |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 1 | A | 5,15% | 150 | 150 | 150 | 5,15% |
 | 2 | A | 5,20% | 100 | 250 | 100 | 5,20% |
