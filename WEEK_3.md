@@ -1,6 +1,6 @@
-1. # **Input dictionary**
+**1.** **Input dictionary**
 
-   1.1. # **Financial overview information**
+   **1.1.** **Financial overview information**
 
 | Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
@@ -14,7 +14,7 @@
 | Nominal Interest rate | Lãi suất danh nghĩa của nền kinh tế | Float | % | 0.0% | \-15% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
 | News / Event | Tin tức về các diễn biến nền kinh tế | String | \- | “Inflation rises above target...” | N/A | Scenario Designer, Economic Model/ Hiền, Linh |
 
-   1.2. # **User-entered input**
+   **1.2.** **User-entered input**
 
 | Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
@@ -24,7 +24,7 @@
 | Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
 | Expected inflation | Lạm phát dự báo sau 1 tháng (5 phase) | Numeric  | % | 3 | 0-5% | User |
 
-   1.3. # **Product information** 
+   **1.3.** **Product information** 
 
 | Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
@@ -32,7 +32,7 @@
 | Repo’s Maturity  | Kỳ hạn của khoản repo  | Numeric | Days  | 14 | 14 days | Scenario Designer/Hiền |
 | Treasury bill’s Maturity  | Kỳ hạn của tín phiếu  | Integer  | Days | 28   | 28 days  | Scenario Designer/Hiền |
 
-   1.4. # **Assumptions / Limitations**  
+   **1.4.** **Assumptions / Limitations**  
 * Giả định về nền kinh tế:  
   * Nền kinh tế đóng (không mô phỏng trade và international capital flows)  
   * MVP giả định các NHTM có phản ứng tương đối giống nhau  
@@ -45,11 +45,11 @@
 * Kỳ hạn ảnh hưởng đến Liquidity gap theo tỉ lệ thuận  
 * OMO Rate ≤ Expected Interbank Rate​ 
 
-2. # **Source register**  
-   2.1. # **Real data**  
+**2.** **Source register**  
+   **2.1.** **Real data**  
 [DATABASE 2.0.xlsx](https://docs.google.com/spreadsheets/d/1GDpEZRkXhVWKvsum6EEYFXGNjwku5HiF/edit?gid=520085657#gid=520085657)
 
-   2.2. # **Sample data**  
+   **2.2.** **Sample data**  
 * **Đấu thầu lãi suất đơn giá** 
 
 Mô phỏng: NHTW muốn bán/phát hành 1.000 tỷ đồng tín phiếu để hút thanh khoản. Các NHTM gửi cả lãi suất và khối lượng dự thầu.  
@@ -185,16 +185,16 @@ Source added by Hiền and Trang
 Structure designed by Hiền and Trang  
 Data processed by Hiền and Trang
 
-3. # **Data flow**  
+**3.** **Data flow**  
 Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  → Lending/Deposit Rate, Liquidity and Macroeconomic Indicators
 
-4. # **Logic test**    
+**4.** **Logic test**    
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1DJ0j1gI4LMp_c7ggH9LKNvD9Bb5KaY1g/edit?gid=737625714#gid=737625714)  
 **Ownership và status**   
 Structure designed by Linh  
 Logic integration by Linh
 
-5. # **Owner and status** 
+ **5.** **Owner and status** 
 
 - Structure designed by Ngọc and Linh  
 - Validation tested by Ngọc and Linh  
