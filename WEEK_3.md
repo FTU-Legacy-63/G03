@@ -1,6 +1,6 @@
 # WEEK 3
 
-**1.** **Input dictionary**
+# **1.** **Input dictionary**
 
    **1.1.** **Financial overview information**
 
@@ -47,7 +47,8 @@
 * Kỳ hạn ảnh hưởng đến Liquidity gap theo tỉ lệ thuận  
 * OMO Rate ≤ Expected Interbank Rate​ 
 
-**2.** **Source register**  
+# **2.** **Source register**  
+
    **2.1.** **Real data**  
 [DATABASE 2.0.xlsx](https://docs.google.com/spreadsheets/d/1GDpEZRkXhVWKvsum6EEYFXGNjwku5HiF/edit?gid=520085657#gid=520085657)
 
@@ -187,16 +188,16 @@ Source added by Hiền and Trang
 Structure designed by Hiền and Trang  
 Data processed by Hiền and Trang
 
-**3.** **Data flow**  
+# **3.** **Data flow**  
 Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  → Lending/Deposit Rate, Liquidity and Macroeconomic Indicators
 
-**4.** **Logic test**    
+# **4.** **Logic test**    
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1DJ0j1gI4LMp_c7ggH9LKNvD9Bb5KaY1g/edit?gid=737625714#gid=737625714)  
 **Ownership và status**   
 Structure designed by Linh  
 Logic integration by Linh
 
- **5.** **Owner and status** 
+ # **5.** **Owner and status** 
 
 - Structure designed by Ngọc and Linh  
 - Validation tested by Ngọc and Linh  
