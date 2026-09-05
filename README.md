@@ -13,9 +13,9 @@ G03
 | Họ tên | Mã sinh viên | Vai trò chính |
 |---|---|---|
 | Vũ Lưu Minh Ngọc | 2412380037 | Game Engine & Backend Developer |
-| Nguyễn Bảo Hiền | 2412380017 | Economic Model & Finance |
+| Nguyễn Bảo Hiền | 2412380017 | Game Logic & Scenario Designer |
 | Nguyễn Minh Trang | 2412380049 | UI/UX & Learning Experience |
-| Nguyễn Khánh Linh | 2413380027 | Game Logic & Scenario Designer |
+| Nguyễn Khánh Linh | 2413380027 | Economic Model & Finance |
 
 ## Mô tả ngắn về sản phẩm
 
