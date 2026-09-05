@@ -51,8 +51,6 @@ _Each phase represents a new economic condition and the outcome of the previous 
 
 **8.  Finance and Banking Relevance**
 
-Trò chơi mô phỏng các nguyên lý và nghiệp vụ thực tế của NHTW thông qua các mô hình kinh tế như New Keynesian IS Curve, New Keynesian Phillips Curve, Okun's Law
-
 2 Kênh truyền dẫn được mô phỏng:
 
 - Kênh Lãi suất (main focus): Quyết định đấu thầu mua tín phiếu nói chung bơm tiền làm giảm lãi suất liên ngân hàng, kéo lãi suất cho vay thực xuống, ... thúc đẩy GDP tăng trưởng.
@@ -63,4 +61,4 @@ Trò chơi mô phỏng các nguyên lý và nghiệp vụ thực tế của NHTW
 
 -   Tính khả thi về công nghệ: Game được xây dựng bằng các công nghệ Web (HTML, CSS cho giao diện tương tác; Chart.js hoặc D3.js để vẽ đồ thị động). Economic Engine chỉ bao gồm các phương trình đại số cơ bản.
 
--   Tính khả thi về học thuật: Hệ thống phương trình cốt lõi (IS, Phillips, Okun, Debt Dynamics) được xây dựng trên cơ sở lý thuyết kinh tế học New Keynesian. Các tham số nhạy cảm có thể được chuẩn hóa qua các bước calibration dựa trên dữ liệu lịch sử thực tế của Việt Nam và các nền kinh tế mới nổi.
+-   Tính khả thi về học thuật: Các tham số nhạy cảm có thể được chuẩn hóa qua các bước calibration dựa trên dữ liệu lịch sử thực tế của Việt Nam và các nền kinh tế mới nổi.
