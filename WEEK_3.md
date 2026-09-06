@@ -88,37 +88,6 @@ Bước 4 – Xác định lãi suất: Do đấu thầu đơn giá, toàn bộ 
 | Lệnh biên | Bank E – 5,49% |
 | Phân bổ lệnh biên | 50/100 tỷ |
 
-* **Đấu thầu khối lượng**   
-Mô phỏng: NHTW muốn phát hành 1.000 tỷ đồng tín phiếu, kỳ hạn 28 ngày. NHTW ấn định trước lãi suất 5,50%/năm, các NHTM chỉ quyết định khối lượng dự thầu.
-
-Quy tắc: Nếu tổng khối lượng dự thầu ≤ khối lượng chào thầu thì chấp nhận toàn bộ. Nếu tổng khối lượng dự thầu \> khối lượng chào thầu thì phân bổ theo tỷ lệ.
-
-| NHTM | LS cố định | KL đặt thầu (tỷ) | KL trúng (tỷ) |
-| :---- | :---- | :---- | :---- |
-| Bank A | 5,50% | 180 | 150,0 |
-| Bank B | 5,50% | 250 | 208,3 |
-| Bank C | 5,50% | 120 | 100,0 |
-| Bank D | 5,50% | 300 | 250,0 |
-| Bank E | 5,50% | 200 | 166,7 |
-| Bank F | 5,50% | 150 | 125,0 |
-| Tổng |   | 1.200 | 1.000 |
-
-Bước 1 – NHTW ấn định lãi suất: Lãi suất áp dụng chung là 5,50%/năm.
-
-Bước 2 – NHTM đặt khối lượng: Tổng nhu cầu \= 1.200 tỷ đồng \> 1.000 tỷ đồng chào thầu.
-
-Bước 3 – Xác định tỷ lệ phân bổ: Tỷ lệ phân bổ \= 1.000 / 1.200 \= 83,33%.
-
-Bước 4 – Phân bổ: Mỗi NHTM được phân bổ khoảng 83,33% khối lượng đã đặt, tổng cộng 1.000 tỷ đồng.
-
-| Chỉ tiêu | Kết quả |
-| :---- | :---- |
-| Khối lượng chào thầu | 1.000 tỷ |
-| Tổng khối lượng dự thầu | 1.200 tỷ |
-| Khối lượng trúng thầu | 1.000 tỷ |
-| Lãi suất áp dụng chung | 5,50%/năm |
-| Tỷ lệ phân bổ | 83,33% |
-| Bid-to-cover | 1,20 lần |  
 * **Đấu thầu đa giá** 
 
 Mô phỏng: NHTW muốn phát hành 1.000 tỷ đồng tín phiếu. Các NHTM quyết định lãi suất và khối lượng dự thầu.
@@ -156,6 +125,38 @@ Bước 4 – Xác định lãi suất: Do đấu thầu đa giá, mỗi lệnh 
 | LS bình quân gia quyền | ≈ 5,31%/năm |
 | Lệnh biên | Bank E – 5,49% |
 | Phân bổ lệnh biên | 50/100 tỷ |
+
+* **Đấu thầu khối lượng**   
+Mô phỏng: NHTW muốn phát hành 1.000 tỷ đồng tín phiếu, kỳ hạn 28 ngày. NHTW ấn định trước lãi suất 5,50%/năm, các NHTM chỉ quyết định khối lượng dự thầu.
+
+Quy tắc: Nếu tổng khối lượng dự thầu ≤ khối lượng chào thầu thì chấp nhận toàn bộ. Nếu tổng khối lượng dự thầu \> khối lượng chào thầu thì phân bổ theo tỷ lệ.
+
+| NHTM | LS cố định | KL đặt thầu (tỷ) | KL trúng (tỷ) |
+| :---- | :---- | :---- | :---- |
+| Bank A | 5,50% | 180 | 150,0 |
+| Bank B | 5,50% | 250 | 208,3 |
+| Bank C | 5,50% | 120 | 100,0 |
+| Bank D | 5,50% | 300 | 250,0 |
+| Bank E | 5,50% | 200 | 166,7 |
+| Bank F | 5,50% | 150 | 125,0 |
+| Tổng |   | 1.200 | 1.000 |
+
+Bước 1 – NHTW ấn định lãi suất: Lãi suất áp dụng chung là 5,50%/năm.
+
+Bước 2 – NHTM đặt khối lượng: Tổng nhu cầu \= 1.200 tỷ đồng \> 1.000 tỷ đồng chào thầu.
+
+Bước 3 – Xác định tỷ lệ phân bổ: Tỷ lệ phân bổ \= 1.000 / 1.200 \= 83,33%.
+
+Bước 4 – Phân bổ: Mỗi NHTM được phân bổ khoảng 83,33% khối lượng đã đặt, tổng cộng 1.000 tỷ đồng.
+
+| Chỉ tiêu | Kết quả |
+| :---- | :---- |
+| Khối lượng chào thầu | 1.000 tỷ |
+| Tổng khối lượng dự thầu | 1.200 tỷ |
+| Khối lượng trúng thầu | 1.000 tỷ |
+| Lãi suất áp dụng chung | 5,50%/năm |
+| Tỷ lệ phân bổ | 83,33% |
+| Bid-to-cover | 1,20 lần |  
 
 **Ownership và status**   
 Source added by Hiền and Trang  
