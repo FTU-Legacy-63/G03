@@ -51,10 +51,11 @@
 [DATABASE 2.0.xlsx](https://docs.google.com/spreadsheets/d/1GDpEZRkXhVWKvsum6EEYFXGNjwku5HiF/edit?gid=520085657#gid=520085657)
 
    **2.2.** **Sample data**  
-* **Đấu thầu lãi suất đơn giá** 
+* **Đấu thầu lãi suất đơn giá**
 
-Mô phỏng: NHTW muốn bán/phát hành 1.000 tỷ đồng tín phiếu để hút thanh khoản. Các NHTM gửi cả lãi suất và khối lượng dự thầu.  
-**Quy tắc mô phỏng:** vì NHTW là bên phát hành/bán tín phiếu, các mức lãi suất dự thầu thấp hơn được ưu tiên trước. Các lệnh được cộng dồn cho đến khi đạt khối lượng 1.000 tỷ đồng.
+Mô phỏng: NHTW muốn phát hành 1.000 tỷ đồng tín phiếu để hút thanh khoản. Các NHTM quyết định lãi suất và khối lượng dự thầu.
+
+Quy tắc: Xếp lãi suất từ thấp → cao, cộng dồn khối lượng đến khi đủ 1.000 tỷ đồng. Tất cả lệnh trúng thầu áp dụng một mức lãi suất chung bằng lãi suất tại lệnh biên.
 
 | STT | NHTM | LS dự thầu | KL đặt thầu (tỷ) | KL cộng dồn (tỷ) | KL trúng (tỷ) |
 | :---- | :---- | :---- | :---- | :---- | :---- |
@@ -64,108 +65,97 @@ Mô phỏng: NHTW muốn bán/phát hành 1.000 tỷ đồng tín phiếu để 
 | 4 | Bank C | 5,35% | 200 | 550 | 200 |
 | 5 | Bank D | 5,35% | 200 | 750 | 200 |
 | 6 | Bank D | 5,40% | 200 | 950 | 200 |
-| **7** | **Bank E** | **5,49%** | **100** | **1.050** | **50** |
+| 7 | Bank E | 5,49% | 100 | 1.050 | 50 |
 | 8 | Bank B | 5,50% | 100 | 1.150 | 0 |
 | 9 | Bank C | 5,60% | 200 | 1.350 | 0 |
 | 10 | Bank F | 5,70% | 200 | 1.550 | 0 |
 
-**Bước 1 \- Xếp lệnh:** xếp lãi suất dự thầu từ thấp lên cao.
+Bước 1 – Xếp lệnh: Xếp lãi suất dự thầu từ thấp đến cao.
 
-**Bước 2 \- Cộng dồn khối lượng:** tại các mức lãi suất thấp hơn 5,49%, tổng khối lượng cộng dồn là 950 tỷ đồng.
+Bước 2 – Cộng dồn: Trước mức 5,49%, tổng khối lượng được chấp nhận là 950 tỷ đồng.
 
-**Bước 3 \- Xác định mức cắt:** NHTW còn cần 50 tỷ đồng để đủ 1.000 tỷ, nên chỉ chấp nhận 50/100 tỷ tại mức 5,49%.
+Bước 3 – Xác định lệnh biên: NHTW cần thêm 50 tỷ đồng nên nhận 50/100 tỷ của Bank E tại 5,49%.
 
-*Lãi suất trúng thầu (cut-off) \= 5,49%/năm*
-
-*Tổng khối lượng trúng thầu \= 1.000 tỷ đồng*
-
-**Bước 4 \- Đấu thầu đơn giá:** toàn bộ các lệnh trúng thầu được áp dụng cùng một mức lãi suất là 5,49%/năm.
+Bước 4 – Xác định lãi suất: Do đấu thầu đơn giá, toàn bộ 1.000 tỷ đồng trúng thầu đều áp dụng 5,49%/năm.
 
 | Chỉ tiêu | Kết quả |
 | :---- | :---- |
-| Khối lượng chào thầu | 1.000 tỷ đồng |
-| Tổng khối lượng dự thầu | 1.550 tỷ đồng |
+| Khối lượng chào thầu | 1.000 tỷ |
+| Tổng khối lượng dự thầu | 1.550 tỷ |
+| Khối lượng trúng thầu | 1.000 tỷ |
 | Lãi suất trúng thầu chung | 5,49%/năm |
-| Khối lượng trúng thầu | 1.000 tỷ đồng |
 | Bid-to-cover | 1,55 lần |
 | Lệnh biên | Bank E – 5,49% |
 | Phân bổ lệnh biên | 50/100 tỷ |
 
 * **Đấu thầu khối lượng**   
-  - Khối lượng chào thầu: 1.000 tỷ đồng.  
-  - Kỳ hạn: 28 ngày.  
-  - Phương thức: đấu thầu khối lượng.  
-  - Lãi suất do người chơi/NHNN ấn định: 5,50%/năm.  
-  - Mỗi NHTM chỉ quyết định khối lượng muốn đặt thầu
+Mô phỏng: NHTW muốn phát hành 1.000 tỷ đồng tín phiếu, kỳ hạn 28 ngày. NHTW ấn định trước lãi suất 5,50%/năm, các NHTM chỉ quyết định khối lượng dự thầu.
 
-| NHTM | Lãi suất áp dụng | Khối lượng đặt thầu (tỷ đồng) | Khối lượng trúng thầu (tỷ đồng) |
+Quy tắc: Nếu tổng khối lượng dự thầu ≤ khối lượng chào thầu thì chấp nhận toàn bộ. Nếu tổng khối lượng dự thầu \> khối lượng chào thầu thì phân bổ theo tỷ lệ.
+
+| NHTM | LS cố định | KL đặt thầu (tỷ) | KL trúng (tỷ) |
 | :---- | :---- | :---- | :---- |
-| A | 5,50% | 180 | **150.0** |
-| B | 5,50% | 250 | **208.3** |
-| C | 5,50% | 120 | **100.0** |
-| D | 5,50% | 300 | **250.0** |
-| E | 5,50% | 200 | **166.7** |
-| F | 5,50% | 150 | **125.0** |
+| Bank A | 5,50% | 180 | 150,0 |
+| Bank B | 5,50% | 250 | 208,3 |
+| Bank C | 5,50% | 120 | 100,0 |
+| Bank D | 5,50% | 300 | 250,0 |
+| Bank E | 5,50% | 200 | 166,7 |
+| Bank F | 5,50% | 150 | 125,0 |
+| Tổng |   | 1.200 | 1.000 |
 
-Tổng khối lượng đặt thầu \= 1.200 tỷ đồng; khối lượng chào thầu \= 1.000 tỷ đồng. Vì tổng cầu lớn hơn lượng chào, áp dụng phân bổ theo tỷ lệ. Mỗi NHTM có một nhu cầu giao dịch khác nhau. Khi NHNN công bố mức lãi suất cố định, khối lượng đặt thầu của từng NHTM dựa trên nhu cầu và mức hấp dẫn của lãi suất so với điều kiện thị trường. Bộ số liệu ban đầu được thiết kế để tạo được cả tình huống dư cầu và thiếu cầu.
+Bước 1 – NHTW ấn định lãi suất: Lãi suất áp dụng chung là 5,50%/năm.
 
-- Lãi suất cố định \> 0\.  
-- Khối lượng đặt thầu của từng NHTM ≥ 0\.  
-- Khối lượng trúng của từng NHTM không vượt khối lượng đặt.  
-- Tổng khối lượng trúng không vượt Q\_offer.  
-- Nếu tổng cầu nhỏ hơn Q\_offer thì Q\_actual phải bằng tổng cầu.  
-- Nếu tổng cầu lớn hơn Q\_offer thì tổng phân bổ phải bằng Q\_offer.  
+Bước 2 – NHTM đặt khối lượng: Tổng nhu cầu \= 1.200 tỷ đồng \> 1.000 tỷ đồng chào thầu.
+
+Bước 3 – Xác định tỷ lệ phân bổ: Tỷ lệ phân bổ \= 1.000 / 1.200 \= 83,33%.
+
+Bước 4 – Phân bổ: Mỗi NHTM được phân bổ khoảng 83,33% khối lượng đã đặt, tổng cộng 1.000 tỷ đồng.
+
+| Chỉ tiêu | Kết quả |
+| :---- | :---- |
+| Khối lượng chào thầu | 1.000 tỷ |
+| Tổng khối lượng dự thầu | 1.200 tỷ |
+| Khối lượng trúng thầu | 1.000 tỷ |
+| Lãi suất áp dụng chung | 5,50%/năm |
+| Tỷ lệ phân bổ | 83,33% |
+| Bid-to-cover | 1,20 lần |  
 * **Đấu thầu đa giá** 
 
-– Khối lượng gọi thầu: 1.000 tỷ đồng.
+Mô phỏng: NHTW muốn phát hành 1.000 tỷ đồng tín phiếu. Các NHTM quyết định lãi suất và khối lượng dự thầu.
 
-– Phương thức: đấu thầu lãi suất đa giá.
+Quy tắc: Xếp lãi suất từ thấp → cao, cộng dồn đến khi đủ 1.000 tỷ đồng. Khác với đơn giá, mỗi lệnh trúng thầu áp dụng chính lãi suất mà lệnh đó đã đặt.
 
-– Mỗi NHTM/nhà đầu tư quyết định mức lãi suất dự thầu và khối lượng dự thầu.
+| STT | NHTM | LS dự thầu | KL đặt (tỷ) | KL cộng dồn | KL trúng |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| 1 | Bank A | 5,15% | 150 | 150 | 150 |
+| 2 | Bank A | 5,20% | 100 | 250 | 100 |
+| 3 | Bank B | 5,25% | 100 | 350 | 100 |
+| 4 | Bank C | 5,35% | 200 | 550 | 200 |
+| 5 | Bank D | 5,35% | 200 | 750 | 200 |
+| 6 | Bank D | 5,40% | 200 | 950 | 200 |
+| 7 | Bank E | 5,49% | 100 | 1.050 | 50 |
+| 8 | Bank B | 5,50% | 100 | 1.150 | 0 |
+| 9 | Bank C | 5,60% | 200 | 1.350 | 0 |
+| 10 | Bank F | 5,70% | 200 | 1.550 | 0 |
 
-– Các lệnh dự thầu được xếp theo lãi suất từ thấp đến cao. Khối lượng được cộng dồn cho đến khi đạt khối lượng gọi thầu.
+Bước 1 – Xếp lệnh: Xếp lãi suất từ thấp đến cao.
 
-– Mỗi lệnh trúng thầu được hưởng đúng mức lãi suất mà lệnh đó đã đăng ký (đặc trưng của đấu thầu đa giá).
+Bước 2 – Cộng dồn: Trước mức 5,49%, tổng khối lượng được chấp nhận là 950 tỷ đồng.
 
-| STT | Nhà đầu tư | Lãi suất đăng ký (%/năm) | Khối lượng đăng ký (Tỷ đồng) | Khối lượng cộng dồn (Tỷ đồng) | Khối lượng trúng thầu (Tỷ đồng) | Lãi suất trúng thầu (%/năm) |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | A | 5,15% | 150 | 150 | 150 | 5,15% |
-| 2 | A | 5,20% | 100 | 250 | 100 | 5,20% |
-| 3 | A | 5,25% | 100 | 350 | 100 | 5,25% |
-| 4 | B | 5,35% | 200 | 550 | 200 | 5,35% |
-| 5 | D | 5,35% | 200 | 750 | 200 | 5,35% |
-| 6 | D | 5,40% | 200 | 950 | 200 | 5,40% |
-| 7 | B | 5,49% | 100 | 1.050 | 50 | 5,49% |
-| 8 | B | 5,50% | 100 | 1.150 | – | – |
-| 9 | C | 5,50% | 200 | 1.350 | – | – |
-| 10 | D | 5,50% | 200 | 1.550 | – | – |
-| 11 | F | 5,50% | 200 | 1.750 | – | – |
-| 12 | C | 5,60% | 300 | 2.050 | – | – |
-| 13 | D | 5,60% | 200 | 2.250 | – | – |
-| 14 | D | 5,70% | 200 | 2.450 | – | – |
-| 15 | E | 5,70% | 50 | 2.500 | – | – |
-| 16 | B | 6,00% | 100 | 2.600 | – | – |
-| 17 | G | 6,00% | 100 | 2.700 | – | – |
-| 18 | H | 6,20% | 200 | 2.900 | – | – |
-| **Tổng** |   |   | **2.900** |   | **1.000** |   |
+Bước 3 – Xác định lệnh biên: Chấp nhận thêm 50/100 tỷ tại mức 5,49% để đủ 1.000 tỷ đồng.
 
-**Kết quả phiên đấu thầu**
+Bước 4 – Xác định lãi suất: Do đấu thầu đa giá, mỗi lệnh trúng áp dụng lãi suất dự thầu của chính lệnh đó, thay vì tất cả cùng hưởng 5,49% như đơn giá.
 
-**– Khối lượng đăng ký:** 2.900 tỷ đồng.
-
-**– Khối lượng trúng thầu:** 1.000 tỷ đồng.
-
-**– Lãi suất trúng thầu:** từ 5,15%/năm đến 5,49%/năm.
-
-**– Lãi suất trúng thầu cao nhất (lệnh biên):** 5,49%/năm.
-
-**– Phân bổ lệnh biên:** 50/100 tỷ đồng.
-
-**– Lãi suất trúng thầu bình quân gia quyền:** 5,312%/năm.
-
-**Cách xác định kết quả:** NHNN/KBNN lần lượt chấp nhận các lệnh có lãi suất thấp nhất cho đến khi đủ 1.000 tỷ đồng. Sau 6 lệnh đầu, khối lượng cộng dồn là 950 tỷ đồng nên tại mức 5,49% chỉ cần nhận thêm 50 tỷ đồng. Vì đây là đấu thầu đa giá, từng lệnh trúng thầu áp dụng chính lãi suất dự thầu của lệnh đó, không dùng một mức lãi suất chung.
-
-**Bình quân gia quyền:** (150×5,15% \+ 100×5,20% \+ 100×5,25% \+ 200×5,35% \+ 200×5,35% \+ 200×5,40% \+ 50×5,49%) / 1.000 \= 5,312%/năm.
+| Chỉ tiêu | Kết quả |
+| :---- | :---- |
+| Khối lượng chào thầu | 1.000 tỷ |
+| Tổng khối lượng dự thầu | 1.550 tỷ |
+| Khối lượng trúng thầu | 1.000 tỷ |
+| Khoảng LS trúng thầu | 5,15%–5,49%/năm |
+| LS trúng thầu cao nhất | 5,49%/năm |
+| LS bình quân gia quyền | ≈ 5,31%/năm |
+| Lệnh biên | Bank E – 5,49% |
+| Phân bổ lệnh biên | 50/100 tỷ |
 
 **Ownership và status**   
 Source added by Hiền and Trang  
