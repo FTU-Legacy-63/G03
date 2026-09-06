@@ -10,7 +10,7 @@
 | ilending | Lãi suất cho vay bình quân | Float | % | 5.5% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
 | Liquidity Demand | Nhu cầu thanh khoản của toàn hệ thống | Float | Billion X’currency units | 10,000 | \- | Scenario Designer, Economic Model/ Hiền, Linh |
 | Interbank Rate | Lãi suất vay mượn giữa các NHTM trên thị trường liên ngân hàng | Float | % p.a. | 4.1% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Inflation | Lạm phát trong nền kinh tế so với phase trước | Float | %  | 4.2%  | \-5% \- 30% | Scenario Designer, Economic Model/ Hiền, Linh |
+| Inflation | Lạm phát trong nền kinh tế | Float | %  | 4.2%  | \-5% \- 30% | Scenario Designer, Economic Model/ Hiền, Linh |
 | Real GDP Growth | Tốc độ tăng trưởng GDP thực | Float | %  | 6.8%  | \-15% \- 15% | Scenario Designer, Economic Model/ Hiền, Linh |
 | Unemployment Rate | Tỷ lệ thất nghiệp | Float | %  | 3.8%  | 0% \- 30% | Scenario Designer, Economic Model/ Hiền, Linh |
 | Nominal Interest rate | Lãi suất danh nghĩa của nền kinh tế | Float | % | 0.0% | \-15% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
@@ -22,7 +22,7 @@
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | OMO Auction Method  | Phương thức đấu thầu được sử dụng | Categorial |  | Volume auction  | Multiple Interest-rate auction/ Single Interest-rate Auction/Volume auction | User  |
 | OMO Action | Quyết định của NHTW nhằm bơm hoặc hút thanh khoản | Categorical  |  | Buy Securities  | Reverse Repo/Repo/Buy Securities/Sell Securities  | User |
-| Volume | Khối lượng tiền tín phiếu quyết định đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
+| Volume | Khối lượng tín phiếu đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
 | Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
 | Expected inflation | Lạm phát dự báo sau 1 tháng (5 phase) | Numeric  | % | 3 | 0-5% | User |
 
@@ -32,7 +32,7 @@
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | Face Value  | Mệnh giá của tín phiếu  | Numerical | X’s  currency units  | 100  | 100bn | Scenario Designer/Hiền |
 | Repo’s Maturity  | Kỳ hạn của khoản repo  | Numeric | Days  | 14 | 14 days | Scenario Designer/Hiền |
-| Treasury bill’s Maturity  | Kỳ hạn của tín phiếu  | Integer  | Days | 28   | 28 days  | Scenario Designer/Hiền |
+| SBV bill’s Maturity  | Kỳ hạn của tín phiếu  | Integer  | Days | 28   | 28 days  | Scenario Designer/Hiền |
 
    **1.4.** **Assumptions / Limitations**  
 * Giả định về nền kinh tế:  
@@ -43,9 +43,7 @@
   * Thời gian giữa 2 phase tương đương 7 ngày trong thực tế  
 * Không tính transaction cost trong MVP  
 * OMO tạo tác động trong cùng một Phase (không có delay)  
-* Hệ thống chỉ áp dụng phương thức xét thầu đơn giá  
 * Kỳ hạn ảnh hưởng đến Liquidity gap theo tỉ lệ thuận  
-* OMO Rate ≤ Expected Interbank Rate​ 
 
 # **2.** **Source register**  
 
@@ -169,20 +167,6 @@ Tổng khối lượng đặt thầu \= 1.200 tỷ đồng; khối lượng chà
 
 **Bình quân gia quyền:** (150×5,15% \+ 100×5,20% \+ 100×5,25% \+ 200×5,35% \+ 200×5,35% \+ 200×5,40% \+ 50×5,49%) / 1.000 \= 5,312%/năm.
 
-**Điều kiện logic dùng cho mô hình/game**
-
-– Lãi suất dự thầu \> 0\.
-
-– Khối lượng dự thầu của mỗi NHTM ≥ 0\.
-
-– Khối lượng trúng thầu của từng lệnh không vượt khối lượng đăng ký.
-
-– Tổng khối lượng trúng thầu không vượt khối lượng gọi thầu.
-
-– Lệnh được xét theo thứ tự lãi suất từ thấp đến cao; lệnh biên có thể được phân bổ một phần.
-
-– Trong đấu thầu đa giá, lãi suất áp dụng cho từng lệnh trúng thầu \= lãi suất đăng ký của chính lệnh đó.
-
 **Ownership và status**   
 Source added by Hiền and Trang  
 Structure designed by Hiền and Trang  
@@ -194,12 +178,7 @@ Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial
 # **4.** **Logic test**    
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1DJ0j1gI4LMp_c7ggH9LKNvD9Bb5KaY1g/edit?gid=737625714#gid=737625714)  
 **Ownership và status**   
-Structure designed by Linh  
-Logic integration by Linh
-
- # **5.** **Owner and status** 
-
-- Structure designed by Ngọc and Linh  
-- Validation tested by Ngọc and Linh  
-- Logic integration by Ngọc and Linh 
+Structure designed by Ngọc and Linh  
+Validation tested by Ngọc and Linh  
+Logic integration by Ngọc and Linh 
 
