@@ -21,7 +21,9 @@ Kết quả của phase trước được giữ lại và trở thành trạng t
 
 - Real GDP Growth
 - Inflation
+- Unemployment rate 
 - Credit Growth
+- ...
 
 ### Banking & Money Market Indicators
 
@@ -219,7 +221,7 @@ Nếu dữ liệu hoặc mô hình quá phức tạp:
 - Quyết định lãi suất chính sách.
 - Chính sách tài khóa.
 - Mô phỏng bảng cân đối chi tiết của từng NHTM.
-- Dự báo chính xác GDP/CPI từ một phiên OMO.
+- Dự báo chính xác GDP từ một phiên OMO.
 - Tái hiện chính xác 100% nền kinh tế thực.
 - Multiplayer.
 
