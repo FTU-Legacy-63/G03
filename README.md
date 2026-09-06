@@ -19,13 +19,13 @@ G03
 
 ## Mô tả ngắn về sản phẩm
 
-WHO RUNS THE WORLD? - Game mô phỏng điều hành chính sách tiền tệ, trong đó người chơi đóng vai Ngân hàng Trung ương và đưa ra quyết định lãi suất dựa trên tình hình kinh tế của một quốc gia.
+WHO RUNS THE WORLD? - Game mô phỏng điều hành chính sách tiền tệ, tập trung vào nghiệp vụ thị trường mở (OMO), trong đó người chơi đóng vai Ngân hàng Trung ương và đưa ra quyết định dựa trên tình hình kinh tế của một quốc gia.
 
 Người chơi phải cân bằng giữa kiểm soát lạm phát, hỗ trợ tăng trưởng kinh tế và duy trì ổn định tài chính thông qua các quyết định chính sách và dự báo kinh tế.
 
 ## Vấn đề sản phẩm giải quyết
 
-Sinh viên quan tâm đến lĩnh vực Ngân hàng Nhà nước và chính sách tiền tệ thường gặp khó khăn trong việc hiểu mối quan hệ giữa các chỉ số kinh tế và tác động của quyết định chính sách.
+Sinh viên quan tâm đến lĩnh vực Ngân hàng Nhà nước và chính sách tiền tệ thường gặp khó khăn trong việc hiểu mối quan hệ giữa các chỉ số kinh tế và tác động của quyết định chính sách. 
 
 Việc học lý thuyết đơn thuần chưa cho người học cơ hội trực tiếp thử nghiệm các quyết định và quan sát hệ quả của chúng.
 
@@ -39,8 +39,8 @@ Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản tr
 
 - Cho phép người chơi đóng vai Central Bank và điều hành chính sách tiền tệ thông qua nghiệp vụ thị trường mở (OMO).
 - Mô phỏng nền kinh tế thông qua nhiều giai đoạn (phases), trong đó mỗi phase tương đương 7 ngày và kết quả của phase trước được carry forward sang phase tiếp theo.
-- Mỗi phase cung cấp một economic scenario với các thông tin như Deposit Rate, Lending Rate, Liquidity Demand, Interbank Rate, Inflation, Real GDP Growth, Unemployment Rate, Nominal Interest Rate và News/Event.
-- Cho phép người chơi lựa chọn OMO Auction Method: Interest-rate auction hoặc Volume auction.
+- Mỗi phase cung cấp một economic scenario với các thông tin như Deposit Rate, Lending Rate, Liquidity Demand, Interbank Rate, Inflation, Real GDP Growth, Unemployment Rate, Credit growth và News/Event.
+- Cho phép người chơi lựa chọn OMO Auction Method: Interest-rate auction (Single price, Multiple price) hoặc Volume auction.
 - Cho phép người chơi lựa chọn OMO Action nhằm bơm hoặc hút thanh khoản: Reverse Repo/Repo/Buy Securities/Sell Securities.
 - Cho phép người chơi quyết định Volume; đối với đấu thầu khối lượng, người chơi/NHTW ấn định Discount rate/Repo rate.
 - Cho phép người chơi đưa ra Expected Inflation để thể hiện dự báo của mình về nền kinh tế.
