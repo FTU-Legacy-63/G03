@@ -167,7 +167,7 @@ Data processed by Hiền and Trang
 Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  → Lending/Deposit Rate, Liquidity and Macroeconomic Indicators
 
 # **4.** **Logic test**    
-[Logic Test.xlsx]([https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=2092788514#gid=2092788514](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=2119262662#gid=2119262662))  
+[Logic Test.xlsx]([https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=2092788514#gid=2092788514](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=2119262662#gid=2119262662)  
 **Ownership và status**   
 Structure designed by Ngọc and Linh  
 Validation tested by Ngọc and Linh  
