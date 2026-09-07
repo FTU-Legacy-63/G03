@@ -42,8 +42,7 @@
   * Inflation trong Economic Engine được coi là GDP-deflator inflation  
   * Thời gian giữa 2 phase tương đương 7 ngày trong thực tế  
 * Không tính transaction cost trong MVP  
-* OMO tạo tác động trong cùng một Phase (không có delay)  
-* Kỳ hạn ảnh hưởng đến Liquidity gap theo tỉ lệ thuận  
+* OMO tạo tác động ngay sau khi người chơi ra quyết định (không có delay)  
 
 # **2.** **Source register**  
 
