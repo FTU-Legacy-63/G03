@@ -4,7 +4,7 @@
 
    **1.1.** **Financial overview information**
 
-| Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
+| Output name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | ideposit | Lãi suất tiền gửi không kì hạn (1 tháng) | Float | % | 2.1% | 0% \- 15% | Scenario Designer, Economic Model/ Hiền, Linh |
 | ilending | Lãi suất cho vay bình quân | Float | % | 5.5% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
