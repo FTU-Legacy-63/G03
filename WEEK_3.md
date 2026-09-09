@@ -29,11 +29,9 @@
 * Giả định về nền kinh tế:  
   * Nền kinh tế đóng (không mô phỏng trade và international capital flows)  
   * MVP giả định các NHTM có phản ứng tương đối giống nhau  
-  * GDP potential growth được giữ cố định trong mỗi Phase  
-  * Inflation trong Economic Engine được coi là GDP-deflator inflation  
   * Thời gian giữa 2 phase tương đương 30 ngày trong thực tế  
-* Không tính transaction cost trong MVP  
-* OMO tạo tác động ngay sau khi người chơi ra quyết định (không có delay)  
+  * Không tính transaction cost trong MVP  
+  * OMO tạo tác động ngay sau khi người chơi ra quyết định (không có delay)  
 
 # **2.** **Source register**  
 
