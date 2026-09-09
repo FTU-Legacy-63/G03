@@ -154,7 +154,7 @@ Structure designed by Hiền and Trang
 Data processed by Hiền and Trang
 
 # **3.** **Data flow**  
-Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  → Lending/Deposit Rate, Liquidity and Macroeconomic Indicators
+Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  
 
 # **4.** **Logic test**    
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=2119262662#gid=2119262662)  
