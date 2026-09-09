@@ -18,7 +18,9 @@
 | Volume | Khối lượng tín phiếu đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
 | Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
 
+
 **After the player enters all the required inputs, Supply (in Logic Test file) is calculated and used in determining the interbank rate for the next round. Any remaining liquidity gap is carried forward and accumulated into the following round.**
+
 
    **1.3.** **Product information** 
 
@@ -30,10 +32,11 @@
 
    **1.4.** **Assumptions / Limitations**  
 * Giả định về nền kinh tế:  
-  * Nền kinh tế đóng (không mô phỏng trade và international capital flows)  
-  * Thời gian giữa 2 phase tương đương 30 ngày trong thực tế  
-  * Không tính transaction cost trong MVP  
-  * OMO tạo tác động ngay sau khi người chơi ra quyết định (không có delay)  
+  * Nền kinh tế đóng (không mô phỏng trade và international capital flows)
+  * MVP giả định các NHTM có phản ứng tương đối giống nhau
+  * Thời gian giữa 2 phase tương đương 30 ngày trong thực tế
+  * Không tính transaction cost trong MVP
+  * OMO tạo tác động trong cùng một Phase (không có delay)
 
 # **2.** **Source register**  
 
