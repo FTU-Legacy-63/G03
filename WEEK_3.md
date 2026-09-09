@@ -2,19 +2,11 @@
 
 # **1.** **Input dictionary**
 
-   **1.1.** **Financial overview information**
+   **1.1.** **Input for next round**
 
 | Output name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| ideposit | Lãi suất tiền gửi không kì hạn (1 tháng) | Float | % | 2.1% | 0% \- 15% | Scenario Designer, Economic Model/ Hiền, Linh |
-| ilending | Lãi suất cho vay bình quân | Float | % | 5.5% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Liquidity Demand | Nhu cầu thanh khoản của toàn hệ thống | Float | Billion X’currency units | 10,000 | \- | Scenario Designer, Economic Model/ Hiền, Linh |
 | Interbank Rate | Lãi suất vay mượn giữa các NHTM trên thị trường liên ngân hàng | Float | % p.a. | 4.1% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Inflation | Lạm phát trong nền kinh tế | Float | %  | 4.2%  | \-5% \- 30% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Real GDP Growth | Tốc độ tăng trưởng GDP thực | Float | %  | 6.8%  | \-15% \- 15% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Unemployment Rate | Tỷ lệ thất nghiệp | Float | %  | 3.8%  | 0% \- 30% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Nominal Interest rate | Lãi suất danh nghĩa của nền kinh tế | Float | % | 0.0% | \-15% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
-| News / Event | Tin tức về các diễn biến nền kinh tế | String | \- | “Inflation rises above target...” | N/A | Scenario Designer, Economic Model/ Hiền, Linh |
 
    **1.2.** **User-entered input**
 
@@ -24,15 +16,14 @@
 | OMO Action | Quyết định của NHTW nhằm bơm hoặc hút thanh khoản | Categorical  |  | Buy Securities  | Reverse Repo/Repo/Buy Securities/Sell Securities  | User |
 | Volume | Khối lượng tín phiếu đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
 | Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
-| Expected inflation | Lạm phát dự báo sau 1 tháng (5 phase) | Numeric  | % | 3 | 0-5% | User |
 
    **1.3.** **Product information** 
 
 | Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | Face Value  | Mệnh giá của tín phiếu  | Numerical | X’s  currency units  | 100  | 100bn | Scenario Designer/Hiền |
-| Repo’s Maturity  | Kỳ hạn của khoản repo  | Numeric | Days  | 14 | 14 days | Scenario Designer/Hiền |
-| SBV bill’s Maturity  | Kỳ hạn của tín phiếu  | Integer  | Days | 28   | 28 days  | Scenario Designer/Hiền |
+| Repo’s Maturity  | Kỳ hạn của khoản repo  | Numeric | Days  | 60 | 60 days | Scenario Designer/Hiền |
+| SBV bill’s Maturity  | Kỳ hạn của tín phiếu  | Integer  | Days | 90  | 90 days  | Scenario Designer/Hiền |
 
    **1.4.** **Assumptions / Limitations**  
 * Giả định về nền kinh tế:  
@@ -40,7 +31,7 @@
   * MVP giả định các NHTM có phản ứng tương đối giống nhau  
   * GDP potential growth được giữ cố định trong mỗi Phase  
   * Inflation trong Economic Engine được coi là GDP-deflator inflation  
-  * Thời gian giữa 2 phase tương đương 7 ngày trong thực tế  
+  * Thời gian giữa 2 phase tương đương 30 ngày trong thực tế  
 * Không tính transaction cost trong MVP  
 * OMO tạo tác động ngay sau khi người chơi ra quyết định (không có delay)  
 
