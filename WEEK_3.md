@@ -2,12 +2,12 @@
 
 # **1.** **Input dictionary**
 
-   **1.1.** **Input for next round**
+   **1.1.** **Output-Input for next round**
 
-| Output name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
+| Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | Interbank Rate | Lãi suất vay mượn giữa các NHTM trên thị trường liên ngân hàng | Float | % p.a. | 4.1% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
-| Liquidity Demand | Nhu cầu thanh khoản của toàn hệ thống | Float | Billion X’currency units | 10,000 | - | Scenario Designer, Economic Model/ Hiền, Linh |
+| Liquidity Gap | Nhu cầu thanh khoản còn lại của hệ thống sau hành động của người chơi | Float | Billion X’currency units | 10,000 | - | Scenario Designer, Economic Model/ Hiền, Linh |
 
    **1.2.** **User-entered input**
 
@@ -17,6 +17,8 @@
 | OMO Action | Quyết định của NHTW nhằm bơm hoặc hút thanh khoản | Categorical  |  | Buy Securities  | Reverse Repo/Repo/Buy Securities/Sell Securities  | User |
 | Volume | Khối lượng tín phiếu đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
 | Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
+
+**After the player enters all the required inputs, Supply (in Logic Test file) is calculated and used in determining the interbank rate for the next round. Any remaining liquidity gap is carried forward and accumulated into the following round.**
 
    **1.3.** **Product information** 
 
@@ -29,7 +31,6 @@
    **1.4.** **Assumptions / Limitations**  
 * Giả định về nền kinh tế:  
   * Nền kinh tế đóng (không mô phỏng trade và international capital flows)  
-  * MVP giả định các NHTM có phản ứng tương đối giống nhau  
   * Thời gian giữa 2 phase tương đương 30 ngày trong thực tế  
   * Không tính transaction cost trong MVP  
   * OMO tạo tác động ngay sau khi người chơi ra quyết định (không có delay)  
@@ -156,7 +157,7 @@ Data processed by Hiền and Trang
 Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  
 
 # **4.** **Logic test**    
-[Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=2119262662#gid=2119262662)  
+[Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?usp=sharing&ouid=117177009192919491601&rtpof=true&sd=true)  
 **Ownership và status**   
 Structure designed by Ngọc and Linh  
 Validation tested by Ngọc and Linh  
