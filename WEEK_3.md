@@ -7,6 +7,7 @@
 | Output name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | Interbank Rate | Lãi suất vay mượn giữa các NHTM trên thị trường liên ngân hàng | Float | % p.a. | 4.1% | 0% \- 20% | Scenario Designer, Economic Model/ Hiền, Linh |
+| Liquidity Demand | Nhu cầu thanh khoản của toàn hệ thống | Float | Billion X’currency units | 10,000 | - | Scenario Designer, Economic Model/ Hiền, Linh |
 
    **1.2.** **User-entered input**
 
