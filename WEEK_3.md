@@ -13,7 +13,8 @@
 
 | Input name | Meaning | Type | Unit | Example | Valid range | Source/Owner |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| OMO Auction Method  | Phương thức đấu thầu được sử dụng | Categorial |  | Volume auction  | Multiple Interest-rate auction/ Single Interest-rate Auction/Volume auction | User  |
+| OMO Auction Method  | Phương thức đấu thầu được sử dụng | Categorial |  | Volume auction  | Interest-rate auction/Volume auction | User  |
+| Pricing Method | Phương thức xác định lãi suất trúng thầu | Categorical |  | Single-price | Single-price / Multi-price | User |
 | OMO Action | Quyết định của NHTW nhằm bơm hoặc hút thanh khoản | Categorical  |  | Buy Securities  | Reverse Repo/Repo/Buy Securities/Sell Securities  | User |
 | Volume | Khối lượng tín phiếu đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
 | Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
@@ -160,6 +161,12 @@ Data processed by Hiền and Trang
 Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  
 
 # **4.** **Logic test**    
+| Input | Expected Output | Calculation and Actual Output | Status |
+| :---- | :---- | :---- | :---- |
+| **TH1: Liquidity Shortage**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 7,000<br><br>Maturity = -2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand (Liquidity Gap) > 0<br><br>Interbank Rate (T) ↑ | **Total Supply Volume = 7,000 - 2,000 = 5,000**<br><br>→ Liquidity Gap = 10,000 - 5,000 = 5,000<br><br>→ Liquidity Pressure = 0.5<br><br>→ Liquidity Adjusted Volume = 5,000 × 0.5 = 2,500<br><br>→ **Interbank Rate (T) = 0.069 × Interbank Rate (T-30) + 0.000123 × Liquidity Adjusted Volume + 3.584 = 4.17** | Pass |
+| **TH2: Liquidity Balance**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 8,000<br><br>Maturity = 2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand = 0<br><br>Interbank Rate (T) ↓ | Total Supply Volume = 10,000<br><br>→ Liquidity Gap = 0<br><br>→ Liquidity Pressure = 0<br><br>→ Liquidity Adjusted Volume = 0<br><br>→ **Interbank Rate (T) = 3.86** | Pass |
+| **TH3: Excess Liquidity**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 10,000<br><br>Maturity = 2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand < 0<br><br>Interbank Rate (T) ↓ | Total Supply Volume = 12,000<br><br>→ Liquidity Gap = -2,000<br><br>→ Liquidity Pressure = -0.2<br><br>→ Liquidity Adjusted Volume = -2,400<br><br>→ **Interbank Rate (T) = 3.56** | Pass |
+
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?usp=sharing&ouid=117177009192919491601&rtpof=true&sd=true)  
 **Ownership và status**   
 Structure designed by Ngọc and Linh  
