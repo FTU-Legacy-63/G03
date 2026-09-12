@@ -160,9 +160,9 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 - Viết input: Minh Ngọc, Khánh Linh
 
-- Triển khai: Khánh Linh, Minh Trang
+- Triển khai:  Minh Trang
 
-- Explanation: Bảo Hiền, Khánh Linh
+- Explanation: Bảo Hiền
 
 - Kiểm tra error path: Bảo Hiền
 
