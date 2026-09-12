@@ -50,7 +50,7 @@ _User-entered input_
 | **Pricing Method** | Phương thức xác định lãi suất trúng thầu | Categorical |  | Single-price | Single-price / Multi-price<br> |
 | **OMO Action** | Quyết định của NHTW nhằm bơm hoặc hút thanh khoản | Categorical |  | Buy Securities | Reverse Repo/Repo/Buy Securities/Sell Securities |
 | **Volume** | Khối lượng tín phiếu đấu thầu | Numeric | Billion X’currency units | 10,000 | ≥ 0 (Giới hạn bởi lượng tín phiếu còn tồn tại) |
-| **Discount rate/Repo rate** | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric | %/year | 4.0 | 0-10% |
+| **Reverse repo/Repo rate** | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric | %/year | 4.0 | 0-10% |
 
 _Product information_
 
