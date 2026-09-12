@@ -1,8 +1,4 @@
-# Hapi Hapi Hapi
-
-> Tài liệu ý tưởng và thiết kế tính năng cho game mô phỏng OMO Decision & Simulation.
-
-hapi hapi hapi
+# WEEK 5
 
 ## 1. Features
 
@@ -115,34 +111,32 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 ### Output design
 
-Main results (with comparison)
+**Main results (with comparison)**
+- Interbank Rate: Interbank Rate: 4.27% (↑ +0.27%)
 
-Interbank Rate: Interbank Rate: 4.27% (↑ +0.27%)
-
-Supporting outputs: Auction Result
-
+**Supporting outputs: Auction Result**
 | Output | Example | Purpose |
 | --- | --- | --- |
 | Real Volume | 3,500 billion | Cho biết lượng giao dịch thực tế được thực hiện |
 | Execution Rate | 4.00% | Cho biết mức lãi suất thực hiện |
 
-Explanation
+**Explanation**
 
-Why did the Liquidity Gap become positive? The liquidity injected/absorbed through OMO, together with maturing OMO transactions, resulted in total supply below the system's liquidity demand.
+- Why did the Liquidity Gap become positive? The liquidity injected/absorbed through OMO, together with maturing OMO transactions, resulted in total supply below the system's liquidity demand.
 
-Why did the interbank rate increase? Liquidity Gap is positive because liquidity demand is higher than total supply. The resulting liquidity shortage creates upward pressure on the interbank rate..
+- Why did the interbank rate increase? Liquidity Gap is positive because liquidity demand is higher than total supply. The resulting liquidity shortage creates upward pressure on the interbank rate..
 
-Limitation: Hiển thị ở vị trí không nổi bật
+**Limitation: Hiển thị ở vị trí không nổi bật**
 
-Model limitation: The interbank rate is estimated using the designer's regression model and previous-period market conditions. It is a simulation result and does not represent a forecast of the actual market rate.
+- Model limitation: The interbank rate is estimated using the designer's regression model and previous-period market conditions. It is a simulation result and does not represent a forecast of the actual market rate.
 
-Interpretation note: Liquidity Gap reflects the aggregate liquidity position of the system. It does not imply that every commercial bank has the same liquidity position.
+- Interpretation note: Liquidity Gap reflects the aggregate liquidity position of the system. It does not imply that every commercial bank has the same liquidity position.
 
-Next Action: Cuối giao diện người dùng
+**Next Action: Cuối giao diện người dùng**
 
-Submit →
+- Submit →
 
-Next Phase →
+- Next Phase →
 
 ### Interface Explainability
 
@@ -156,11 +150,11 @@ Next Phase →
 | Tooltip | Giải thích ngắn về ý nghĩa của các chỉ số | ? beside “Interbank Rate” |
 | Comparison | Thể hiện sự thay đổi của chỉ số so với phase trước | 4.27% ↑ 0.27% |
 
-## 5. working interface draft
+## 5. Working interface draft
 
-https://kipsoos.github.io/WTFAID/
+[INTERFACE DRAFT](https://kipsoos.github.io/WTFAID/)
 
-## 6. revision evidence
+## 6. Revision evidence
 
 - Thiết kế flow: Minh Ngọc, Khánh Linh
 
@@ -174,18 +168,3 @@ https://kipsoos.github.io/WTFAID/
 
 - Tích hợp: Minh Trang
 
-
----
-
-## 5. Working Interface Draft
-
-- Working interface: https://kipsoos.github.io/WTFAID/
-
-## 6. Revision Evidence
-
-- Thiết kế flow: Minh Ngọc, Khánh Linh
-- Viết input: Minh Ngọc, Khánh Linh
-- Triển khai: Khánh Linh, Minh Trang
-- Explanation: Bảo Hiền, Khánh Linh
-- Kiểm tra error path: Bảo Hiền
-- Tích hợp: Minh Trang
