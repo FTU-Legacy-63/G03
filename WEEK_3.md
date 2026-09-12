@@ -17,7 +17,7 @@
 | Pricing Method | Phương thức xác định lãi suất trúng thầu | Categorical |  | Single-price | Single-price / Multi-price | User |
 | OMO Action | Quyết định của NHTW nhằm bơm hoặc hút thanh khoản | Categorical  |  | Buy Securities  | Reverse Repo/Repo/Buy Securities/Sell Securities  | User |
 | Volume | Khối lượng tín phiếu đấu thầu | Numeric  | Billion X’currency units  | 10,000 | ≥ 0  | User |
-| Discount rate/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
+| Reverse repo/Repo rate | Lãi suất áp dụng cho đấu thầu khối lượng | Numeric  | %/year  | 4.0 | 0-10% | User |
 
 
 **After the player enters all the required inputs, Supply (in Logic Test file) is calculated and used in determining the interbank rate for the next round. Any remaining liquidity gap is carried forward and accumulated into the following round.**
