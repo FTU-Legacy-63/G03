@@ -121,9 +121,9 @@ _Classification:_
   Supply > 0: NHNN bơm thanh khoản vào hệ thống.
   Supply < 0: NHNN hút thanh khoản khỏi hệ thống.
 - Maturity:
-  Maturity > 0 khi có tín phiếu, repo đáo hạn
-  Maturity = 0 khi không có tín phiếu, repo, reverse repo đáo hạn
-  Maturity < 0 khi reverse repo đáo hạn
+  Maturity > 0: maturity injects liquidity into banking system.
+  Maturity = 0: no maturity injects/absorbs liquidity into banking system.
+  Maturity < 0: maturity absorbs liquidity from banking system.
 - Real Liquidity Demand/Gap/Pressure:
   Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
   Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
