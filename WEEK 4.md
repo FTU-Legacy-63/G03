@@ -131,11 +131,39 @@ _Classification:_
 
 _Explainability:_
 
-**OMO Decision → Bank Bids → Auction Allocation → System Liquidity → Interbank Rate**
-- **Auction result:** NHTM nào trúng thầu, khối lượng trúng của từng NHTM và tổng khối lượng OMO thực tế.
-- **System liquidity:** Tổng hợp thay đổi thanh khoản của các NHTM và so sánh Liquidity Gap trước và sau OMO.
-- **Interbank rate:** Giải thích sự thay đổi của lãi suất liên ngân hàng dựa trên trạng thái thanh khoản sau can thiệp.
-- **Remaining issue:** Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có.
+**Liquidity Demand**
+
+Ví dụ: Liquidity Demand sau OMO = +600 tỷ đồng.
+
+- **Kết quả:** Hệ thống còn thiếu 600 tỷ đồng thanh khoản.
+- **Vì sao:** Khối lượng thanh khoản được phân bổ qua phiên OMO chưa đủ để bù đắp toàn bộ mức thiếu thanh khoản của hệ thống.
+- **Input ảnh hưởng:** Liquidity Demand trước OMO, khối lượng OMO trúng thầu/phân bổ và tác động đáo hạn (nếu có).
+- **Assumption:** Liquidity Demand > 0 được quy ước là thiếu thanh khoản; Liquidity Demand < 0 là thừa thanh khoản.
+- **Cách hiểu output:** Giá trị +600 tỷ đồng cho biết sau can thiệp, hệ thống vẫn cần bổ sung 600 tỷ đồng để trở về trạng thái cân bằng thanh khoản.
+- **Output không khẳng định:** Kết quả phản ánh trạng thái thanh khoản tổng hợp của hệ thống, không có nghĩa tất cả NHTM đều thiếu 600 tỷ đồng thanh khoản.
+
+
+**Interbank Rate**
+
+Ví dụ: Interbank Rate giảm từ 4,30% xuống 4,10%.
+
+- **Kết quả:** Lãi suất liên ngân hàng sau OMO được ước tính ở mức 4,10%.
+- **Vì sao:** OMO làm giảm mức thiếu thanh khoản của hệ thống, từ đó giảm áp lực vay vốn trên thị trường liên ngân hàng.
+- **Input ảnh hưởng:** Liquidity Demand sau OMO và Interbank Rate của kỳ trước.
+- **Assumption:** Interbank Rate được ước tính bằng mô hình của nhóm dựa trên điều kiện thanh khoản mô phỏng và dữ liệu lãi suất kỳ trước.
+- **Cách hiểu output:** Mức giảm từ 4,30% xuống 4,10% thể hiện áp lực thanh khoản trên thị trường liên ngân hàng đã giảm trong mô phỏng.
+- **Output không khẳng định:** 4,10% không phải dự báo lãi suất liên ngân hàng thực tế và không khẳng định OMO là yếu tố duy nhất quyết định lãi suất.
+
+
+**Auction Result**
+
+Ví dụ: NHNN chào bơm 1.000 tỷ đồng và 900 tỷ đồng được phân bổ cho các NHTM trúng thầu.
+
+- **Kết quả:** Tổng khối lượng OMO thực tế được phân bổ là 900 tỷ đồng.
+- **Vì sao:** Kết quả được xác định từ Bid Rate, Bid Volume của các NHTM và rule của cơ chế đấu thầu được lựa chọn.
+- **Input ảnh hưởng:** Khối lượng OMO chào thầu, Bid Rate, Bid Volume, Auction Method và Pricing Method.
+- **Assumption:** Bid của các NHTM được mô phỏng theo rule và phân phối dữ liệu được nhóm xác định.
+- **Cách hiểu output:** 900 tỷ đồng là khối lượng thực tế đi qua cơ chế đấu thầu và được sử dụng để cập nhật thanh khoản sau OMO.
 
 Ví dụ:
 “NHNN dự kiến bơm 1.000 tỷ đồng. Sau phiên đấu thầu, 900 tỷ đồng được phân bổ cho các NHTM trúng thầu. Liquidity Gap giảm từ 1.500 xuống 600 tỷ đồng, do đó áp lực trên thị trường liên ngân hàng giảm và Interbank Rate giảm từ 4,30% xuống 4,10%. Tuy nhiên, hệ thống vẫn còn thiếu 600 tỷ đồng thanh khoản.
