@@ -168,8 +168,11 @@ Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial
 | **TH3: Excess Liquidity**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 10,000<br><br>Maturity = 2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand < 0<br><br>Interbank Rate (T) ↓ | Total Supply Volume = 12,000<br><br>→ Liquidity Gap = -2,000<br><br>→ Liquidity Pressure = -0.2<br><br>→ Liquidity Adjusted Volume = -2,400<br><br>→ **Interbank Rate (T) = 3.56** | Pass |
 
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?usp=sharing&ouid=117177009192919491601&rtpof=true&sd=true)  
-**Ownership và status**   
-Structure designed by Ngọc and Linh  
-Validation tested by Ngọc and Linh  
-Logic integration by Ngọc and Linh 
+
+# **4.** **Ownership và status** 
+* Source added: Bảo Hiền, Minh Trang
+* Structure designed: Bảo Hiền, Minh Trang
+* Data processed: Bảo Hiền, Minh Trang
+* Validation tested: Minh Ngọc, Khánh Linh
+* Logic integration: Minh Ngọc, Khánh Linh
 
