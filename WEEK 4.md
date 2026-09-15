@@ -109,7 +109,9 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1 và thêm hệ số từ cao đến thấp)
     - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
     
-- Rule for post-phase explanation: Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể]. [Việc nới lỏng thanh khoản có thể hỗ trợ tăng trưởng và việc làm trong ngắn hạn, nhưng đồng thời làm gia tăng áp lực lạm phát nếu kéo dài / Việc thắt chặt thanh khoản có thể giúp giảm áp lực lạm phát và hỗ trợ ổn định tài chính, nhưng đồng thời có thể làm chậm tăng trưởng và gây áp lực lên việc làm.]
+- Rule for post-phase explanation: (Mô tả sự thay đổi các chỉ số kinh tế vĩ mô). Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa].
+[Đánh giá tổng thể về quyết định OMO và các chỉ số kinh tế vĩ mô].
+
   - [trạng thái]:
     - |Liquidity Gap| giảm → “được thu hẹp”
     - |Liquidity Gap| tăng → “bị gia tăng” 
@@ -215,12 +217,12 @@ _Midterm Checklist_
 
 | Assessment area | Evidence | Status |
 | --- | --- | --- |
-| Project Direction | README & Product Direction | Ready |
-| Input & Evidence Readiness | Input Mapping, Source & Database | Ready |
-| Financial Logic | Formula, Rules, Regression & Logic Test | Ready |
-| Product Structure & Progress | Product Flow, Logic Test & Technical Readiness | Ready |
-| Group Footprint | README, weekly documentation | Ready |
-| Individual Contribution | Contribution evidence by member | Ready |
+| Project Direction | README, Project Proposal, Solution Structure | Ready |
+| Input & Evidence Readiness | Week 3 (Source & Database) | Ready |
+| Financial Logic | Week 4 (Formula, Rules, Regression & Logic Test) | Ready |
+| Product Structure & Progress | Week 3 (Technical Readiness), Week 4 (Logic Test), Week 5 (User Flow) | Ready |
+| Group Footprint | README, weekly updates | Ready |
+| Individual Contribution | Evidence at the of each weekly submission | Ready |
 
 _Individual Contribution_
 
