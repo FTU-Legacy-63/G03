@@ -94,24 +94,25 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
 
 
 - Rule for Auction result:
-_Interest-rate auction_
-  - Tạo Bid Rate:
-      - Win rate = Interbank (T-30) ± Random Spread (dựa theo normal distribution từ dữ liệu thực tế)
-      - Bid Rate = Win rate ± Random Spread (tham khảo theo khoảng giá trị từ dữ liệu đấu thầu tín phiếu kho bạc thực tế)
-  - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1)
-  - Xếp các Bid rate và Bid volume theo thứ tự phù hợp với hướng OMO.
-  - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
-  - Single-price: các bid trúng được áp dụng cùng mức lãi suất trúng thầu.
-  - Multi-price: mỗi bid trúng được áp dụng chính mức lãi suất mà ngân hàng đã bid.
+
+  _Interest-rate auction_
+    - Tạo Bid Rate:
+        - Win rate = Interbank (T-30) ± Random Spread (dựa theo normal distribution từ dữ liệu thực tế)
+        - Bid Rate = Win rate ± Random Spread (tham khảo theo khoảng giá trị từ dữ liệu đấu thầu tín phiếu kho bạc thực tế)
+    - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1)
+    - Xếp các Bid rate và Bid volume theo thứ tự phù hợp với hướng OMO.
+    - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
+    - Single-price: các bid trúng được áp dụng cùng mức lãi suất trúng thầu.
+    - Multi-price: mỗi bid trúng được áp dụng chính mức lãi suất mà ngân hàng đã bid.
     
-_Volume auction_
-  - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1 và thêm hệ số từ cao đến thấp)
-  - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
+  _Volume auction_
+    - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1 và thêm hệ số từ cao đến thấp)
+    - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
     
 - Rule for post-phase explanation: Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể].
   - [trạng thái]:
-    |Liquidity Gap| giảm → “được thu hẹp”
-    |Liquidity Gap| tăng → “bị gia tăng”
+    - |Liquidity Gap| giảm → “được thu hẹp”
+    - |Liquidity Gap| tăng → “bị gia tăng” 
   - Đánh giá hướng can thiệp:
     - Real Liquidity Demand + Maturity volume > 0 và OMO = Buy Securities / REPO → Phù hợp
     - Real Liquidity Demand + Maturity volume > 0 và OMO = Sell Securities / Reverse REPO → Ngược chiều
@@ -133,21 +134,22 @@ _Volume auction_
 
 - Classification:
   - Supply: Lượng tiền bơm/hút thực tế
-    Supply > 0: NHNN bơm thanh khoản vào hệ thống.
-    Supply < 0: NHNN hút thanh khoản khỏi hệ thống.
-  - Maturity:
-    Maturity > 0: maturity injects liquidity into banking system.
-    Maturity = 0: no maturity injects/absorbs liquidity into banking system.
-    Maturity < 0: maturity absorbs liquidity from banking system.
+    - Supply > 0: NHNN bơm thanh khoản vào hệ thống.
+    - Supply < 0: NHNN hút thanh khoản khỏi hệ thống.
+  - Maturity Volume:
+    - Maturity Volume > 0: KL đáo hạn làm tăng thanh khoản trong hệ thống
+    - Maturity Volume = 0: Không có khối lượng giao dịch đáo hạn.
+    - Maturity Volume < 0: KL đáo hạn làm giảm thanh khoản trong hệ thống.
   - Real Liquidity Demand/Gap/Pressure:
-    Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
-    Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
-    Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
+    - Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
+    - Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
+    - Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
   - Interbank Rate:
-    | < Floor | Floor | Floor + 25%*(Cap - Floor) | Middle 50% | Cap - 25%*(Cap - Floor) | Cap | > Cap
-    | --- | --- | --- | --- |
-    |  | 0.5% | 1.625% |  | 3.875% | 5% |  |
-    |🔴 Critical | 🟡 Warning | 🟡 Warning | 🟢 Within the corridor | 🟡 Warning | 🟡 Warning | 🔴 Critical
+
+    | < Floor | Floor | Floor + 25% × (Cap - Floor) | Middle 50%             | Cap - 25% × (Cap - Floor) | Cap | > Cap |
+    |---------|-------|------------------------------|------------------------|----------------------------|-----|-------|
+    |         | 0.5%  | 1.625%                       | 🟢 Within the corridor | 3.875%                     | 5%  |       |
+    | 🔴 Critical | 🟡 Warning | 🟡 Warning |  | 🟡 Warning | 🟡 Warning | 🔴 Critical |
 
 **Explainability:**
 
