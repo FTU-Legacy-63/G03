@@ -61,7 +61,7 @@
 
 | Step | User action | System response | Evidence |
 | --- | --- | --- | --- |
-| 1 | Start Phase | Hiển thị scenario và các chỉ tiêu kinh tế/thanh khoản hiện tại | Scenario page + Economic Dashboard |
+| 1 | Start Simulation | Hiển thị scenario và các chỉ tiêu kinh tế/thanh khoản hiện tại | Scenario page + Economic Dashboard |
 | 2 | Xem Liquidity Demand, Interbank Rate | Hệ thống hiển thị dữ liệu | Economic Dashboard |
 | 3 | Chọn Auction Method | Hệ thống cập nhật các trường input phù hợp với loại đấu thầu | Decision Area |
 | 4 | Chọn Pricing Method nếu sử dụng Interest-rate Auction | Hệ thống hiển thị phương thức pricing tương ứng | Decision Area |
@@ -120,15 +120,11 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 **Explanation**
 
-- Why did the Liquidity Gap become positive? The liquidity injected/absorbed through OMO, together with maturing OMO transactions, resulted in total supply below the system's liquidity demand.
+Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể].
 
-- Why did the interbank rate increase? Liquidity Gap is positive because liquidity demand is higher than total supply. The resulting liquidity shortage creates upward pressure on the interbank rate..
+**Limitation: Hiển thị ở cuối Instructions**
 
-**Limitation: Hiển thị ở vị trí không nổi bật**
-
-- Model limitation: The interbank rate is estimated using the designer's regression model and previous-period market conditions. It is a simulation result and does not represent a forecast of the actual market rate.
-
-- Interpretation note: Liquidity Gap reflects the aggregate liquidity position of the system. It does not imply that every commercial bank has the same liquidity position.
+VD Model limitation: Interbank Rate được ước tính bằng mô hình hồi quy dựa trên điều kiện thanh khoản mô phỏng và dữ liệu lãi suất kỳ trước. Đây chỉ là kết quả mô phỏng, không dự báo chính xác biến động lãi suất của nền kinh tế.
 
 **Next Action: Cuối giao diện người dùng**
 
@@ -140,12 +136,11 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 | Element | Purpose | Example |
 | --- | --- | --- |
-| Auction Result | Giải thích NHTM nào trúng và khối lượng thực tế được phân bổ | “1,000 bn was allocated among the winning banks.” |
-| System Liquidity | Giải thích trạng thái thiếu/thừa thanh khoản của hệ thống thay đổi sau OMO | “Liquidity Demand changed from +1,500 bn to +500 bn.” |
-| Interbank Rate | Giải thích tác động của điều kiện thanh khoản lên thị trường liên ngân hàng | “Lower liquidity shortage reduced interbank funding pressure, causing ON to decrease from 4.30% to 4.10%.” |
-| Remaining issue | Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có | “The system remains in liquidity shortage, but the shortage decreased by 1,000 bn.” |
-| Assumption box | Làm rõ các giả thuyết của game và mô hình áp dụng trong game | “Interbank rate is estimated using the simulated liquidity condition and previous rate.” |
-| Tooltip | Giải thích ngắn về ý nghĩa của các chỉ số | ? beside “Interbank Rate” |
+| Explanation | Mô tả Auction Result. Mô tả trạng thái của kết quả mà người chơi tạo ra và giải thích lí do dẫn đến kết quả | “Tình trạng thiếu hụt thanh khoản được cải thiện làm giảm áp lực huy động vốn trên thị trường liên ngân hàng, khiến lãi suất LNH giảm từ 4,30% xuống 4,10%.” |
+| Remaining issue | Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có | “Hệ thống trong tình trạng thiếu hụt thanh khoản” |
+| Warning | Làm nổi bật các chỉ số không nằm trong vùng an toàn của người chơi | Red highlight |
+| Assumption box | Làm rõ các giả thuyết của game và mô hình áp dụng trong game | Interbank Rate được ước tính bằng mô hình hồi quy dựa trên điều kiện thanh khoản mô phỏng và dữ liệu lãi suất kỳ trước. Đây chỉ là kết quả mô phỏng, không dự báo chính xác biến động lãi suất của nền kinh tế. |
+| Tooltip | Giải thích ngắn về ý nghĩa của các chỉ số | ? bên cạnh “Interbank Rate” |
 | Comparison | Thể hiện sự thay đổi của chỉ số so với phase trước | 4.27% ↑ 0.27% |
 
 ## 5. Working interface draft
