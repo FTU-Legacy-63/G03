@@ -136,6 +136,7 @@ _Explainability:_
 - **System liquidity:** Tổng hợp thay đổi thanh khoản của các NHTM và so sánh Liquidity Gap trước và sau OMO.
 - **Interbank rate:** Giải thích sự thay đổi của lãi suất liên ngân hàng dựa trên trạng thái thanh khoản sau can thiệp.
 - **Remaining issue:** Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có.
+
 Ví dụ:
 “NHNN dự kiến bơm 1.000 tỷ đồng. Sau phiên đấu thầu, 900 tỷ đồng được phân bổ cho các NHTM trúng thầu. Liquidity Gap giảm từ 1.500 xuống 600 tỷ đồng, do đó áp lực trên thị trường liên ngân hàng giảm và Interbank Rate giảm từ 4,30% xuống 4,10%. Tuy nhiên, hệ thống vẫn còn thiếu 600 tỷ đồng thanh khoản.
 
