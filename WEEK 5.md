@@ -140,9 +140,9 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 | Element | Purpose | Example |
 | --- | --- | --- |
-| Explanation | Mô tả trạng thái của kết quả mà người chơi tạo ra | “The banking system is in liquidity shortage.” |
-| Reason statement | Giải thích lí do dẫn đến kết quả mà người chơi tạo ra | “Liquidity demand exceeded total liquidity supply.” |
-| Warning | Làm nổi bật các chỉ số không nằm trong vùng an toàn của người chơi | ⚠ / red highlight |
+| Auction Result | Giải thích NHTM nào trúng và khối lượng thực tế được phân bổ | “1,000 bn was allocated among the winning banks.” |
+| System Liquidity | Giải thích Liquidity Gap thay đổi sau khi tác động | “Liquidity Gap decreased from +1,500 bn to +500 bn.” |
+| Interbank Rate | Giải thích tác động của điều kiện thanh khoản lên thị trường liên ngân hàng | “Lower liquidity shortage reduced interbank funding pressure, causing ON to decrease from 4.30% to 4.10%.” |
 | Assumption box | Làm rõ các giả thuyết của game và mô hình áp dụng trong game | “Interbank rate is estimated using the simulated liquidity condition and previous rate.” |
 | Tooltip | Giải thích ngắn về ý nghĩa của các chỉ số | ? beside “Interbank Rate” |
 | Comparison | Thể hiện sự thay đổi của chỉ số so với phase trước | 4.27% ↑ 0.27% |
