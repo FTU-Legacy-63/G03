@@ -93,8 +93,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
 | Liquidity Gap + Interbank Rate (T−30) | Áp lực thanh khoản lên thị trường LNH | Liquidity Gap → Liquidity pressure → Liquidity adjusted volume → Interbank Rate (calculated by regression model) | Interbank Rate (T) |
 
 
-**Rule for Auction Result**
-
+- Rule for Auction result:
 _Interest-rate auction_
   - Tạo Bid Rate:
       - Win rate = Interbank (T-30) ± Random Spread (dựa theo normal distribution từ dữ liệu thực tế)
@@ -108,30 +107,51 @@ _Interest-rate auction_
 _Volume auction_
   - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1 và thêm hệ số từ cao đến thấp)
   - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
+    
+- Rule for post-phase explanation: Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể].
+  - [trạng thái]:
+    |Liquidity Gap| giảm → “được thu hẹp”
+    |Liquidity Gap| tăng → “bị gia tăng”
+  - Đánh giá hướng can thiệp:
+    - Real Liquidity Demand + Maturity volume > 0 và OMO = Buy Securities / REPO → Phù hợp
+    - Real Liquidity Demand + Maturity volume > 0 và OMO = Sell Securities / Reverse REPO → Ngược chiều
+    - Real Liquidity Demand + Maturity volume < 0 và OMO = Sell Securities / Reverse REPO → Phù hợp
+    - Real Liquidity Demand + Maturity volume < 0 và OMO = Buy Securities / REPO → Ngược chiều
+  - [Đánh giá tổng thể]:
+    Intervention Ratio = |Volume| / |Real Liquidity Demand + Maturity volume|
+    - Đánh giá hướng can thiệp = Ngược → “Can thiệp của NHNN đã làm gia tăng tình trạng thiếu/dư thanh khoản”
+    - Đánh giá hướng can thiệp = Phù hợp và Intervention Ratio < 50% → “Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô nhỏ hơn nhu cầu của hệ thống.”
+    - Đánh giá hướng can thiệp = Phù hợp và Intervention Ratio > 100% → “Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô lớn hơn nhu cầu của hệ thống”
+    - Đánh giá hướng can thiệp = Phù hợp và 50% <= Intervention Ratio <= 100% → “Can thiệp của NHNN có hiệu quả và quy mô tương đối phù hợp”
 
-_Formula_
+- Formula:
   - Total Supply Volume = Supply + Maturity
   - Liquidity Gap = Real Liquidity Demand − Total Supply Volume
   - Liquidity Pressure = Liquidity Gap / |Real Liquidity Demand|
   - Liquidity Adjusted Volume = |Total Supply Volume| x Liquidity Pressure
   - Interbank Rate (T) = β₀ + β₁ Interbank Rate (T−30) + β₂ Liquidity Adjusted Volume (β₀, β₁, β₂ lấy từ kết quả regression của nhóm kèm sự điều chỉnh cho phù hợp)
 
-_Classification:_
-- Supply: Lượng tiền bơm/hút thực tế
-  Supply > 0: NHNN bơm thanh khoản vào hệ thống.
-  Supply < 0: NHNN hút thanh khoản khỏi hệ thống.
-- Maturity:
-  Maturity > 0: maturity injects liquidity into banking system.
-  Maturity = 0: no maturity injects/absorbs liquidity into banking system.
-  Maturity < 0: maturity absorbs liquidity from banking system.
-- Real Liquidity Demand/Gap/Pressure:
-  Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
-  Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
-  Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
+- Classification:
+  - Supply: Lượng tiền bơm/hút thực tế
+    Supply > 0: NHNN bơm thanh khoản vào hệ thống.
+    Supply < 0: NHNN hút thanh khoản khỏi hệ thống.
+  - Maturity:
+    Maturity > 0: maturity injects liquidity into banking system.
+    Maturity = 0: no maturity injects/absorbs liquidity into banking system.
+    Maturity < 0: maturity absorbs liquidity from banking system.
+  - Real Liquidity Demand/Gap/Pressure:
+    Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
+    Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
+    Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
+  - Interbank Rate:
+    | < Floor | Floor | Floor + 25%*(Cap - Floor) | Middle 50% | Cap - 25%*(Cap - Floor) | Cap | > Cap
+    | --- | --- | --- | --- |
+    |  | 0.5% | 1.625% |  | 3.875% | 5% |  |
+    |🔴 Critical | 🟡 Warning | 🟡 Warning | 🟢 Within the corridor | 🟡 Warning | 🟡 Warning | 🔴 Critical
 
-_Explainability:_
+**Explainability:**
 
-**Liquidity Demand**
+_Liquidity Demand_
 
 Ví dụ: Liquidity Demand sau OMO = +600 tỷ đồng.
 
@@ -143,19 +163,19 @@ Ví dụ: Liquidity Demand sau OMO = +600 tỷ đồng.
 - **Output không khẳng định:** Kết quả phản ánh trạng thái thanh khoản tổng hợp của hệ thống, không có nghĩa tất cả NHTM đều thiếu 600 tỷ đồng thanh khoản.
 
 
-**Interbank Rate**
+_Interbank Rate_
 
 Ví dụ: Interbank Rate giảm từ 4,30% xuống 4,10%.
 
 - **Kết quả:** Lãi suất liên ngân hàng sau OMO được ước tính ở mức 4,10%.
 - **Vì sao:** OMO làm giảm mức thiếu thanh khoản của hệ thống, từ đó giảm áp lực vay vốn trên thị trường liên ngân hàng.
 - **Input ảnh hưởng:** Liquidity Demand sau OMO và Interbank Rate của kỳ trước.
-- **Assumption:** Interbank Rate được ước tính bằng mô hình của nhóm dựa trên điều kiện thanh khoản mô phỏng và dữ liệu lãi suất kỳ trước.
+- **Assumption:** Interbank Rate được ước tính bằng mô hình hồi quy dựa trên điều kiện thanh khoản mô phỏng và dữ liệu lãi suất kỳ trước.
 - **Cách hiểu output:** Mức giảm từ 4,30% xuống 4,10% thể hiện áp lực thanh khoản trên thị trường liên ngân hàng đã giảm trong mô phỏng.
 - **Output không khẳng định:** 4,10% không phải dự báo lãi suất liên ngân hàng thực tế và không khẳng định OMO là yếu tố duy nhất quyết định lãi suất.
 
 
-**Auction Result**
+_Auction Result_
 
 Ví dụ: NHNN chào bơm 1.000 tỷ đồng và 900 tỷ đồng được phân bổ cho các NHTM trúng thầu.
 
@@ -164,9 +184,6 @@ Ví dụ: NHNN chào bơm 1.000 tỷ đồng và 900 tỷ đồng được phân
 - **Input ảnh hưởng:** Khối lượng OMO chào thầu, Bid Rate, Bid Volume, Auction Method và Pricing Method.
 - **Assumption:** Bid của các NHTM được mô phỏng theo rule và phân phối dữ liệu được nhóm xác định.
 - **Cách hiểu output:** 900 tỷ đồng là khối lượng thực tế đi qua cơ chế đấu thầu và được sử dụng để cập nhật thanh khoản sau OMO.
-
-Ví dụ:
-“NHNN dự kiến bơm 1.000 tỷ đồng. Sau phiên đấu thầu, 900 tỷ đồng được phân bổ cho các NHTM trúng thầu. Liquidity Gap giảm từ 1.500 xuống 600 tỷ đồng, do đó áp lực trên thị trường liên ngân hàng giảm và Interbank Rate giảm từ 4,30% xuống 4,10%. Tuy nhiên, hệ thống vẫn còn thiếu 600 tỷ đồng thanh khoản.
 
 **7. Sample Calculation và Logic Test**
 
