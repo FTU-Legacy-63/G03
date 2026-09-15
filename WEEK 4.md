@@ -109,7 +109,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1 và thêm hệ số từ cao đến thấp)
     - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
     
-- Rule for post-phase explanation: Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể].
+- Rule for post-phase explanation: Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể]. [Việc nới lỏng thanh khoản có thể hỗ trợ tăng trưởng và việc làm trong ngắn hạn, nhưng đồng thời làm gia tăng áp lực lạm phát nếu kéo dài / Việc thắt chặt thanh khoản có thể giúp giảm áp lực lạm phát và hỗ trợ ổn định tài chính, nhưng đồng thời có thể làm chậm tăng trưởng và gây áp lực lên việc làm.]
   - [trạng thái]:
     - |Liquidity Gap| giảm → “được thu hẹp”
     - |Liquidity Gap| tăng → “bị gia tăng” 
@@ -226,8 +226,8 @@ _Individual Contribution_
 
 | Member | Contribution up to Midterm | Most Important Output | Next Responsibility |
 | --- | --- | --- | --- |
-| Nguyễn Bảo Hiền - Game Logic & Scenario Designer | Source research, data collection, variable selection and scenario development | Source & Database | Complete scenarios and connect them to the game logic |
-| Nguyễn Minh Trang - UI/UX & Learning Experience | Source research, data collection, data cleaning and regression-data preparation | Regression Dataset & Database | Develop UI/UX and frontend |
+| Nguyễn Bảo Hiền - Game Logic & Scenario Designer | Source research, data collection, data cleaning and explanation development | Source & Database | Complete scenarios and connect them to the game logic |
+| Nguyễn Minh Trang - UI/UX & Learning Experience | Source research, data collection, data cleaning and Working interface demo | Regression Dataset & Database | Develop UI/UX and frontend |
 | Vũ Lưu Minh Ngọc - Game Engine & Backend Developer | Group coordination, data/formula verification, formula revision and regression | Regression & Logic Test | Develop backend/game engine and integrate the financial logic |
 | Nguyễn Khánh Linh - Economic Model | Formula research, model structuring, regression and economic-model development | Regression & Logic Test | Complete and refine the Economic Engine |
 
