@@ -72,6 +72,13 @@
 | 9 | Đọc Explanation | Hệ thống tóm tắt kết quả sau can thiệp, giải thích tại sao Liquidity và Interbank rate thay đổi và hệ quả | Explanation |
 | 10 | Nhấn Continue to Phase 2 | Kết quả hiện tại được lưu làm trạng thái cho lượt tiếp theo | Transaction Log + Updated State |
 
+### Alternative Path
+| **Step** | **User action**                                      | **System response**                                                                                            | **Evidence**      |
+| -------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------- |
+| 1        | Click chọn **“Result”** khi chưa Submit OMO Decision | Hệ thống chuyển hướng sang màn hình tổng kết phase, hiển thị lịch sử quyết định, biến động chỉ số qua các lượt | Outcome Dashboard |
+| 2        | Theo dõi biểu đồ so sánh hoặc xuất báo cáo           | Cung cấp cái nhìn tổng quan về hiệu suất điều hành chính sách tiền tệ của người chơi                           | Outcome Dashboard |
+| 3        | Nhấn **“Close”** và quay lại Happy Path              | Đóng báo cáo và quay lại màn hình Decision Area                                                                | Decision Area     |
+
 ### Error Path
 
 ### Error 1 - Missing input
