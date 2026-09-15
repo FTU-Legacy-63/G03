@@ -129,7 +129,8 @@ _Classification:_
   Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
   Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
 
-_Explainability_
+_Explainability:_
+
 **OMO Decision → Bank Bids → Auction Allocation → System Liquidity → Interbank Rate**
 - **Auction result:** NHTM nào trúng thầu, khối lượng trúng của từng NHTM và tổng khối lượng OMO thực tế.
 - **System liquidity:** Tổng hợp thay đổi thanh khoản của các NHTM và so sánh Liquidity Gap trước và sau OMO.
