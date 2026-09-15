@@ -130,11 +130,13 @@ _Classification:_
   Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
 
 _Explainability_
-- Liquidity Demand > 0: Hệ thống có nhu cầu bổ sung thanh khoản.
-- Liquidity Demand < 0: Hệ thống có dư thừa thanh khoản
-**→ Khi Liquidity Demand tăng, áp lực lên nguồn vốn trên thị trường liên ngân hàng có xu hướng tăng, từ đó tạo áp lực tăng lên Interbank Rate. Ngược lại, nhu cầu thanh khoản giảm làm giảm áp lực lên nguồn vốn và có xu hướng kéo lãi suất xuống.**
-
-
+**OMO Decision → Bank Bids → Auction Allocation → System Liquidity → Interbank Rate**
+- **Auction result:** NHTM nào trúng thầu, khối lượng trúng của từng NHTM và tổng khối lượng OMO thực tế.
+- **System liquidity:** Tổng hợp thay đổi thanh khoản của các NHTM và so sánh Liquidity Gap trước và sau OMO.
+- **Interbank rate:** Giải thích sự thay đổi của lãi suất liên ngân hàng dựa trên trạng thái thanh khoản sau can thiệp.
+- **Remaining issue:** Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có.
+Ví dụ:
+“NHNN dự kiến bơm 1.000 tỷ đồng. Sau phiên đấu thầu, 900 tỷ đồng được phân bổ cho các NHTM trúng thầu. Liquidity Gap giảm từ 1.500 xuống 600 tỷ đồng, do đó áp lực trên thị trường liên ngân hàng giảm và Interbank Rate giảm từ 4,30% xuống 4,10%. Tuy nhiên, hệ thống vẫn còn thiếu 600 tỷ đồng thanh khoản.
 
 **7. Sample Calculation và Logic Test**
 
