@@ -120,7 +120,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     - Real Liquidity Demand + Maturity volume > 0 và OMO = Sell Securities / Reverse REPO → Ngược chiều
     - Real Liquidity Demand + Maturity volume < 0 và OMO = Sell Securities / Reverse REPO → Phù hợp
     - Real Liquidity Demand + Maturity volume < 0 và OMO = Buy Securities / REPO → Ngược chiều
-  - [Đánh giá tổng thể]:
+  - [Đánh giá tổng thể] (chưa xem xét các yếu tố vĩ mô):
     Intervention Ratio = |Volume| / |Real Liquidity Demand + Maturity volume|
     - Đánh giá hướng can thiệp = Ngược → “Can thiệp của NHNN đã làm gia tăng tình trạng thiếu/dư thanh khoản”
     - Đánh giá hướng can thiệp = Phù hợp và Intervention Ratio < 50% → “Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô nhỏ hơn nhu cầu của hệ thống.”
@@ -155,15 +155,15 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
 
 **Explainability:**
 
-_Liquidity Demand_
+_Liquidity Gap (không hiển thị cho người chơi)_
 
-Ví dụ: Liquidity Demand sau OMO = +600 tỷ đồng.
+Ví dụ: Liquidity Gap sau OMO = +600 tỷ đồng.
 
 - **Kết quả:** Hệ thống còn thiếu 600 tỷ đồng thanh khoản.
 - **Vì sao:** Khối lượng thanh khoản được phân bổ qua phiên OMO chưa đủ để bù đắp toàn bộ mức thiếu thanh khoản của hệ thống.
-- **Input ảnh hưởng:** Liquidity Demand trước OMO, khối lượng OMO trúng thầu/phân bổ và tác động đáo hạn (nếu có).
-- **Assumption:** Liquidity Demand > 0 được quy ước là thiếu thanh khoản; Liquidity Demand < 0 là thừa thanh khoản.
-- **Cách hiểu output:** Giá trị +600 tỷ đồng cho biết sau can thiệp, hệ thống vẫn cần bổ sung 600 tỷ đồng để trở về trạng thái cân bằng thanh khoản.
+- **Input ảnh hưởng:** Real Liquidity Demand trước OMO, khối lượng trúng thầu và khối lượng đáo hạn.
+- **Assumption:** Liquidity Gap > 0 - thiếu thanh khoản; Liquidity Gap < 0 - dư thanh khoản.
+- **Cách hiểu output:** Sau can thiệp, hệ thống vẫn cần bổ sung 600 tỷ đồng để trở về trạng thái cân bằng thanh khoản.
 - **Output không khẳng định:** Kết quả phản ánh trạng thái thanh khoản tổng hợp của hệ thống, không có nghĩa tất cả NHTM đều thiếu 600 tỷ đồng thanh khoản.
 
 
@@ -183,7 +183,7 @@ _Auction Result_
 
 Ví dụ: NHNN chào bơm 1.000 tỷ đồng và 900 tỷ đồng được phân bổ cho các NHTM trúng thầu.
 
-- **Kết quả:** Tổng khối lượng OMO thực tế được phân bổ là 900 tỷ đồng.
+- **Kết quả:** Tổng khối lượng tiền thực tế được phân bổ là 900 tỷ đồng.
 - **Vì sao:** Kết quả được xác định từ Bid Rate, Bid Volume của các NHTM và rule của cơ chế đấu thầu được lựa chọn.
 - **Input ảnh hưởng:** Khối lượng OMO chào thầu, Bid Rate, Bid Volume, Auction Method và Pricing Method.
 - **Assumption:** Bid của các NHTM được mô phỏng theo rule và phân phối dữ liệu được nhóm xác định.
