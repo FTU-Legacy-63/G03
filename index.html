@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WHO RUNS THE WORLD? - Central Bank OMO Simulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    /* Light Theme */
+    html.light body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+
+    html.light .app-card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    html.light .nav-box {
+      background-color: #e2e8f0;
+      border-color: #cbd5e1;
+    }
+
+    /* Dark Theme */
+    html.dark body {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+    }
+
+    html.dark .app-card {
+      background-color: #1e293b !important;
+      border: 1px solid #334155 !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    html.dark .nav-box {
+      background-color: #334155 !important;
+      border-color: #475569 !important;
+    }
+
+    html.dark input, html.dark select {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #475569 !important;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 3px; }
+
+    .sim-table th, .sim-table td {
+      padding: 8px 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    @media (min-width: 640px) {
+      .sim-table th, .sim-table td {
+        padding: 10px 14px;
+      }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-down {
+      animation: slideDown 0.3s forwards ease-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-2 sm:p-4 md:p-6 transition-colors duration-200">
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- GUIDE MODAL (WHAT TO KNOW 101 - MANUAL FILE) -->
+  <div id="guide-modal" onclick="if(event.target === this) closeGuideModal()" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm transition-opacity">
+    <div class="app-card rounded-2xl p-4 sm:p-6 max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700 relative animate-slide-down">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-sky-950 flex items-center justify-center border border-emerald-300 dark:border-sky-700">
+            <span class="text-emerald-700 dark:text-sky-300 font-extrabold text-sm">i</span>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black uppercase tracking-wider text-emerald-600 dark:text-sky-400">WHAT TO KNOW 101</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Tệp Hướng dẫn Chi tiết & Quy tắc Điều hành OMO</p>
+          </div>
+        </div>
+        <button onclick="closeGuideModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="overflow-y-auto my-4 pr-1.5 space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+        
+        <!-- Section 1 -->
+        <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-900/70 border border-emerald-200 dark:border-slate-700 space-y-2">
+          <h4 class="font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center text-[10px]">1</span>
+            Mục Tiêu Điều Hành Của NHNN (Central Bank Target)
+          </h4>
+          <p class="text-xs sm:text-sm leading-relaxed">
+            Bạn đóng vai <strong>Ban Điều hành Nghiệp vụ Thị trường Mở (NHNN)</strong>. Nhiệm vụ chính là đưa ra các quyết định bơm hoặc rút tiền thông qua OMO để:
+          </p>
+          <ul class="list-disc pl-5 text-xs space-y-1">
+            <li><strong>Ổn định Lãi suất Liên ngân hàng (Interbank Rate):</strong> Giữ cho chi phí vốn ngắn hạn giữa các ngân hàng thương mại không biến động quá mức.</li>
+            <li><strong>Giải tỏa Nghẽn Thanh khoản:</strong> Đáp ứng kịp thời nhu cầu dư/thiếu hụt tiền mặt trong hệ thống.</li>
+            <li><strong>Kiểm soát Lạm phát (CPI) & Hỗ trợ Tăng trưởng (GDP):</strong> Cân bằng bài toán vĩ mô dài hạn.</li>
+          </ul>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 space-y-2">
+          <h4 class="font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded bg-sky-600 text-white flex items-center justify-center text-[10px]">2</span>
+            Các Chỉ Số Vĩ Mô Key (Indicators & Metrics)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+            <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <strong class="text-emerald-600 dark:text-sky-400 block mb-0.5">Interbank Rate (Lãi suất LNH):</strong>
+              Phản ứng trực tiếp & tức thì ngay sau mỗi phiên OMO.
+            </div>
+            <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <strong class="text-emerald-600 dark:text-sky-400 block mb-0.5">Liquidity Demand (Nhu cầu thanh khoản):</strong>
+              Mức dư (+) hoặc thiếu hụt (-) tiền mặt hệ thống.
+            </div>
+            <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <strong class="text-emerald-600 dark:text-sky-400 block mb-0.5">Maturity Schedule (Lịch đáo hạn):</strong>
+              Khối lượng Tín phiếu & Repo tự động đến hạn bơm/rút tiền.
+            </div>
+            <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <strong class="text-emerald-600 dark:text-sky-400 block mb-0.5">CPI & GDP Growth:</strong>
+              Các chỉ số vĩ mô phát huy tác dụng qua nhiều kỳ (độ trễ dài hơn).
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 space-y-2">
+          <h4 class="font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span>
+            Công Cụ & Phương Thức Đấu Thầu (OMO Console)
+          </h4>
+          <ul class="list-disc pl-5 text-xs space-y-1.5">
+            <li><strong>Repo / Mua giấy tờ có giá:</strong> Bơm thanh khoản vào hệ thống thương mại.</li>
+            <li><strong>Reverse Repo / Phát hành Tín phiếu:</strong> Rút bớt tiền dư thừa khỏi hệ thống.</li>
+            <li><strong>Volume Auction (Đấu thầu khối lượng):</strong> NHNN ấn định trước lãi suất, NHTM đăng ký khối lượng mua.</li>
+            <li><strong>Interest Rate Auction (Đấu thầu lãi suất):</strong> NHNN ấn định khối lượng chào thầu, các NHTM tự đặt mức lãi suất cạnh tranh.</li>
+          </ul>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="p-4 rounded-xl bg-amber-50/60 dark:bg-slate-900/70 border border-amber-200 dark:border-slate-700 space-y-1">
+          <h4 class="font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded bg-amber-600 text-white flex items-center justify-center text-[10px]">4</span>
+            Lời Khuyên Đạt Điểm Cao (Tips)
+          </h4>
+          <p class="text-xs">
+            Luôn quan sát <strong>Scenario Briefing</strong> ở mỗi Phase để đưa ra đúng nghiệp vụ (Bơm hay Rút) và tính toán khối lượng thầu vừa đủ giải quyết thiếu hụt thanh khoản mà không gây rủi ro lạm phát vượt trần!
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-3 border-t border-slate-200 dark:border-slate-700 shrink-0 flex items-center justify-between">
+        <span class="text-[11px] text-slate-500 font-mono hidden sm:inline">Nhấn ESC hoặc click bên ngoài để đóng</span>
+        <button onclick="closeGuideModal()" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white text-xs font-bold rounded-xl transition shadow-md">
+          ĐÃ ĐỌC HƯỚNG DẪN & ĐÓNG
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HEADER NAVBAR -->
+  <header class="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-3 pb-4 border-b border-slate-300 dark:border-slate-700 relative">
+    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 shrink-0">
+      <span class="text-base sm:text-lg md:text-xl font-black tracking-wider text-emerald-600 dark:text-sky-400 select-none whitespace-nowrap shrink-0">
+        WHO RUNS THE W<span class="inline-block hover:rotate-180 transition-transform duration-500">🌍</span>RLD?
+      </span>
+
+      <div id="header-team-badge" class="hidden flex items-center justify-center px-3 py-1 rounded-full bg-emerald-100 dark:bg-sky-900/80 text-emerald-800 dark:text-sky-200 text-xs font-bold border border-emerald-300 dark:border-sky-600 shadow-sm transition-all whitespace-nowrap">
+        <span class="opacity-75 mr-1 shrink-0">Team:</span>
+        <span id="current-team-name" class="font-black text-emerald-900 dark:text-sky-100 truncate max-w-[140px] sm:max-w-[200px]">Group 1</span>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center md:justify-end gap-2 shrink-0">
+      
+      <!-- Theme Toggle -->
+      <button onclick="toggleTheme()" id="theme-toggle-btn" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg nav-box text-xs font-bold transition border shadow-sm">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-text" class="text-slate-700 dark:text-slate-200">Light</span>
+      </button>
+
+      <!-- WHAT TO KNOW 101 Info Button -->
+      <button onclick="openGuideModal()" id="guide-btn" title="Mở tệp hướng dẫn OMO" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg nav-box text-xs font-bold transition border shadow-sm text-emerald-700 dark:text-sky-300 hover:bg-emerald-50 dark:hover:bg-slate-700">
+        <div class="w-4 h-4 rounded-full bg-emerald-600 dark:bg-sky-500 text-white flex items-center justify-center text-[10px] font-black">i</div>
+        <span>WHAT TO KNOW 101</span>
+      </button>
+
+      <!-- Phase Stepper -->
+      <div id="phase-stepper" class="hidden flex items-center gap-1 nav-box p-1 rounded-lg border text-[11px] sm:text-xs font-semibold">
+        <span id="badge-p1" class="px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-bold">P1</span>
+        <span id="badge-p2" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">P2</span>
+        <span id="badge-p3" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">P3</span>
+      </div>
+
+      <!-- Main App Tabs -->
+      <nav id="nav-tabs" class="hidden flex gap-1 nav-box p-1 rounded-lg border overflow-x-auto">
+        <button onclick="switchTab('indicators')" id="tab-btn-indicators" class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 dark:bg-sky-600 text-white whitespace-nowrap">Indicators</button>
+        <button onclick="switchTab('decisions')" id="tab-btn-decisions" class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap">Decisions</button>
+        <button onclick="switchTab('results')" id="tab-btn-results" disabled class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap" title="Cần gửi Quyết định OMO trước khi xem Kết quả">Results 🔒</button>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto w-full my-auto py-3 sm:py-6">
+
+    <!-- START SCREEN -->
+    <section id="slide-title" class="flex flex-col items-center justify-center text-center py-4 sm:py-8 min-h-[70vh] space-y-6">
+      
+      <div class="app-card rounded-3xl p-6 sm:p-8 md:p-10 w-full max-w-3xl shadow-xl relative overflow-hidden border border-slate-200 dark:border-slate-800">
+        <div class="inline-block px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-sky-950 border border-emerald-300 dark:border-sky-700 text-emerald-800 dark:text-sky-300 text-[11px] sm:text-xs font-bold tracking-wider uppercase mb-3 sm:mb-4">
+          Central Bank OMO Policy Simulator
+        </div>
+        
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-3 text-slate-900 dark:text-white leading-tight">
+          WHO RUNS THE <br class="hidden sm:block" />
+          <span class="text-emerald-600 dark:text-sky-400 inline-block whitespace-nowrap">W<span class="inline-block hover:rotate-180 transition-transform duration-500">🌍</span>RLD?</span>
+        </h1>
+        
+        <p class="max-w-xl mx-auto text-slate-600 dark:text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed font-medium">
+          Đóng vai Ban Điều hành Nghiệp vụ Thị trường Mở (NHNN). Trải qua 3 Phase điều hành thực tế từ Đấu thầu Khối lượng, Đấu thầu Lãi suất cho đến Quản trị Trade-off Vĩ mô.
+        </p>
+      </div>
+
+      <!-- SETUP CARD WITH PROMINENT WHAT TO KNOW 101 BAR -->
+      <div class="app-card rounded-2xl p-5 sm:p-6 w-full max-w-xl text-left space-y-4 shadow-lg border border-slate-200 dark:border-slate-800">
+        
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">⚙️</span>
+            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400">Thiết Lập Đội Chơi</h3>
+          </div>
+          <span class="text-[11px] font-mono text-slate-400">Single Player Mode</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Tên Nhóm / Đội chơi:</label>
+          <input type="text" id="inputTeamName" value="Nhóm 1 – Central Bankers" maxlength="30" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
+        </div>
+
+        <!-- WHAT TO KNOW 101 INTERACTIVE BAR WITH ICON (i) -->
+        <button type="button" onclick="openGuideModal()" class="w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-emerald-50 hover:bg-emerald-100/90 dark:bg-slate-900/80 dark:hover:bg-slate-800 border border-emerald-300 dark:border-sky-700 transition group text-left shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-emerald-600 dark:bg-sky-500 text-white flex items-center justify-center font-black text-base shadow-sm group-hover:scale-110 transition-transform">
+              i
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-800 dark:text-sky-300 flex items-center gap-1.5">
+                <span>WHAT TO KNOW 101</span>
+                <span class="px-2 py-0.2 rounded bg-emerald-200 dark:bg-sky-950 text-emerald-900 dark:text-sky-200 text-[10px] font-mono">Tệp hướng dẫn</span>
+              </div>
+              <div class="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Bấm để đọc tệp hướng dẫn & quy tắc điều hành OMO</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-sky-400 group-hover:translate-x-1 transition-transform shrink-0">
+            <span>Mở tệp</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </button>
+
+        <div class="pt-2">
+          <button onclick="startGame()" 
+                  class="w-full flex items-center justify-center gap-3 py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black text-sm sm:text-base rounded-xl transition shadow-lg hover:scale-[1.01] active:scale-95">
+            <span>START SIMULATION</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- APP CONTENT MAIN CONTAINER -->
+    <div id="slide-app" class="hidden">
+
+      <!-- TAB 1: INDICATORS & MACRO CONTEXT -->
+      <section id="tab-content-indicators" class="space-y-4 sm:space-y-5">
+        <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div>
+              <h2 id="p-title-ind" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Phase 1: Phase 1</h2>
+              <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Đánh giá bối cảnh vĩ mô, tình trạng thanh khoản và lịch đáo hạn OMO</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+          <!-- Left Column: Scenario & Maturity Schedule -->
+          <div class="lg:col-span-5 space-y-4">
+            
+            <div class="app-card rounded-xl p-3.5 sm:p-4 border-l-4 border-emerald-500 dark:border-sky-500">
+              <h4 class="text-[11px] sm:text-xs font-bold uppercase text-emerald-600 dark:text-sky-400 mb-1.5">Scenario Briefing</h4>
+              <p id="scenario-text" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                Scenario pending
+              </p>
+            </div>
+
+            <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
+                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Schedule of Maturity</h3>
+                <span class="text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400">Ngày phát hành: 8/13/2026</span>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs sim-table border-collapse">
+                  <thead>
+                    <tr class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 text-[11px] font-bold">
+                      <th class="py-1.5 px-2 text-left">Công cụ</th>
+                      <th class="py-1.5 px-2 text-center">Khối lượng (Tỷ VND)</th>
+                      <th class="py-1.5 px-2 text-right">Lãi suất (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="maturity-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-[11px]">
+                    <tr>
+                      <td class="font-sans font-semibold py-2 px-2 text-slate-800 dark:text-slate-200">Khối lượng Tín phiếu 90N</td>
+                      <td id="mat-tb-bill-vol" class="text-center font-bold text-emerald-600 dark:text-sky-400">15,000</td>
+                      <td id="mat-tb-bill-rate" class="text-right text-slate-700 dark:text-slate-300">3.43%</td>
+                    </tr>
+                    <tr>
+                      <td class="font-sans font-semibold py-2 px-2 text-slate-800 dark:text-slate-200">Khối lượng Repo 60N</td>
+                      <td id="mat-tb-repo-vol" class="text-center font-bold text-rose-600 dark:text-rose-400">2,000</td>
+                      <td id="mat-tb-repo-rate" class="text-right text-slate-700 dark:text-slate-300">3.15%</td>
+                    </tr>
+                    <tr>
+                      <td class="font-sans font-semibold py-2 px-2 text-slate-800 dark:text-slate-200">Khối lượng Reverse Repo 60N</td>
+                      <td id="mat-tb-rev-vol" class="text-center font-bold text-amber-600 dark:text-amber-400">2,000</td>
+                      <td id="mat-tb-rev-rate" class="text-right text-slate-700 dark:text-slate-300">3.30%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-2 text-xs">
+              <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">Key Macro & Market Metrics</h3>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                <span class="text-slate-600 dark:text-slate-400">Real GDP Growth</span>
+                <span id="ind-gdp" class="font-mono font-bold text-slate-800 dark:text-slate-200">3.40%</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                <span class="text-slate-600 dark:text-slate-400">Inflation (CPI)</span>
+                <span id="ind-cpi" class="font-mono font-bold text-amber-600 dark:text-amber-400">3.97%</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                <span class="text-slate-600 dark:text-slate-400">Interbank Rate (ON)</span>
+                <span id="ind-interbank" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.95%</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-slate-600 dark:text-slate-400">Liquidity Demand</span>
+                <span id="ind-liquidity" class="font-mono font-bold text-rose-600 dark:text-rose-400">-1,900 Tỷ</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Trend Chart & Navigation -->
+          <div class="lg:col-span-7 app-card rounded-xl p-4 sm:p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400 mb-3">Interbank Rate Trend Line (%)</h3>
+              <div class="relative w-full h-56 sm:h-72">
+                <canvas id="indicatorsChart"></canvas>
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button onclick="switchTab('decisions')" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
+                <span>GO TO OMO DECISION CONSOLE</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: OMO DECISION CONSOLE -->
+      <section id="tab-content-decisions" class="hidden space-y-5">
+        <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div>
+            <h2 id="p-title-dec" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Phase 1: Phase 1</h2>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Thiết lập thông số đấu thầu OMO để điều tiết lượng cung tiền</p>
+          </div>
+        </div>
+
+        <div class="app-card rounded-xl p-3.5 sm:p-4 border-l-4 border-emerald-500 dark:border-sky-500">
+          <h4 class="text-[11px] sm:text-xs font-bold uppercase text-emerald-600 dark:text-sky-400 mb-1">Scenario Briefing</h4>
+          <p id="decision-scenario-text" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+            Scenario pending
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 app-card rounded-2xl p-4 sm:p-6 space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">1. OMO Auction Method</label>
+                <select id="auctionMethod" onchange="toggleRateVisibility()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
+                  <option value="volume">Volume Auction (Đấu thầu khối lượng)</option>
+                  <option value="rate">Interest Rate Auction (Đấu thầu lãi suất)</option>
+                </select>
+              </div>
+
+              <div id="pricingContainer" class="hidden">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">2. Pricing Method</label>
+                <select id="pricingMechanism" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
+                  <option value="single">Single-price (Đơn giá)</option>
+                  <option value="multi">Multiple-price (Đa giá)</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">3. OMO Action Type</label>
+                <select id="omoAction" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
+                  <option value="repo" selected>Repo (Bơm tiền)</option>
+                  <option value="reverse_repo">Reverse Repo (Hút tiền)</option>
+                  <option value="buy_securities">Buy Securities (Mua đứt giấy tờ có giá)</option>
+                  <option value="sell_securities">Sell Securities (Bán đứt giấy tờ có giá)</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2 space-y-2">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">4. Target Volume (Khối lượng chào thầu - Tỷ VND)</label>
+                <div class="flex gap-2">
+                  <input type="number" id="volumeInput" step="500" value="5000" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono font-bold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm" placeholder="Nhập số tiền...">
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                  <span class="text-[11px] text-slate-500 self-center font-medium">Quick select:</span>
+                  <button type="button" onclick="setFixedVolume(3000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">3,000B</button>
+                  <button type="button" onclick="setFixedVolume(5000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">5,000B</button>
+                  <button type="button" onclick="setFixedVolume(8000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">8,000B</button>
+                  <button type="button" onclick="setFixedVolume(10000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">10,000B</button>
+                </div>
+              </div>
+
+              <div id="rateContainer" class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">5. OMO / Repo Rate (%/năm)</label>
+                <input type="number" id="inputRate" step="0.05" value="4.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
+              </div>
+
+            </div>
+
+            <div class="pt-3 flex justify-end">
+              <button onclick="submitDecision()" class="w-full md:w-auto px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black rounded-xl transition shadow-lg text-xs sm:text-sm">
+                SUBMIT OMO DECISION
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-2">Policy Execution Rules</h3>
+              <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 leading-relaxed font-medium">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 font-bold">•</span>
+                  <span><strong>Volume Auction:</strong> NHNN ấn định lãi suất chào thầu, các NHTM đặt thầu khối lượng.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 font-bold">•</span>
+                  <span><strong>Interest Rate Auction:</strong> NHNN ấn định khối lượng chào thầu, lãi suất do các NHTM cạnh tranh tự do.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 font-bold">•</span>
+                  <span>Kết quả phân bổ chi tiết và danh sách bids của từng NHTM sẽ xuất hiện ở <strong>Tab 3: Results</strong>.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: RESULTS & TRANSMISSION REPORT -->
+      <section id="tab-content-results" class="hidden space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div>
+            <h2 id="p-title-res" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Phase 1: Phase 1</h2>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Kết quả truyền dẫn chính sách vĩ mô và bảng tổng hợp phản ứng thị trường</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-emerald-100 dark:bg-sky-950 text-emerald-800 dark:text-sky-300 text-[11px] sm:text-xs font-bold border border-emerald-300 dark:border-sky-700">EXECUTION COMPLETE</span>
+        </div>
+
+        <!-- Policy Assessment Header -->
+        <div class="app-card rounded-2xl p-4 sm:p-5 border-l-4 border-emerald-500 dark:border-sky-500">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Policy Assessment</span>
+              <h3 id="res-eval-title" class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400">Will be updates so stay tuned</h3>
+            </div>
+            <span class="px-3 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-800">
+              ⚡ Đã Thực Thi
+            </span>
+          </div>
+          <p id="res-analysis" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium mt-3 border-t border-slate-200 dark:border-slate-800 pt-3">
+            YOLO
+          </p>
+        </div>
+
+        <!-- SIMULATED ORDERBOOK -->
+        <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Simulated Orderbook - Kết Quả Đấu Thầu Các NHTM</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mô phỏng phản ứng đặt thầu của các Ngân hàng thương mại (Bank A - E)</p>
+            </div>
+            <span id="bids-cutoff-badge" class="text-[11px] font-mono font-bold text-emerald-600 dark:text-sky-400">Cut-off Rate: --</span>
+          </div>
+          <div class="overflow-x-auto -mx-2 sm:mx-0">
+            <table class="w-full text-xs sim-table border-collapse min-w-[550px]">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
+                  <th>Tổ chức tín dụng (NHTM)</th>
+                  <th>Lãi suất đặt thầu (%/năm)</th>
+                  <th>Khối lượng đặt (Tỷ VND)</th>
+                  <th>Khối lượng trúng thầu (Tỷ VND)</th>
+                  <th>Trạng thái trúng thầu</th>
+                </tr>
+              </thead>
+              <tbody id="bids-table-body" class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MACRO IMPACT ANALYSIS -->
+        <div class="app-card rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Macro Impact Analysis (Phân Tích Tác Động Vĩ Mô)</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Lãi suất liên ngân hàng phản ứng ngay lập tức sau OMO; các chỉ số lạm phát & GDP có độ trễ qua nhiều kỳ.</p>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="text-[11px] font-bold uppercase text-emerald-600 dark:text-sky-400">Biểu Đồ Truyền Dẫn Lãi Suất Trực Tiếp & Độ Trễ Vĩ Mô</h4>
+            <div class="relative w-full h-56 sm:h-64 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
+              <canvas id="macroResultsChart"></canvas>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto -mx-2 sm:mx-0 pt-2">
+            <table class="w-full text-xs sim-table border-collapse min-w-[580px]">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
+                  <th>Chỉ số Vĩ mô / Thị trường</th>
+                  <th>Trước OMO (Pre)</th>
+                  <th>Sau OMO (Post)</th>
+                  <th>Thay đổi (Delta)</th>
+                  <th>Đặc tính truyền dẫn</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr class="bg-emerald-50/50 dark:bg-sky-950/30">
+                  <td class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                    <span>⚡ Interbank Rate (Lãi suất LNH)</span>
+                  </td>
+                  <td id="row-pre-rate" class="font-mono">3.95%</td>
+                  <td id="row-post-rate" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.80%</td>
+                  <td id="row-delta-rate" class="font-mono text-emerald-600 dark:text-sky-400">-0.15%</td>
+                  <td><span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">Tác động trực tiếp tức thì</span></td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-slate-800 dark:text-slate-200">Liquidity Position (Thanh khoản)</td>
+                  <td id="row-pre-liq" class="font-mono text-rose-600">-1,900 Tỷ</td>
+                  <td id="row-post-liq" class="font-mono font-bold text-emerald-600 dark:text-sky-400">+3,100 Tỷ</td>
+                  <td id="row-delta-liq" class="font-mono text-emerald-600 dark:text-sky-400">+5,000 Tỷ</td>
+                  <td><span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">Cân bằng cung cầu</span></td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-slate-800 dark:text-slate-200">Avg Deposit Rate (Lãi suất CĐ)</td>
+                  <td id="row-pre-dep" class="font-mono">4.95%</td>
+                  <td id="row-post-dep" class="font-mono">4.90%</td>
+                  <td id="row-delta-dep" class="font-mono text-emerald-600 dark:text-sky-400">-0.05%</td>
+                  <td><span class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[10px] font-bold">Độ trễ trung hạn</span></td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-slate-800 dark:text-slate-200">Inflation Rate (CPI Lạm phát)</td>
+                  <td id="row-pre-cpi" class="font-mono">3.97%</td>
+                  <td id="row-post-cpi" class="font-mono">3.95%</td>
+                  <td id="row-delta-cpi" class="font-mono text-emerald-600 dark:text-sky-400">-0.02%</td>
+                  <td><span class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[10px] font-bold">Độ trễ dài hạn (2-3 phase)</span></td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-slate-800 dark:text-slate-200">GDP Growth Rate (Tăng trưởng)</td>
+                  <td id="row-pre-gdp" class="font-mono">3.40%</td>
+                  <td id="row-post-gdp" class="font-mono">3.45%</td>
+                  <td id="row-delta-gdp" class="font-mono text-emerald-600 dark:text-sky-400">+0.05%</td>
+                  <td><span class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[10px] font-bold">Độ trễ dài hạn (2-3 phase)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button id="btn-next-phase" onclick="nextPhase()" 
+                  class="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
+            <span>PROCEED TO PHASE 2</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- FINAL SUMMARY REPORT -->
+      <section id="tab-content-summary" class="hidden space-y-6 text-center py-4 sm:py-6">
+        <div class="app-card rounded-3xl p-5 sm:p-8 max-w-3xl mx-auto border border-slate-200 dark:border-slate-800 space-y-6 shadow-xl">
+          
+          <!-- Top Badge -->
+          <div>
+            <span class="px-4 py-1.5 rounded-full bg-emerald-100 dark:bg-sky-950 text-emerald-800 dark:text-sky-300 text-xs font-bold tracking-wider uppercase">
+              FINAL SIMULATION REPORT
+            </span>
+          </div>
+          
+          <!-- Title & Team Header -->
+          <div class="space-y-1">
+            <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+              GAME COMPLETED!
+            </h2>
+            <p id="summary-team-title" class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-sky-400">
+              Team: Nhóm 1 – Central Bankers
+            </p>
+          </div>
+
+          <!-- Subtitle Description -->
+          <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-xl mx-auto font-medium leading-relaxed">
+            Bạn đã hoàn thành xuất sắc 3 Phase điều hành Nghiệp vụ Thị trường Mở (OMO) với tư cách Ban Điều hành NHNN.
+          </p>
+
+          <!-- 3 PHASE SCORE CARDS ROW -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+            <div class="app-card rounded-2xl p-4 sm:p-5 text-center border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block uppercase tracking-wider">Phase 1 Score</span>
+              <span id="card-score-p1" class="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-sky-400 block font-mono">88</span>
+            </div>
+
+            <div class="app-card rounded-2xl p-4 sm:p-5 text-center border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block uppercase tracking-wider">Phase 2 Score</span>
+              <span id="card-score-p2" class="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-sky-400 block font-mono">90</span>
+            </div>
+
+            <div class="app-card rounded-2xl p-4 sm:p-5 text-center border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block uppercase tracking-wider">Phase 3 Score</span>
+              <span id="card-score-p3" class="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-sky-400 block font-mono">92</span>
+            </div>
+          </div>
+
+          <!-- GOVERNOR'S OVERALL REVIEW -->
+          <div class="app-card rounded-2xl p-5 sm:p-6 text-left border border-slate-200 dark:border-slate-800 space-y-2">
+            <h4 class="text-xs font-bold text-emerald-600 dark:text-sky-400 uppercase tracking-wider">
+              GOVERNOR'S OVERALL REVIEW:
+            </h4>
+            <p id="final-review-text" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              XUẤT SẮC! Ban Điều hành đã điều tiết lượng cung tiền linh hoạt qua 3 Phase. Lãi suất liên ngân hàng được duy trì ổn định quanh mục tiêu, kiểm soát hiệu quả lạm phát và giữ vững tăng trưởng GDP.
+            </p>
+          </div>
+
+          <div class="pt-2">
+            <button onclick="resetGame()" class="w-full sm:w-auto px-10 py-3.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black rounded-xl transition text-sm shadow-lg">
+              RESTART SIMULATION
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    let currentPhase = 1;
+    let teamName = "Nhóm 1 – Central Bankers";
+    let scores = { p1: null, p2: null, p3: null };
+    let currentTheme = 'light';
+    let isResultUnlocked = false;
+    let chartInstance = null;
+    let macroResultsChartInstance = null;
+
+    const phaseConfig = {
+      1: {
+        title: "Phase 1: Phase 1",
+        scenario: "Scenario pending",
+        indicators: {
+          gdp: "3.40%",
+          cpi: "3.97%",
+          interbank: "3.95%",
+          liquidity: "-1,900 Tỷ"
+        },
+        matTable: {
+          billVol: "15,000",
+          billRate: "3.43%",
+          repoVol: "2,000",
+          repoRate: "3.15%",
+          revVol: "2,000",
+          revRate: "3.30%"
+        },
+        method: "volume",
+        action: "repo",
+        defaultVol: 5000,
+        defaultRate: 4.00,
+        chartData: [3.95, 3.95, 3.95, 3.95],
+        preMetrics: {
+          rate: 3.95,
+          liq: -1900,
+          dep: 4.95,
+          cpi: 3.97,
+          gdp: 3.40
+        },
+        bankBids: [
+          { bank: "Bank A", rate: 4.00, vol: 1500, awarded: 0, status: "" },
+          { bank: "Bank B", rate: 4.00, vol: 1200, awarded: 0, status: "" },
+          { bank: "Bank C", rate: 4.00, vol: 1000, awarded: 0, status: "" },
+          { bank: "Bank D", rate: 4.00, vol: 800, awarded: 0, status: "" },
+          { bank: "Bank E", rate: 4.00, vol: 1000, awarded: 0, status: "" }
+        ]
+      },
+      2: {
+        title: "Phase 2: Phase 2",
+        scenario: "Yep it still pending, plz wait",
+        indicators: {
+          gdp: "3.45%",
+          cpi: "3.95%",
+          interbank: "4.10%",
+          liquidity: "-3,500 Tỷ"
+        },
+        matTable: {
+          billVol: "10,000",
+          billRate: "3.50%",
+          repoVol: "5,000",
+          repoRate: "3.80%",
+          revVol: "1,000",
+          revRate: "3.20%"
+        },
+        method: "rate",
+        action: "repo",
+        defaultVol: 6000,
+        defaultRate: 4.15,
+        chartData: [3.80, 3.92, 4.02, 4.10],
+        preMetrics: {
+          rate: 4.10,
+          liq: -3500,
+          dep: 5.10,
+          cpi: 3.95,
+          gdp: 3.45
+        },
+        bankBids: [
+          { bank: "Bank A", rate: 4.25, vol: 2000, awarded: 0, status: "" },
+          { bank: "Bank B", rate: 4.20, vol: 1800, awarded: 0, status: "" },
+          { bank: "Bank C", rate: 4.15, vol: 1500, awarded: 0, status: "" },
+          { bank: "Bank D", rate: 4.10, vol: 1200, awarded: 0, status: "" },
+          { bank: "Bank E", rate: 4.05, vol: 1000, awarded: 0, status: "" }
+        ]
+      },
+      3: {
+        title: "Phase 3: Phase 3",
+        scenario: "STILL STILL pending, wait faster!",
+        indicators: {
+          gdp: "3.52%",
+          cpi: "4.23%",
+          interbank: "3.20%",
+          liquidity: "+6,000 Tỷ"
+        },
+        matTable: {
+          billVol: "5,000",
+          billRate: "3.60%",
+          repoVol: "1,000",
+          repoRate: "3.50%",
+          revVol: "8,000",
+          revRate: "3.65%"
+        },
+        method: "volume",
+        action: "reverse_repo",
+        defaultVol: 5000,
+        defaultRate: 3.50,
+        chartData: [3.85, 3.60, 3.40, 3.20],
+        preMetrics: {
+          rate: 3.20,
+          liq: 6000,
+          dep: 4.70,
+          cpi: 4.23,
+          gdp: 3.52
+        },
+        bankBids: [
+          { bank: "Bank A", rate: 3.50, vol: 1800, awarded: 0, status: "" },
+          { bank: "Bank B", rate: 3.50, vol: 1500, awarded: 0, status: "" },
+          { bank: "Bank C", rate: 3.50, vol: 1200, awarded: 0, status: "" },
+          { bank: "Bank D", rate: 3.50, vol: 1000, awarded: 0, status: "" },
+          { bank: "Bank E", rate: 3.50, vol: 1000, awarded: 0, status: "" }
+        ]
+      }
+    };
+
+    function openGuideModal() {
+      const modal = document.getElementById('guide-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeGuideModal() {
+      const modal = document.getElementById('guide-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('theme-icon');
+      const themeText = document.getElementById('theme-text');
+      
+      if (currentTheme === 'light') {
+        currentTheme = 'dark';
+        html.classList.remove('light');
+        html.classList.add('dark');
+        if (themeIcon) themeIcon.innerText = '🌙';
+        if (themeText) themeText.innerText = 'Dark';
+      } else {
+        currentTheme = 'light';
+        html.classList.remove('dark');
+        html.classList.add('light');
+        if (themeIcon) themeIcon.innerText = '☀️';
+        if (themeText) themeText.innerText = 'Light';
+      }
+
+      if (phaseConfig[currentPhase]) {
+        renderChart(phaseConfig[currentPhase].chartData);
+      }
+    }
+
+    function toggleRateVisibility() {
+      const method = document.getElementById('auctionMethod').value;
+      const rateContainer = document.getElementById('rateContainer');
+      const pricingContainer = document.getElementById('pricingContainer');
+      
+      if (method === 'rate') {
+        if (rateContainer) rateContainer.classList.add('hidden');
+        if (pricingContainer) pricingContainer.classList.remove('hidden');
+      } else {
+        if (rateContainer) rateContainer.classList.remove('hidden');
+        if (pricingContainer) pricingContainer.classList.add('hidden');
+      }
+    }
+
+    function setFixedVolume(val) {
+      const input = document.getElementById('volumeInput');
+      if (input) input.value = val;
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      
+      const toast = document.createElement('div');
+      const bgClass = type === 'success' ? 'bg-emerald-600' : type === 'warning' ? 'bg-amber-600' : 'bg-sky-600';
+      
+      toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-xl flex items-center justify-between gap-3 text-xs sm:text-sm font-semibold transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto mb-2`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-white hover:opacity-80 font-bold">&times;</button>
+      `;
+      
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+      
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.classList.add('opacity-0', '-translate-y-2');
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 3500);
+    }
+
+    function startGame() {
+      const inputEl = document.getElementById('inputTeamName');
+      if (inputEl && inputEl.value.trim()) {
+        teamName = inputEl.value.trim();
+      } else {
+        teamName = "Group 1";
+      }
+
+      document.getElementById('current-team-name').innerText = teamName;
+      document.getElementById('slide-title').classList.add('hidden');
+      document.getElementById('slide-app').classList.remove('hidden');
+      
+      document.getElementById('header-team-badge').classList.remove('hidden');
+      document.getElementById('phase-stepper').classList.remove('hidden');
+      document.getElementById('nav-tabs').classList.remove('hidden');
+
+      loadPhase(1);
+      switchTab('indicators');
+      showToast(`⚡ Chào mừng ${teamName}! Phase 1 sẵn sàng mô phỏng.`, 'info');
+    }
+
+    function resetGame() {
+      currentPhase = 1;
+      scores = { p1: null, p2: null, p3: null };
+      isResultUnlocked = false;
+
+      document.getElementById('slide-app').classList.add('hidden');
+      document.getElementById('tab-content-summary').classList.add('hidden');
+      document.getElementById('slide-title').classList.remove('hidden');
+
+      document.getElementById('header-team-badge').classList.add('hidden');
+      document.getElementById('phase-stepper').classList.add('hidden');
+      document.getElementById('nav-tabs').classList.add('hidden');
+    }
+
+    function loadPhase(phaseNum) {
+      currentPhase = phaseNum;
+      const cfg = phaseConfig[phaseNum];
+
+      isResultUnlocked = false;
+      const resBtn = document.getElementById('tab-btn-results');
+      if (resBtn) {
+        resBtn.disabled = true;
+        resBtn.innerHTML = "Results 🔒";
+        resBtn.title = "Cần gửi Quyết định OMO trước khi xem Kết quả";
+        resBtn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
+      }
+
+      for (let p = 1; p <= 3; p++) {
+        const badge = document.getElementById(`badge-p${p}`);
+        if (!badge) continue;
+        if (p === phaseNum) {
+          badge.className = "px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-extrabold shadow-sm transition-all";
+        } else if (p < phaseNum) {
+          badge.className = "px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold transition-all";
+        } else {
+          badge.className = "px-2.5 py-1 rounded text-slate-400 dark:text-slate-500 font-medium transition-all opacity-70";
+        }
+      }
+
+      const titleInd = document.getElementById('p-title-ind');
+      if (titleInd) titleInd.innerText = cfg.title;
+
+      const titleDec = document.getElementById('p-title-dec');
+      if (titleDec) titleDec.innerText = cfg.title;
+
+      const titleRes = document.getElementById('p-title-res');
+      if (titleRes) titleRes.innerText = cfg.title;
+
+      const scenarioEl = document.getElementById('scenario-text');
+      if (scenarioEl) scenarioEl.innerText = cfg.scenario;
+      
+      const decisionScenarioEl = document.getElementById('decision-scenario-text');
+      if (decisionScenarioEl) decisionScenarioEl.innerText = cfg.scenario;
+
+      document.getElementById('ind-gdp').innerText = cfg.indicators.gdp;
+      document.getElementById('ind-cpi').innerText = cfg.indicators.cpi;
+      document.getElementById('ind-interbank').innerText = cfg.indicators.interbank;
+
+      const liqEl = document.getElementById('ind-liquidity');
+      if (liqEl) {
+        liqEl.innerText = cfg.indicators.liquidity;
+        if (cfg.indicators.liquidity.startsWith('+')) {
+          liqEl.className = "font-mono font-bold text-emerald-600 dark:text-sky-400";
+        } else {
+          liqEl.className = "font-mono font-bold text-rose-600 dark:text-rose-400";
+        }
+      }
+
+      if (cfg.matTable) {
+        document.getElementById('mat-tb-bill-vol').innerText = cfg.matTable.billVol;
+        document.getElementById('mat-tb-bill-rate').innerText = cfg.matTable.billRate;
+        document.getElementById('mat-tb-repo-vol').innerText = cfg.matTable.repoVol;
+        document.getElementById('mat-tb-repo-rate').innerText = cfg.matTable.repoRate;
+        document.getElementById('mat-tb-rev-vol').innerText = cfg.matTable.revVol;
+        document.getElementById('mat-tb-rev-rate').innerText = cfg.matTable.revRate;
+      }
+
+      document.getElementById('auctionMethod').value = cfg.method;
+      document.getElementById('volumeInput').value = cfg.defaultVol;
+      document.getElementById('inputRate').value = cfg.defaultRate.toFixed(2);
+
+      const omoActionSelect = document.getElementById('omoAction');
+      if (omoActionSelect) omoActionSelect.value = cfg.action;
+
+      toggleRateVisibility();
+      renderChart(cfg.chartData);
+    }
+
+    function switchTab(tabName) {
+      if (tabName === 'results' && !isResultUnlocked) {
+        showToast("⚠️ Vui lòng nhấn 'SUBMIT OMO DECISION' ở Tab Decisions trước khi xem Kết quả!", "warning");
+        return;
+      }
+
+      const tabs = ['indicators', 'decisions', 'results'];
+      tabs.forEach(t => {
+        const content = document.getElementById(`tab-content-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabName) {
+          content.classList.remove('hidden');
+          btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 dark:bg-sky-600 text-white whitespace-nowrap";
+        } else {
+          content.classList.add('hidden');
+          if (t === 'results' && !isResultUnlocked) {
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
+          } else {
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap";
+          }
+        }
+      });
+
+      if (tabName === 'indicators' && phaseConfig[currentPhase]) {
+        renderChart(phaseConfig[currentPhase].chartData);
+      }
+    }
+
+    function submitDecision() {
+      const vol = parseInt(document.getElementById('volumeInput').value) || 5000;
+      const userRate = parseFloat(document.getElementById('inputRate').value) || 4.0;
+      const action = document.getElementById('omoAction').value;
+      const method = document.getElementById('auctionMethod').value;
+      const cfg = phaseConfig[currentPhase];
+
+      let phaseScore = 88;
+      let evalTitle = "Will be updates so stay tuned";
+      let analysisText = "YOLO";
+
+      const pre = cfg.preMetrics;
+      let postRate = pre.rate;
+      let postLiq = pre.liq;
+      let postDep = pre.dep;
+      let postCpi = pre.cpi;
+      let postGdp = pre.gdp;
+
+      const isInjectingLiquidity = (action === 'repo' || action === 'buy_securities');
+      const deltaLiqVal = isInjectingLiquidity ? vol : -vol;
+      postLiq += deltaLiqVal;
+
+      if (currentPhase === 1) {
+        if (isInjectingLiquidity && vol >= 4000 && vol <= 7000) {
+          phaseScore = 88;
+          postRate = Math.max(3.60, pre.rate - 0.15);
+          postDep = pre.dep - 0.05;
+          postCpi = pre.cpi - 0.02;
+          postGdp = pre.gdp + 0.05;
+        } else if (!isInjectingLiquidity) {
+          phaseScore = 50;
+          postRate = pre.rate + 0.40;
+          postDep = pre.dep + 0.20;
+        } else {
+          phaseScore = 75;
+          postRate = Math.max(3.80, pre.rate - 0.05);
+        }
+      } else if (currentPhase === 2) {
+        if (method === 'rate' && isInjectingLiquidity && vol >= 6000) {
+          phaseScore = 90;
+          postRate = Math.max(3.90, pre.rate - 0.20);
+          postDep = pre.dep - 0.10;
+          postCpi = pre.cpi - 0.05;
+          postGdp = pre.gdp + 0.08;
+        } else if (method === 'volume') {
+          phaseScore = 70;
+          postRate = pre.rate - 0.10;
+        } else {
+          phaseScore = 65;
+          postRate = pre.rate - 0.05;
+        }
+      } else if (currentPhase === 3) {
+        if (!isInjectingLiquidity && vol >= 4000 && vol <= 8000) {
+          phaseScore = 92;
+          postRate = pre.rate - 0.15;
+          postCpi = Math.max(4.10, pre.cpi - 0.13);
+          postGdp = pre.gdp + 0.02;
+          postDep = pre.dep - 0.10;
+        } else if (isInjectingLiquidity) {
+          phaseScore = 45;
+          postCpi = pre.cpi + 0.25;
+          postRate = pre.rate - 0.25;
+        } else {
+          phaseScore = 70;
+          postCpi = pre.cpi - 0.05;
+        }
+      }
+
+      evalTitle = "Will be updates so stay tuned";
+      analysisText = "YOLO";
+
+      scores[`p${currentPhase}`] = phaseScore;
+
+      isResultUnlocked = true;
+      const resBtn = document.getElementById('tab-btn-results');
+      if (resBtn) {
+        resBtn.disabled = false;
+        resBtn.innerHTML = "Results";
+        resBtn.title = "Xem kết quả OMO";
+      }
+
+      let bankBids = JSON.parse(JSON.stringify(cfg.bankBids));
+      let cutoffRate = userRate;
+
+      if (method === 'rate') {
+        bankBids.sort((a, b) => b.rate - a.rate);
+        let remainingVol = vol;
+
+        bankBids.forEach(b => {
+          if (remainingVol >= b.vol) {
+            b.awarded = b.vol;
+            b.status = "Trúng thầu toàn bộ";
+            remainingVol -= b.vol;
+            cutoffRate = b.rate;
+          } else if (remainingVol > 0) {
+            b.awarded = remainingVol;
+            b.status = `Trúng thầu một phần (${Math.round((remainingVol/b.vol)*100)}%)`;
+            cutoffRate = b.rate;
+            remainingVol = 0;
+          } else {
+            b.awarded = 0;
+            b.status = "Không trúng thầu";
+          }
+        });
+      } else {
+        cutoffRate = userRate;
+        const totalReq = bankBids.reduce((sum, b) => sum + b.vol, 0);
+        const ratio = Math.min(1, vol / totalReq);
+
+        bankBids.forEach(b => {
+          if (userRate < pre.rate && isInjectingLiquidity) {
+            b.awarded = 0;
+            b.status = "Lãi suất thầu quá thấp";
+          } else {
+            b.awarded = Math.round(b.vol * ratio);
+            b.status = ratio >= 1 ? "Trúng thầu toàn bộ" : `Trúng thầu pro-rata (${Math.round(ratio*100)}%)`;
+          }
+        });
+      }
+
+      const deltaRateVal = postRate - pre.rate;
+      const deltaDepVal = postDep - pre.dep;
+      const deltaCpiVal = postCpi - pre.cpi;
+      const deltaGdpVal = postGdp - pre.gdp;
+
+      document.getElementById('res-eval-title').innerText = evalTitle;
+      document.getElementById('res-analysis').innerText = analysisText;
+
+      document.getElementById('row-pre-rate').innerText = `${pre.rate.toFixed(2)}%`;
+      document.getElementById('row-post-rate').innerText = `${postRate.toFixed(2)}%`;
+      document.getElementById('row-delta-rate').innerText = `${deltaRateVal >= 0 ? '+' : ''}${deltaRateVal.toFixed(2)}%`;
+
+      document.getElementById('row-pre-liq').innerText = `${pre.liq >= 0 ? '+' : ''}${pre.liq.toLocaleString()} Tỷ`;
+      document.getElementById('row-post-liq').innerText = `${postLiq >= 0 ? '+' : ''}${postLiq.toLocaleString()} Tỷ`;
+      
+      const rowPostLiq = document.getElementById('row-post-liq');
+      if (rowPostLiq) {
+        rowPostLiq.className = postLiq >= 0 ? "font-mono font-bold text-emerald-600 dark:text-sky-400" : "font-mono font-bold text-rose-600 dark:text-rose-400";
+      }
+
+      const rowDeltaLiq = document.getElementById('row-delta-liq');
+      if (rowDeltaLiq) {
+        rowDeltaLiq.innerText = `${deltaLiqVal >= 0 ? '+' : ''}${deltaLiqVal.toLocaleString()} Tỷ`;
+        rowDeltaLiq.className = deltaLiqVal >= 0 ? "font-mono text-emerald-600 dark:text-sky-400" : "font-mono text-rose-600 dark:text-rose-400";
+      }
+
+      document.getElementById('row-pre-dep').innerText = `${pre.dep.toFixed(2)}%`;
+      document.getElementById('row-post-dep').innerText = `${postDep.toFixed(2)}%`;
+      document.getElementById('row-delta-dep').innerText = `${deltaDepVal >= 0 ? '+' : ''}${deltaDepVal.toFixed(2)}%`;
+
+      document.getElementById('row-pre-cpi').innerText = `${pre.cpi.toFixed(2)}%`;
+      document.getElementById('row-post-cpi').innerText = `${postCpi.toFixed(2)}%`;
+      document.getElementById('row-delta-cpi').innerText = `${deltaCpiVal >= 0 ? '+' : ''}${deltaCpiVal.toFixed(2)}%`;
+
+      document.getElementById('row-pre-gdp').innerText = `${pre.gdp.toFixed(2)}%`;
+      document.getElementById('row-post-gdp').innerText = `${postGdp.toFixed(2)}%`;
+      document.getElementById('row-delta-gdp').innerText = `${deltaGdpVal >= 0 ? '+' : ''}${deltaGdpVal.toFixed(2)}%`;
+
+      document.getElementById('bids-cutoff-badge').innerText = `Cut-off Rate: ${method === 'rate' ? cutoffRate.toFixed(2) : userRate.toFixed(2)}%/năm`;
+
+      const bidsTableBody = document.getElementById('bids-table-body');
+      let bidsHtml = "";
+      bankBids.forEach(b => {
+        const isWin = b.awarded > 0;
+        const statusColor = isWin ? "text-emerald-600 dark:text-sky-400 font-bold" : "text-slate-400";
+        bidsHtml += `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+            <td class="font-bold text-slate-800 dark:text-slate-200 font-sans">${b.bank}</td>
+            <td>${b.rate.toFixed(2)}%</td>
+            <td>${b.vol.toLocaleString()} Tỷ</td>
+            <td class="font-bold text-slate-900 dark:text-slate-100">${b.awarded.toLocaleString()} Tỷ</td>
+            <td class="${statusColor} font-sans font-semibold">${b.status}</td>
+          </tr>
+        `;
+      });
+      bidsTableBody.innerHTML = bidsHtml;
+
+      renderMacroResultsChart(pre.rate, postRate, pre.dep, postDep, pre.cpi, postCpi);
+
+      const nextBtn = document.getElementById('btn-next-phase');
+      if (currentPhase < 3) {
+        nextBtn.innerHTML = `<span>PROCEED TO PHASE ${currentPhase + 1}</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>`;
+      } else {
+        nextBtn.innerHTML = `<span>VIEW FINAL SIMULATION REPORT</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+
+      showToast(` Gửi quyết định ${cfg.title} thành công!`, "success");
+      switchTab('results');
+    }
+
+    function renderMacroResultsChart(preRate, postRate, preDep, postDep, preCpi, postCpi) {
+      const ctx = document.getElementById('macroResultsChart');
+      if (!ctx) return;
+
+      if (macroResultsChartInstance) {
+        macroResultsChartInstance.destroy();
+      }
+
+      const isDark = currentTheme === 'dark';
+      const gridColor = isDark ? '#334155' : '#e2e8f0';
+      const textColor = isDark ? '#cbd5e1' : '#475569';
+
+      macroResultsChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Interbank Rate (Trực tiếp)', 'Deposit Rate (Độ trễ ngắn)', 'Inflation CPI (Độ trễ dài)'],
+          datasets: [
+            {
+              label: 'Trước OMO (Pre)',
+              data: [preRate, preDep, preCpi],
+              backgroundColor: isDark ? '#475569' : '#cbd5e1',
+              borderRadius: 6
+            },
+            {
+              label: 'Sau OMO (Post)',
+              data: [postRate, postDep, postCpi],
+              backgroundColor: isDark ? '#38bdf8' : '#059669',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' } }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 10, weight: 'bold' } }
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 10 } },
+              min: 2.0,
+              max: 6.0
+            }
+          }
+        }
+      });
+    }
+
+    function nextPhase() {
+      if (currentPhase < 3) {
+        loadPhase(currentPhase + 1);
+        switchTab('indicators');
+      } else {
+        showSummary();
+      }
+    }
+
+    function showSummary() {
+      document.getElementById('tab-content-indicators').classList.add('hidden');
+      document.getElementById('tab-content-decisions').classList.add('hidden');
+      document.getElementById('tab-content-results').classList.add('hidden');
+      document.getElementById('tab-content-summary').classList.remove('hidden');
+
+      document.getElementById('summary-team-title').innerText = `Team: ${teamName}`;
+
+      document.getElementById('card-score-p1').innerText = scores.p1 || 88;
+      document.getElementById('card-score-p2').innerText = scores.p2 || 90;
+      document.getElementById('card-score-p3').innerText = scores.p3 || 92;
+
+      const reviewText = document.getElementById('final-review-text');
+      reviewText.innerText = `XUẤT SẮC! ${teamName} đã điều tiết lượng cung tiền linh hoạt qua 3 Phase. Lãi suất liên ngân hàng được duy trì ổn định quanh mục tiêu, kiểm soát hiệu quả lạm phát và giữ vững tăng trưởng GDP.`;
+    }
+
+    function renderChart(chartData) {
+      const ctx = document.getElementById('indicatorsChart');
+      if (!ctx) return;
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      const isDark = currentTheme === 'dark';
+      const lineColor = isDark ? '#38bdf8' : '#059669';
+      const gridColor = isDark ? '#334155' : '#e2e8f0';
+      const textColor = isDark ? '#cbd5e1' : '#475569';
+
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['T-3', 'T-2', 'T-1', 'Current (T)'],
+          datasets: [{
+            label: 'Interbank Rate (%)',
+            data: chartData,
+            borderColor: lineColor,
+            backgroundColor: isDark ? 'rgba(56, 189, 248, 0.2)' : 'rgba(16, 185, 129, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: lineColor
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' } }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 10 } }
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 10 } },
+              min: 3.0,
+              max: 5.0
+            }
+          }
+        }
+      });
+    }
+
+    // ESC key event listener
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeGuideModal();
+    });
+
+    // Bind interactive handlers to global window
+    window.openGuideModal = openGuideModal;
+    window.closeGuideModal = closeGuideModal;
+    window.toggleTheme = toggleTheme;
+    window.toggleRateVisibility = toggleRateVisibility;
+    window.startGame = startGame;
+    window.resetGame = resetGame;
+    window.setFixedVolume = setFixedVolume;
+    window.switchTab = switchTab;
+    window.submitDecision = submitDecision;
+    window.nextPhase = nextPhase;
+    window.showSummary = showSummary;
+  </script>
+</body>
+</html>
