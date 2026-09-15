@@ -30,7 +30,7 @@
 | Tính năng | Chức năng | Nếu bỏ, có thể thực hiện core tasks không? |
 | --- | --- | --- |
 | Learning Card | Giải thích ý nghĩa của các input (Auction Type, Pricing Method, OMO Action, Volume, Rate) và các indicator (Liquidity Demand, Interbank Rate) | Có |
-| Result Explanation | Giải thích tại sao Liquidity Gap và Interbank Rate thay đổi và ảnh hưởng của nó | Có |
+| Result Explanation | Giải thích tại sao Liquidity Gap và Interbank Rate thay đổi và tác động đối với nền kinh tế | Có |
 | Validation | Cảnh báo input không hợp lệ hoặc volume/rate không phù hợp với auction type | Có |
 | Phase Report | Tổng kết kết quả sau mỗi phase | Có |
 
@@ -120,7 +120,8 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 **Explanation**
 
-Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa]. [Đánh giá tổng thể].
+(Mô tả sự thay đổi các chỉ số kinh tế vĩ mô). Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa].
+[Đánh giá tổng thể về quyết định OMO và các chỉ số kinh tế vĩ mô].
 
 **Limitation: Hiển thị ở cuối Instructions**
 
