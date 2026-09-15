@@ -7,7 +7,7 @@
 | Feature | Mô tả | Nếu bỏ, có thể thực hiện core tasks không? |
 | --- | --- | --- |
 | Instructions | Hướng dẫn cách chơi game | Không |
-| Scenario / News Panel | Cung cấp bối cảnh kinh tế cho người chơi | Không |
+| Scenario and News Panel | Cung cấp bối cảnh kinh tế cho người chơi | Không |
 | Economic Situation | Hiển thị các chỉ tiêu thanh khoản trong phase hiện tại | Không |
 | OMO Decision | Người chơi chọn Auction Type, Pricing Method, OMO Action, Volume và Rate | Không |
 | OMO Auction Engine | Xử lý bid, phân bổ volume và xác định kết quả đấu thầu | Không |
@@ -29,9 +29,8 @@
 
 | Tính năng | Chức năng | Nếu bỏ, có thể thực hiện core tasks không? |
 | --- | --- | --- |
-| Input Guidance | Giải thích Auction Type, Pricing Method, OMO Action, Volume, Rate | Có |
-| Indicator Guidance | Giải thích ý nghĩa của Liquidity Demand, Interbank Rate, Liquidity Gap... | Có |
-| Result Explanation / Explainability | Giải thích tại sao Liquidity Gap và Interbank Rate thay đổi | Có |
+| Learning Card | Giải thích ý nghĩa của các input (Auction Type, Pricing Method, OMO Action, Volume, Rate) và các indicator (Liquidity Demand, Interbank Rate) | Có |
+| Result Explanation | Giải thích tại sao Liquidity Gap và Interbank Rate thay đổi và ảnh hưởng của nó | Có |
 | Validation | Cảnh báo input không hợp lệ hoặc volume/rate không phù hợp với auction type | Có |
 | Phase Report | Tổng kết kết quả sau mỗi phase | Có |
 
@@ -69,10 +68,9 @@
 | 5 | Chọn OMO Action | Hệ thống xác định hướng tác động: bơm hoặc hút thanh khoản | Decision Area |
 | 6 | Nhập Volume và nếu chọn Volume Auction nhập Repo/Reverse Repo Rate | Hệ thống kiểm tra tính hợp lệ của input | Input validation |
 | 7 | Nhấn Submit | Hệ thống chạy auction engine và xác định winning bids / real volume | Auction Result |
-| 8 | Xem kết quả đấu thầu | Hiển thị Real Volume và Execution Rate/Rate Range | Auction Result |
-| 9 | Xem kết quả tài chính | Hệ thống tính Total Supply, Liquidity Gap, Liquidity Pressure và Interbank Rate (T) và hiển thị kết quả Interbank Rate (T) | Outcome Dashboard |
-| 10 | Đọc Explanation | Hệ thống giải thích tại sao liquidity và interbank rate thay đổi | Explanation panel |
-| 11 | Nhấn Next Phase | Kết quả hiện tại được lưu làm trạng thái cho lượt tiếp theo | Transaction Log + Updated State |
+| 8 | Xem kết quả đấu thầu và các chỉ số thanh khoản sau can thiệp| Hiển thị Real Volume và Execution Rate.  Hệ thống tính Total Supply, Liquidity Gap, Liquidity Pressure và Interbank Rate (T) và hiển thị kết quả Interbank Rate (T) | Auction Result, Outcome Dashboard |
+| 9 | Đọc Explanation | Hệ thống tóm tắt kết quả sau can thiệp, giải thích tại sao Liquidity và Interbank rate thay đổi và hệ quả | Explanation |
+| 10 | Nhấn Continue to Phase 2 | Kết quả hiện tại được lưu làm trạng thái cho lượt tiếp theo | Transaction Log + Updated State |
 
 ### Error Path
 
