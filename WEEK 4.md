@@ -148,8 +148,8 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
 
     | < Floor | Floor | Floor + 25% × (Cap - Floor) | Middle 50%             | Cap - 25% × (Cap - Floor) | Cap | > Cap |
     |---------|-------|------------------------------|------------------------|----------------------------|-----|-------|
-    |         | 0.5%  | 1.625%                       | 🟢 Within the corridor | 3.875%                     | 5%  |       |
-    | 🔴 Critical | 🟡 Warning | 🟡 Warning |  | 🟡 Warning | 🟡 Warning | 🔴 Critical |
+    |         | 0.5%  | 1.625%                       |  | 3.875%                     | 5%  |       |
+    | 🔴 Critical | 🟡 Warning | 🟡 Warning | 🟢 Within the corridor | 🟡 Warning | 🟡 Warning | 🔴 Critical |
 
 **Explainability:**
 
