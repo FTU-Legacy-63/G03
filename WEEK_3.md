@@ -152,11 +152,6 @@ Bước 4 – Phân bổ: Mỗi NHTM được phân bổ khoảng 83,33% khối 
 | Tỷ lệ phân bổ | 83,33% |
 | Bid-to-cover | 1,20 lần |  
 
-**Ownership và status**   
-Source added by Hiền and Trang  
-Structure designed by Hiền and Trang  
-Data processed by Hiền and Trang
-
 # **3.** **Data flow**  
 Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial banks submit bids) → System liquidity → Interbank rate  
 
@@ -169,7 +164,7 @@ Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial
 
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?usp=sharing&ouid=117177009192919491601&rtpof=true&sd=true)  
 
-# **4.** **Ownership và status** 
+# **5.** **Ownership và status** 
 * Source added: Bảo Hiền, Minh Trang
 * Structure designed: Bảo Hiền, Minh Trang
 * Data processed: Bảo Hiền, Minh Trang
