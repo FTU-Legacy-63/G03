@@ -140,8 +140,7 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 | Element | Purpose | Example |
 | --- | --- | --- |
-| Short explanation | Mô tả trạng thái của kết quả mà người chơi tạo ra | “The banking system is in liquidity shortage.” |
-| Breakdown | Thể hiện các yếu tố / chỉ số ảnh hưởng đến chỉ số hiện tại | Liquidity Demand − Total Supply = Liquidity Gap |
+| Explanation | Mô tả trạng thái của kết quả mà người chơi tạo ra | “The banking system is in liquidity shortage.” |
 | Reason statement | Giải thích lí do dẫn đến kết quả mà người chơi tạo ra | “Liquidity demand exceeded total liquidity supply.” |
 | Warning | Làm nổi bật các chỉ số không nằm trong vùng an toàn của người chơi | ⚠ / red highlight |
 | Assumption box | Làm rõ các giả thuyết của game và mô hình áp dụng trong game | “Interbank rate is estimated using the simulated liquidity condition and previous rate.” |
