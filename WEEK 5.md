@@ -142,8 +142,8 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 | --- | --- | --- |
 | Auction Result | Giải thích NHTM nào trúng và khối lượng thực tế được phân bổ | “1,000 bn was allocated among the winning banks.” |
 | System Liquidity | Giải thích trạng thái thiếu/thừa thanh khoản của hệ thống thay đổi sau OMO | “Liquidity Demand changed from +1,500 bn to +500 bn.” |
-| Remaining issue | Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có | “The system remains in liquidity shortage, but the shortage decreased by 1,000 bn.” |
 | Interbank Rate | Giải thích tác động của điều kiện thanh khoản lên thị trường liên ngân hàng | “Lower liquidity shortage reduced interbank funding pressure, causing ON to decrease from 4.30% to 4.10%.” |
+| Remaining issue | Nêu vấn đề thanh khoản còn tồn tại sau OMO, nếu có | “The system remains in liquidity shortage, but the shortage decreased by 1,000 bn.” |
 | Assumption box | Làm rõ các giả thuyết của game và mô hình áp dụng trong game | “Interbank rate is estimated using the simulated liquidity condition and previous rate.” |
 | Tooltip | Giải thích ngắn về ý nghĩa của các chỉ số | ? beside “Interbank Rate” |
 | Comparison | Thể hiện sự thay đổi của chỉ số so với phase trước | 4.27% ↑ 0.27% |
