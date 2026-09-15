@@ -6,7 +6,7 @@
 
 | Feature | Mô tả | Nếu bỏ, có thể thực hiện core tasks không? |
 | --- | --- | --- |
-| Instructions | Hướng dẫn cách chơi game | Không |
+| Set-up page and Instructions | Đặt tên người chơi và Hướng dẫn cách chơi game | Không |
 | Scenario and News Panel | Cung cấp bối cảnh kinh tế cho người chơi | Không |
 | Economic Situation | Hiển thị các chỉ tiêu thanh khoản trong phase hiện tại | Không |
 | OMO Decision | Người chơi chọn Auction Type, Pricing Method, OMO Action, Volume và Rate | Không |
@@ -50,7 +50,7 @@
 
 | Tiêu chí kiểm tra | Tính năng / cách thiết kế giúp thỏa mãn tiêu chí |
 | --- | --- |
-| User có biết bắt đầu ở đâu? | Scenario page là điểm bắt đầu của mỗi phase. Trang này hiển thị tình trạng kinh tế, các chỉ báo chính và thông tin về trạng thái của nền kinh tế hiện tại để người chơi ra quyết định. |
+| User có biết bắt đầu ở đâu? | Trang thiết lập là điểm bắt đầu của mỗi phase. Trang này gồm tên game, tên người chơi và hướng dẫn chơi. Ở cuối giao diện có button Start Simulation khi người chơi sẵn sàng vào game. |
 | Mỗi bước có phục vụ goal không? | Flow được thiết kế theo chuỗi Scenario → Economic Data → Decision → Auction Result + Updated Indicators + Explanation → Next Phase. Mỗi bước cung cấp thông tin hoặc thực hiện tính toán để user ra quyết định OMO và quan sát tác động của quyết định. |
 | Có bước nào không cần thiết không? | Chỉ hiển thị thông tin cần thiết để người chơi ra quyết định ở từng phase; các giải thích lý thuyết chi tiết được đặt trong “?” |
 | Output có dẫn tới next action rõ không? | Sau khi submit OMO, các chỉ số được cập nhật, cho người chơi thấy kết quả của decision. Kèm status/message giải thích kết quả và nút “Continue to Phase 2”. Ở phase tiếp theo, trạng thái từ phase trước được carry forward. |
