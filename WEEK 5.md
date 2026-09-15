@@ -53,7 +53,7 @@
 | User có biết bắt đầu ở đâu? | Scenario page là điểm bắt đầu của mỗi phase. Trang này hiển thị tình trạng kinh tế, các chỉ báo chính và thông tin về trạng thái của nền kinh tế hiện tại để người chơi ra quyết định. |
 | Mỗi bước có phục vụ goal không? | Flow được thiết kế theo chuỗi Scenario → Economic Data → Decision → Auction Result + Updated Indicators + Explanation → Next Phase. Mỗi bước cung cấp thông tin hoặc thực hiện tính toán để user ra quyết định OMO và quan sát tác động của quyết định. |
 | Có bước nào không cần thiết không? | Chỉ hiển thị thông tin cần thiết để người chơi ra quyết định ở từng phase; các giải thích lý thuyết chi tiết được đặt trong “?” |
-| Output có dẫn tới next action rõ không? | Sau khi submit OMO, các chỉ số được cập nhật, cho người chơi thấy kết quả của decision. Kèm status/message giải thích kết quả và nút “Next Phase”. Ở phase tiếp theo, trạng thái từ phase trước được carry forward. |
+| Output có dẫn tới next action rõ không? | Sau khi submit OMO, các chỉ số được cập nhật, cho người chơi thấy kết quả của decision. Kèm status/message giải thích kết quả và nút “Continue to Phase 2”. Ở phase tiếp theo, trạng thái từ phase trước được carry forward. |
 
 ## 3. User flow
 
@@ -134,7 +134,7 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 - Submit →
 
-- Next Phase →
+- Continue to Phase 2 →
 
 ### Interface Explainability
 
