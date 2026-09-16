@@ -4,9 +4,12 @@
 
 **Project Readiness & Contribution Verification**
 
-Group: 3 				Product: Who runs the world? 		Instructor: Assoc. Prof. Dr. Phan Tran Trung Dung
-
-Team representative: Vũ Lưu Minh Ngọc 	Repository: [https://github.com/FTU-Legacy-63/G03](https://github.com/FTU-Legacy-63/G03)	Date: 16/09/2026
+Group: 3 				
+Product: Who runs the world? 		
+Instructor: Assoc. Prof. Dr. Phan Tran Trung Dung
+Team representative: Vũ Lưu Minh Ngọc
+Repository: [https://github.com/FTU-Legacy-63/G03](https://github.com/FTU-Legacy-63/G03)
+Date: 16/09/2026
 
 **Purpose.** This exam is a short verification of the project evidence already available in your repository. Do not rewrite Week 1 \- Week 5 submissions. Focus only on what still needs to be clarified before moving into Week 6\.
 
