@@ -1,11 +1,12 @@
-1\. Core flow và components  
+# WEEK 6
+**1\. Core flow và components**  
 Technical end-to-end flow: Frontend (index.html) → Flask API (app.py) → Python Engine (central\_bank\_engine.py) → Results UI. Python engine là nguồn dữ liệu chuẩn cho tính toán.
 
 - Frontend: Indicators, Decisions và Results; nhận quyết định OMO từ người dùng và hiển thị kết quả.  
 - Flask API: phục vụ index.html; /api/start-game khởi tạo game; /api/run-phase thực thi Phase.  
 - OMO Engine: xử lý Decision validation, auction, cung/cầu thanh khoản, truyền dẫn lãi suất liên ngân hàng, tồn kho T-bill, Repo/Reverse Repo và đáo hạn
 
-2\. Deployment hoặc working build
+**2\. Deployment hoặc working build**
 
 | Item | Status |
 | ----- | ----- |
@@ -19,7 +20,7 @@ Technical end-to-end flow: Frontend (index.html) → Flask API (app.py) → Pyth
 | Có hướng dẫn chạy local | README giải thích cách setup và chạy local. |
 | Có backup demo | Có commit ổn định/video/screenshot hoặc bản backup có thể dùng demo. |
 
-3\. Test table
+**3\. Test table**
 
 | Case | Input | Expected | Actual | Status |
 | ----- | ----- | ----- | ----- | ----- |
@@ -36,7 +37,7 @@ Technical end-to-end flow: Frontend (index.html) → Flask API (app.py) → Pyth
 | Financial | So sánh RLD, total supply và gap | Gap \= RLD \- total supply. | run\_phase() tính và lưu liquidity\_gap tương ứng. | PASS |
 | Integration | Chạy Phase từ public Render URL trên thiết bị khác | API same-origin truy cập được; Results hiển thị. | Checked | PASS |
 
-4\. Bug log and critical fixes
+**4\. Bug log and critical fixes**
 
 |  | Vị trí / Cách tái hiện | Expected | Actual | Severity | Trạng thái sửa |
 | :---- | :---- | :---- | :---- | :---- | :---- |
@@ -44,16 +45,16 @@ Technical end-to-end flow: Frontend (index.html) → Flask API (app.py) → Pyth
 | Deployment public gọi API localhost. | index.html — startGame/submitDecision trên public URL. | Gọi API same-origin của deployment. | 127.0.0.1 trỏ tới máy của người dùng. | Critical | ĐÃ SỬA  |
 | Render không tìm thấy dependency file. | Render build khi file tên requirement.txt. | Build tìm thấy requirements.txt. | requirements.txt không nằm trong build working directory. | Critical | ĐÃ SỬA  |
 
-6\. scope freeze;
+**5\. Scope freeze**
 
-| Item | Week 6 |
+| Item | Status |
 | ----- | ----- |
 | Frozen scope | Mô phỏng OMO 3 Phase; Indicators → Decisions → Results; Flask API; Python OMO engine; auction; liquidity; inventory; Repo/Reverse Repo; maturity; interbank output. |
 | Postponed feature | Các feature gameplay mới hoặc flow khái niệm mới ngoài phạm vi integration/testing được hoãn. |
 | Known limitation | Deployment cuối, kiểm tra đa thiết bị, README hoàn chỉnh và backup demo vẫn cần được xác nhận. |
 | Các thay đổi được phép sau freeze | Chỉ sửa critical bugs, major clarity issues, deployment, documentation và test failures. |
 
-6\. contribution evidence.  
+**6\. contribution evidence** 
 \- Component completed by: Minh Ngọc, Minh Trang  
 \- Integrated by: Khánh Linh  
 \- Bug reported by: Bảo Hiền  
