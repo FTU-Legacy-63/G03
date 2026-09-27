@@ -512,7 +512,7 @@
               <h3 id="res-eval-title" class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400">Will be updates so stay tuned</h3>
             </div>
             <span class="px-3 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-800">
-              ⚡ Đã Thực Thi
+               Executed
             </span>
           </div>
           <p id="res-analysis" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium mt-3 border-t border-slate-200 dark:border-slate-800 pt-3">
@@ -647,7 +647,7 @@
               <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                 <tr class="bg-emerald-50/50 dark:bg-sky-950/30">
                   <td class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                    <span>⚡ Interbank Rate (Lãi suất LNH)</span>
+                    <span> Interbank Rate (Lãi suất LNH)</span>
                   </td>
                   <td id="row-pre-rate" class="font-mono">3.95%</td>
                   <td id="row-post-rate" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.80%</td>
@@ -1367,7 +1367,7 @@ function renderMaturityEventsTable(events) {
     
           loadPhase(1);
           switchTab('indicators');
-          showToast(`⚡ Chào mừng ${teamName}!`, 'info');
+          showToast(`Chào mừng ${teamName}!`, 'info');
         } else {
           showToast('Lỗi khởi tạo game: ' + data.message, 'warning');
         }
@@ -1566,7 +1566,7 @@ function renderMaturityEventsTable(events) {
             nextBtn.innerHTML = `<span>VIEW FINAL SIMULATION REPORT</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
           }
     
-          showToast(`⚡ Đã chạy xong mô phỏng Python cho ${cfg.title}!`, "success");
+          showToast(` Đã chạy xong mô phỏng cho ${cfg.title}!`, "success");
           switchTab('results');
         } else {
           showToast('Lỗi từ Python Backend: ' + result.message, 'warning');
