@@ -527,7 +527,6 @@
               <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Auction Result - Kết Quả Đấu Thầu Các NHTM</h3>
               <p class="text-[11px] text-slate-500 dark:text-slate-400">Mô phỏng phản ứng đặt thầu của các Ngân hàng thương mại (Bank A - E)</p>
             </div>
-            <span id="bids-cutoff-badge" class="text-[11px] font-mono font-bold text-emerald-600 dark:text-sky-400">Cut-off Rate: --</span>
           </div>
           <div class="overflow-x-auto -mx-2 sm:mx-0">
             <table class="w-full text-xs sim-table border-collapse min-w-[550px]">
@@ -623,11 +622,11 @@
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-4">
           <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Macro Impact Analysis (Phân Tích Tác Động Vĩ Mô)</h3>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Lãi suất liên ngân hàng phản ứng ngay lập tức sau OMO; các chỉ số lạm phát & GDP có độ trễ qua nhiều kỳ.</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">So sánh lãi suất liên ngân hàng trước và sau quyết định OMO.</p>
           </div>
 
           <div class="space-y-2">
-            <h4 class="text-[11px] font-bold uppercase text-emerald-600 dark:text-sky-400">Biểu Đồ Truyền Dẫn Lãi Suất Trực Tiếp & Độ Trễ Vĩ Mô</h4>
+            <h4 class="text-[11px] font-bold uppercase text-emerald-600 dark:text-sky-400">Biểu Đồ Lãi Suất Liên Ngân Hàng Trước & Sau OMO</h4>
             <div class="relative w-full h-56 sm:h-64 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
               <canvas id="macroResultsChart"></canvas>
             </div>
@@ -646,17 +645,11 @@
               <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                 <tr class="bg-emerald-50/50 dark:bg-sky-950/30">
                   <td class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                    <span>⚡ Interbank Rate (Lãi suất LNH)</span>
+                    <span>Interbank Rate (Lãi suất LNH)</span>
                   </td>
                   <td id="row-pre-rate" class="font-mono">3.95%</td>
                   <td id="row-post-rate" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.80%</td>
                   <td id="row-delta-rate" class="font-mono text-emerald-600 dark:text-sky-400">-0.15%</td>
-                </tr>
-                <tr>
-                  <td class="font-bold text-slate-800 dark:text-slate-200">Liquidity Position (Thanh khoản)</td>
-                  <td id="row-pre-liq" class="font-mono text-rose-600">-1,900 Tỷ</td>
-                  <td id="row-post-liq" class="font-mono font-bold text-emerald-600 dark:text-sky-400">+3,100 Tỷ</td>
-                  <td id="row-delta-liq" class="font-mono text-emerald-600 dark:text-sky-400">+5,000 Tỷ</td>
                 </tr>
               </tbody>
             </table>
@@ -1543,11 +1536,6 @@ function renderMaturityEventsTable(events) {
           const deltaRateVal = result.interbank_rate - pre.rate;
           document.getElementById('row-delta-rate').innerText = `${deltaRateVal >= 0 ? '+' : ''}${deltaRateVal.toFixed(2)}%`;
     
-          document.getElementById('row-pre-liq').innerText = `${pre.liq >= 0 ? '+' : ''}${pre.liq.toLocaleString()} Tỷ`;
-          document.getElementById('row-post-liq').innerText = `${result.total_supply >= 0 ? '+' : ''}${result.total_supply.toLocaleString()} Tỷ`;
-    
-          document.getElementById('bids-cutoff-badge').innerText = `Cut-off / Win Rate: ${result.win_rate.toFixed(2)}%/năm`;
-    
           const bidsTableBody = document.getElementById('bids-table-body');
           let bidsHtml = "";
           result.bids.forEach(b => {
@@ -1670,17 +1658,17 @@ function renderMaturityEventsTable(events) {
       macroResultsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Interbank Rate (Trực tiếp)', 'Deposit Rate (Độ trễ ngắn)', 'Inflation CPI (Độ trễ dài)'],
+          labels: ['Interbank Rate'],
           datasets: [
             {
               label: 'Trước OMO (Pre)',
-              data: [preRate, preDep, preCpi],
+              data: [preRate],
               backgroundColor: isDark ? '#475569' : '#cbd5e1',
               borderRadius: 6
             },
             {
               label: 'Sau OMO (Post)',
-              data: [postRate, postDep, postCpi],
+              data: [postRate],
               backgroundColor: isDark ? '#38bdf8' : '#059669',
               borderRadius: 6
             }
