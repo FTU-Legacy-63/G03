@@ -11,14 +11,14 @@ Technical end-to-end flow: Frontend (index.html) → Flask API (app.py) → Pyth
 | Item | Status |
 | ----- | ----- |
 | Public URL mở được | Checked |
-| Link nằm trong README | README có chứa public URL. |
+| Link nằm trong README | README có chứa public URL |
 | Thử trên thiết bị khác | Checked |
-| Dependencies rõ | requirements.txt chứa flask, flask-cors, gunicorn. |
-| Build command chạy | pip install \-r requirements.txt chạy thành công. |
-| Các file code/data được include | app.py, central\_bank\_engine.py, index.html và requirements.txt nằm trong thư mục WEEK 6\. |
-| Secrets không nằm trong repo | Không commit API key, password hoặc credential. |
-| Có hướng dẫn chạy local | README giải thích cách setup và chạy local. |
-| Có backup demo | Có commit ổn định/video/screenshot hoặc bản backup có thể dùng demo. |
+| Dependencies rõ | requirements.txt chứa flask, flask-cors, gunicor|
+| Build command chạy | pip install \-r requirements.txt chạy thành công |
+| Các file code/data được include | app.py, central\_bank\_engine.py, index.html và requirements.txt nằm trong thư mục WEEK 6 |
+| Secrets không nằm trong repo | Không commit API key, password hoặc credential |
+| Có hướng dẫn chạy local | README giải thích cách setup và chạy local |
+| Có backup demo | Có commit ổn định/video/screenshot hoặc bản backup có thể dùng demo |
 
 **3\. Test table**
 
