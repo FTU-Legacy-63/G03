@@ -1586,74 +1586,210 @@ function renderMaturityEventsTable(events) {
     function buildPolicyExplanation(result, action, volume, pre) {
       const preRate = Number(result.previous_interbank_rate ?? pre.rate ?? 0);
       const postRate = Number(result.interbank_rate ?? 0);
-
-      // Liquidity gap sau can thiệp.
-      // gap > 0  : vẫn còn thiếu thanh khoản
-      // gap < 0  : dư thừa thanh khoản
-      // gap = 0  : cân bằng
-      const gap = Number(result.liquidity_gap ?? 0);
-
-      let liquidityState = '';
-      let liquidityPressure = '';
-      let marketCondition = '';
-      let remainingText = '';
-
-      if (gap > 0) {
-        liquidityState = 'vẫn còn thiếu thanh khoản';
-        liquidityPressure = 'giảm';
-        marketCondition = 'nới lỏng nhưng chưa hoàn toàn';
-        remainingText = `${gap.toLocaleString()} tỷ đồng thanh khoản chưa được đáp ứng`;
-      } else if (gap < 0) {
-        liquidityState = 'chuyển sang trạng thái dư thừa thanh khoản';
-        liquidityPressure = 'giảm';
-        marketCondition = 'nới lỏng';
-        remainingText = `${Math.abs(gap).toLocaleString()} tỷ đồng thanh khoản dư thừa`;
-      } else {
-        liquidityState = 'được cân bằng';
-        liquidityPressure = postRate < preRate ? 'giảm' : postRate > preRate ? 'tăng' : 'không thay đổi đáng kể';
-        marketCondition = postRate < preRate
-          ? 'nới lỏng'
-          : postRate > preRate
-            ? 'thắt chặt'
-            : 'tương đối cân bằng';
-        remainingText = '0 tỷ đồng thanh khoản chưa được đáp ứng';
-      }
-
-      let rateDirection = '';
-      if (postRate < preRate) {
-        rateDirection = `giảm xuống ${postRate.toFixed(2)}%`;
-      } else if (postRate > preRate) {
-        rateDirection = `tăng lên ${postRate.toFixed(2)}%`;
-      } else {
-        rateDirection = `duy trì ở mức ${postRate.toFixed(2)}%`;
-      }
-
-      let overallAssessment = '';
-
-      if (gap > 0 && postRate < preRate) {
-        overallAssessment =
-          'Quyết định OMO đã giúp cải thiện điều kiện thanh khoản và giảm áp lực trên thị trường liên ngân hàng, nhưng vẫn còn một phần nhu cầu thanh khoản chưa được đáp ứng.';
-      } else if (gap > 0 && postRate >= preRate) {
-        overallAssessment =
-          'Can thiệp OMO chưa đủ để đáp ứng hoàn toàn nhu cầu thanh khoản, do đó áp lực trên thị trường liên ngân hàng vẫn còn.';
-      } else if (gap < 0 && postRate < preRate) {
-        overallAssessment =
-          'Quyết định OMO đã tạo ra trạng thái thanh khoản dư thừa và làm giảm áp lực huy động vốn trên thị trường liên ngân hàng.';
-      } else if (gap < 0 && postRate > preRate) {
-        overallAssessment =
-          'Mặc dù hệ thống chuyển sang trạng thái dư thừa thanh khoản, lãi suất liên ngân hàng vẫn tăng, cho thấy tác động nới lỏng chưa phản ánh hoàn toàn vào điều kiện thị trường.';
-      } else {
-        overallAssessment =
-          'Quyết định OMO đưa trạng thái thanh khoản về gần mức cân bằng và giúp duy trì điều kiện thị trường tiền tệ tương đối ổn định.';
-      }
-
-      return (
-        `Sau quyết định can thiệp của NHNN, mức ${gap > 0 ? 'thiếu hụt' : gap < 0 ? 'dư thừa' : 'cân bằng'} thanh khoản trong hệ thống ${liquidityState}. ` +
-        `Áp lực huy động vốn trên thị trường liên ngân hàng ${liquidityPressure}, với lãi suất liên ngân hàng ${rateDirection}, ` +
-        `cho thấy điều kiện thanh khoản trên thị trường được ${marketCondition}. ` +
-        `Sau can thiệp, các ngân hàng báo cáo còn ${remainingText}. ` +
-        `${overallAssessment}`
+    
+      // Nhu cầu thanh khoản trước khi xét OMO hiện tại
+      const realLiquidityDemand = Number(result.real_liquidity_demand ?? 0);
+    
+      // Maturity volume mang dấu theo tác động thanh khoản:
+      // > 0 = đáo hạn bơm tiền vào hệ thống
+      // < 0 = đáo hạn hút tiền khỏi hệ thống
+      const maturityVolume = Number(result.maturity_volume ?? 0);
+    
+      // Nhu cầu thanh khoản sau khi đã xét tác động của đáo hạn
+      const liquidityAfterMaturity =
+        realLiquidityDemand - maturityVolume;
+    
+      // Liquidity gap cuối cùng sau OMO
+      const liquidityAfterOMO =
+        Number(result.liquidity_gap ?? 0);
+    
+      // Dùng khối lượng THỰC TẾ đã thực hiện, không dùng volume yêu cầu
+      const omoVolume = Math.abs(
+        Number(result.total_real_volume ?? volume ?? 0)
       );
+    
+      const isInjection = [
+        'Buy Securities',
+        'Reverse Repo'
+      ].includes(action);
+    
+      const isAbsorption = [
+        'Sell Securities',
+        'Repo'
+      ].includes(action);
+    
+      const fmt = (value) =>
+        Math.abs(Number(value)).toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        });
+    
+      const fmtSigned = (value) => {
+        const n = Number(value);
+        if (Math.abs(n) < 0.005) return '0';
+        return `${n > 0 ? '+' : '-'}${fmt(n)}`;
+      };
+    
+      const rateDirection =
+        postRate < preRate
+          ? `giảm từ ${preRate.toFixed(2)}% xuống ${postRate.toFixed(2)}%`
+          : postRate > preRate
+            ? `tăng từ ${preRate.toFixed(2)}% lên ${postRate.toFixed(2)}%`
+            : `duy trì ở mức ${postRate.toFixed(2)}%`;
+    
+      /*
+       * Maturity description
+       *
+       * Không có maturity:
+       *   "Trong giai đoạn này không có khối lượng đáo hạn."
+       *
+       * Có maturity:
+       *   Dựa vào dấu của maturity_volume để mô tả đúng tác động.
+       */
+      let maturityText = '';
+    
+      if (Math.abs(maturityVolume) < 0.005) {
+        maturityText =
+          'Trong giai đoạn này không có khối lượng đáo hạn';
+      } else if (maturityVolume < 0) {
+        maturityText =
+          `Sau khi ${fmt(maturityVolume)} tỷ đồng từ giao dịch trước đáo hạn, thanh khoản bị rút khỏi hệ thống`;
+      } else {
+        maturityText =
+          `Sau khi ${fmt(maturityVolume)} tỷ đồng từ giao dịch trước đáo hạn, thanh khoản được bổ sung vào hệ thống`;
+      }
+    
+      /*
+       * Với trường hợp đáo hạn:
+       *   shortage tăng nếu maturity < 0
+       *   shortage giảm nếu maturity > 0
+       *
+       * Vì vậy liquidityAfterMaturity là mức thiếu/dư
+       * thực tế trước khi OMO hiện tại được thực hiện.
+       */
+      const maturityResultText =
+        Math.abs(maturityVolume) < 0.005
+          ? `hệ thống ghi nhận nhu cầu thanh khoản ${fmtSigned(liquidityAfterMaturity)} tỷ đồng`
+          : liquidityAfterMaturity > 0
+            ? `khiến hệ thống ghi nhận mức thiếu hụt thanh khoản ${fmt(liquidityAfterMaturity)} tỷ đồng`
+            : liquidityAfterMaturity < 0
+              ? `khiến hệ thống chuyển sang trạng thái dư thừa thanh khoản khoảng ${fmt(Math.abs(liquidityAfterMaturity))} tỷ đồng`
+              : 'đưa trạng thái thanh khoản của hệ thống về gần mức cân bằng';
+    
+      /*
+       * Ngưỡng để xem OMO là "gần bù đắp".
+       * Dùng 5% nhu cầu sau đáo hạn, tối thiểu 1 tỷ.
+       */
+      const tolerance = Math.max(
+        1,
+        Math.abs(liquidityAfterMaturity) * 0.05
+      );
+    
+      const isNearBalance =
+        Math.abs(liquidityAfterOMO) <= tolerance;
+    
+      let explanation = '';
+    
+      // =========================================================
+      // CASE 1 — BƠM GẦN BẰNG NHU CẦU SAU ĐÁO HẠN
+      // =========================================================
+      if (
+        isInjection &&
+        liquidityAfterMaturity > 0 &&
+        isNearBalance
+      ) {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `NHNN thực hiện bơm ${fmt(omoVolume)} tỷ đồng, gần bù đắp toàn bộ mức thiếu hụt này và đưa nhu cầu thanh khoản sau can thiệp về ${fmtSigned(liquidityAfterOMO)} tỷ đồng. ` +
+          `Nhờ áp lực vay trên thị trường liên ngân hàng được giải tỏa, lãi suất ON ${rateDirection} và dần ổn định hơn. ` +
+          `Việc bù đắp lượng thanh khoản thiếu hụt giúp duy trì điều kiện tiền tệ và hạn chế sự gián đoạn đối với tín dụng và tăng trưởng. ` +
+          `Tuy nhiên, nếu áp lực lạm phát đang gia tăng, việc tiếp tục bù đắp toàn bộ thiếu hụt có thể duy trì mức độ nới lỏng tiền tệ và làm giảm dư địa kiểm soát lạm phát trong các giai đoạn sau.`;
+      }
+    
+      // =========================================================
+      // CASE 2 — BƠM NHỎ HƠN NHU CẦU SAU ĐÁO HẠN
+      // =========================================================
+      else if (
+        isInjection &&
+        liquidityAfterMaturity > 0 &&
+        liquidityAfterOMO > 0
+      ) {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `NHNN chỉ bơm ${fmt(omoVolume)} tỷ đồng, nên sau can thiệp hệ thống vẫn còn thiếu ${fmt(liquidityAfterOMO)} tỷ đồng thanh khoản. ` +
+          `Lượng vốn bổ sung giúp giảm một phần áp lực vay trên thị trường liên ngân hàng, khiến lãi suất ON ${rateDirection}, nhưng áp lực thanh khoản vẫn còn tồn tại. ` +
+          `Việc chỉ bù đắp một phần giúp hạn chế mức độ nới lỏng tiền tệ và có thể phù hợp hơn khi cần kiểm soát áp lực lạm phát. ` +
+          `Đổi lại, điều kiện thanh khoản vẫn tương đối chặt chẽ, có thể hạn chế khả năng mở rộng tín dụng và tạo thêm sức ép lên tăng trưởng.`;
+      }
+    
+      // =========================================================
+      // CASE 3 — BƠM LỚN HƠN NHU CẦU SAU ĐÁO HẠN
+      // =========================================================
+      else if (
+        isInjection &&
+        liquidityAfterMaturity > 0 &&
+        liquidityAfterOMO < -tolerance
+      ) {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `NHNN thực hiện bơm ${fmt(omoVolume)} tỷ đồng, lớn hơn mức thiếu hụt phát sinh, khiến nhu cầu thanh khoản sau can thiệp giảm xuống ${fmtSigned(liquidityAfterOMO)} tỷ đồng và hệ thống chuyển sang dư khoảng ${fmt(Math.abs(liquidityAfterOMO))} tỷ đồng. ` +
+          `Thanh khoản dồi dào làm giảm nhu cầu vay trên thị trường liên ngân hàng, khiến lãi suất ON ${rateDirection}. ` +
+          `Việc bơm vượt mức thiếu hụt tạo thêm mức nới lỏng thay vì chỉ khôi phục lượng thanh khoản đã mất, qua đó có thể hỗ trợ tín dụng và tăng trưởng mạnh hơn. ` +
+          `Tuy nhiên, lượng thanh khoản dư cũng có thể làm tăng nguy cơ nới lỏng quá mức và tạo thêm áp lực lạm phát trong các giai đoạn sau.`;
+      }
+    
+      // =========================================================
+      // CASE 4 — HÚT THANH KHOẢN
+      // =========================================================
+      else if (isAbsorption) {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `NHNN thực hiện hút ${fmt(omoVolume)} tỷ đồng, khiến nhu cầu thanh khoản sau can thiệp tăng lên ${fmtSigned(liquidityAfterOMO)} tỷ đồng. ` +
+          `Điều kiện thanh khoản trở nên chặt chẽ hơn, làm nhu cầu vay trên thị trường liên ngân hàng tăng và lãi suất ON ${rateDirection}. ` +
+          `Việc chủ động hút thanh khoản có thể hỗ trợ mục tiêu kiểm soát lạm phát hoặc xử lý tình trạng dư thừa thanh khoản. ` +
+          `Tuy nhiên, nếu hệ thống vốn đã thiếu thanh khoản sau đáo hạn, quyết định này sẽ khuếch đại mức thiếu hụt, làm tăng áp lực lãi suất và có thể gây bất lợi cho tín dụng và tăng trưởng.`;
+      }
+    
+      // =========================================================
+      // CASE 5 — BƠM KHI HỆ THỐNG ĐÃ DƯ THỪA
+      // =========================================================
+      else if (
+        isInjection &&
+        liquidityAfterMaturity < 0
+      ) {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `NHNN tiếp tục bơm ${fmt(omoVolume)} tỷ đồng trong khi hệ thống đã ở trạng thái dư thừa thanh khoản, khiến mức dư thừa sau can thiệp tăng lên khoảng ${fmt(Math.abs(liquidityAfterOMO))} tỷ đồng. ` +
+          `Thanh khoản dư thừa làm giảm thêm nhu cầu vay trên thị trường liên ngân hàng, khiến lãi suất ON ${rateDirection}. ` +
+          `Quyết định này tạo thêm mức nới lỏng tiền tệ thay vì chỉ điều chỉnh nhu cầu thanh khoản, qua đó có thể hỗ trợ tín dụng và tăng trưởng nhưng đồng thời làm tăng áp lực đối với mục tiêu kiểm soát lạm phát.`;
+      }
+    
+      // =========================================================
+      // CASE 6 — HÚT KHI HỆ THỐNG ĐANG THIẾU THANH KHOẢN
+      // =========================================================
+      else if (
+        isAbsorption &&
+        liquidityAfterMaturity > 0
+      ) {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `Trong bối cảnh hệ thống đang thiếu thanh khoản, NHNN vẫn thực hiện hút ${fmt(omoVolume)} tỷ đồng, khiến mức thiếu hụt sau can thiệp tăng lên ${fmt(Math.abs(liquidityAfterOMO))} tỷ đồng. ` +
+          `Áp lực vay trên thị trường liên ngân hàng gia tăng, khiến lãi suất ON ${rateDirection}. ` +
+          `Việc hút thêm thanh khoản có thể hỗ trợ mục tiêu kiểm soát lạm phát, nhưng trong điều kiện thanh khoản đã thiếu, quyết định này có thể làm điều kiện tiền tệ chặt chẽ hơn và gây thêm sức ép lên tín dụng và tăng trưởng.`;
+      }
+    
+      // =========================================================
+      // FALLBACK — TRẠNG THÁI GẦN CÂN BẰNG
+      // =========================================================
+      else {
+        explanation =
+          `${maturityText}, ${maturityResultText}. ` +
+          `NHNN thực hiện nghiệp vụ ${action} với khối lượng thực hiện ${fmt(omoVolume)} tỷ đồng, đưa trạng thái thanh khoản sau can thiệp về ${fmtSigned(liquidityAfterOMO)} tỷ đồng. ` +
+          `Lãi suất ON ${rateDirection}. ` +
+          `Tác động của quyết định cần được tiếp tục theo dõi trong các giai đoạn sau, đặc biệt khi các giao dịch OMO trước đó tiếp tục đáo hạn.`;
+      }
+    
+      return explanation;
     }
     function renderMacroResultsChart(preRate, postRate, preDep, postDep, preCpi, postCpi) {
       const ctx = document.getElementById('macroResultsChart');
