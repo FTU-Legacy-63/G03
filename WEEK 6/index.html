@@ -256,7 +256,7 @@
       <!-- WHAT TO KNOW 101 Info Button -->
       <button onclick="openGuideModal()" id="guide-btn" title="Mở tệp hướng dẫn OMO" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg nav-box text-xs font-bold transition border shadow-sm text-emerald-700 dark:text-sky-300 hover:bg-emerald-50 dark:hover:bg-slate-700">
         <div class="w-4 h-4 rounded-full bg-emerald-600 dark:bg-sky-500 text-white flex items-center justify-center text-[10px] font-black">i</div>
-        <span>WHAT TO KNOW 101</span>
+        <span>HƯỚNG DẪN</span>
       </button>
 
       <!-- Phase Stepper -->
@@ -893,7 +893,7 @@ function renderRepoTable(repos) {
   body.innerHTML = rows + `
     <tr class="border-t-2 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/70">
       <td class="py-1.5 text-left font-extrabold text-slate-900 dark:text-white">
-        TOTAL
+        TỔNG
       </td>
 
       <td></td>
@@ -1437,7 +1437,7 @@ function renderMaturityEventsTable(events) {
           const resBtn = document.getElementById('tab-btn-results');
           if (resBtn) {
             resBtn.disabled = true;
-            resBtn.innerHTML = "Results 🔒";
+            resBtn.innerHTML = "Kết quả 🔒";
             resBtn.title = "Cần gửi Quyết định OMO trước khi xem Kết quả";
             resBtn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
           }
@@ -1557,7 +1557,7 @@ function renderMaturityEventsTable(events) {
           const resBtn = document.getElementById('tab-btn-results');
           if (resBtn) {
             resBtn.disabled = false;
-            resBtn.innerHTML = "Results";
+            resBtn.innerHTML = "Kết quả";
             resBtn.title = "Xem kết quả OMO";
           }
           renderPythonPhaseState(result);
@@ -1579,19 +1579,68 @@ function renderMaturityEventsTable(events) {
           document.getElementById('row-delta-rate').innerText = `${deltaRateVal >= 0 ? '+' : ''}${deltaRateVal.toFixed(2)}%`;
     
           const bidsTableBody = document.getElementById('bids-table-body');
+
           let bidsHtml = "";
+          let totalBidVolume = 0;
+          let totalRealVolume = 0;
+          
           result.bids.forEach(b => {
-            const statusColor = b.won ? "text-emerald-600 dark:text-sky-400 font-bold" : "text-slate-400";
+            const bidVolume = Number(b.bid_volume || 0);
+            const realVolume = Number(b.real_volume || 0);
+          
+            totalBidVolume += bidVolume;
+            totalRealVolume += realVolume;
+          
+            const statusColor = b.won
+              ? "text-emerald-600 dark:text-sky-400 font-bold"
+              : "text-slate-400";
+          
             bidsHtml += `
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <td class="font-bold text-slate-800 dark:text-slate-200 font-sans">${b.bank}</td>
-                <td>${b.bid_rate.toFixed(2)}%</td>
-                <td>${b.bid_volume.toLocaleString()} Tỷ</td>
-                <td class="font-bold text-slate-900 dark:text-slate-100">${b.real_volume.toLocaleString()} Tỷ</td>
-                <td class="${statusColor} font-sans font-semibold">${b.status}</td>
+                <td class="font-bold text-slate-800 dark:text-slate-200 font-sans">
+                  ${b.bank}
+                </td>
+          
+                <td>
+                  ${Number(b.bid_rate || 0).toFixed(2)}%
+                </td>
+          
+                <td>
+                  ${bidVolume.toLocaleString()} Tỷ
+                </td>
+          
+                <td class="font-bold text-slate-900 dark:text-slate-100">
+                  ${realVolume.toLocaleString()} Tỷ
+                </td>
+          
+                <td class="${statusColor} font-sans font-semibold">
+                  ${b.status}
+                </td>
               </tr>
             `;
           });
+          
+          /* ===== TOTAL ===== */
+          bidsHtml += `
+            <tr class="border-t-2 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/70">
+              <td class="font-extrabold text-slate-900 dark:text-white text-left">
+                TỔNG
+              </td>
+          
+              <td></td>
+          
+              <td class="font-extrabold text-slate-900 dark:text-white">
+                ${totalBidVolume.toLocaleString()} Tỷ
+              </td>
+          
+              <td class="font-extrabold text-slate-900 dark:text-white">
+                ${totalRealVolume.toLocaleString()} Tỷ
+              </td>
+          
+              <td></td>
+            </tr>
+          `;
+          
           bidsTableBody.innerHTML = bidsHtml;
     
           renderMacroResultsChart(pre.rate, result.interbank_rate, pre.dep, pre.dep, pre.cpi, pre.cpi);
