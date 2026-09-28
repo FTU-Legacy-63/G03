@@ -1016,22 +1016,6 @@ function renderMaturityEventsTable(events) {
               </p>
             </div>
 
-            <div class="pt-1 space-y-1">
-              <p>
-                <strong>Nhu cầu thanh khoản:</strong>
-                <span class="font-bold text-rose-600 dark:text-rose-400">
-                  +1.900 tỷ đồng
-                </span>
-              </p>
-
-              <p>
-                <strong>Lãi suất liên ngân hàng:</strong>
-                <span class="font-bold">
-                  4,50%
-                </span>
-              </p>
-            </div>
-
             <div class="pt-1">
               <p>
                 NHNN Quốc gia X cần đánh giá diễn biến thị trường và xác định liệu
@@ -1572,74 +1556,231 @@ function renderMaturityEventsTable(events) {
       }
     }
     function buildPolicyExplanation(result, action, volume, pre) {
-      const preRate = Number(result.previous_interbank_rate ?? pre.rate ?? 0);
-      const postRate = Number(result.interbank_rate ?? 0);
-
-      // Liquidity gap sau can thiệp.
-      // gap > 0  : vẫn còn thiếu thanh khoản
-      // gap < 0  : dư thừa thanh khoản
-      // gap = 0  : cân bằng
-      const gap = Number(result.liquidity_gap ?? 0);
-
+      // =========================================================
+      // 1. CÁC CHỈ SỐ TRƯỚC / SAU CAN THIỆP
+      // =========================================================
+      const preRate = Number(
+        result.previous_interbank_rate ?? pre.rate ?? 0
+      );
+    
+      const postRate = Number(
+        result.interbank_rate ?? 0
+      );
+    
+      // Real Liquidity Demand được engine tính từ:
+      // Scenario Liquidity Demand + Unmet from Previous Phase
+      const realLiquidityDemand = Number(
+        result.real_liquidity_demand ?? 0
+      );
+    
+      // Maturity Volume:
+      // > 0 = maturity tạo thêm supply
+      // < 0 = maturity làm giảm supply
+      const maturity = Number(
+        result.maturity_volume ?? 0
+      );
+    
+      // Liquidity Gap sau can thiệp
+      // gap > 0 = thiếu thanh khoản
+      // gap < 0 = dư thừa thanh khoản
+      const gap = Number(
+        result.liquidity_gap ?? 0
+      );
+    
+      // =========================================================
+      // 2. TỔNG NHU CẦU THANH KHOẢN CẦN XỬ LÝ
+      //    Real Liquidity Demand + Maturity
+      // =========================================================
+      const netLiquidityNeed = realLiquidityDemand + maturity;
+    
+    
+      // =========================================================
+      // 3. XÁC ĐỊNH TRẠNG THÁI THANH KHOẢN SAU CAN THIỆP
+      // =========================================================
+      let liquidityType = '';
       let liquidityState = '';
+      let remainingText = '';
+    
+      if (gap > 0) {
+        liquidityType = 'thiếu hụt';
+        remainingText =
+          `${Math.abs(gap).toLocaleString()} tỷ đồng thanh khoản chưa được đáp ứng`;
+      } else if (gap < 0) {
+        liquidityType = 'dư thừa';
+        remainingText =
+          `${Math.abs(gap).toLocaleString()} tỷ đồng thanh khoản dư thừa`;
+      } else {
+        liquidityType = 'cân bằng';
+        remainingText =
+          '0 tỷ đồng thanh khoản chưa được đáp ứng';
+      }
+    
+    
+      // =========================================================
+      // 4. XÁC ĐỊNH |LIQUIDITY GAP| THAY ĐỔI THẾ NÀO
+      //
+      // So sánh gap trước can thiệp với gap sau can thiệp.
+      //
+      // Gap trước can thiệp = Real Liquidity Demand + Maturity
+      // vì trước khi OMO được thực hiện, đây là lượng thiếu/dư
+      // cần xử lý.
+      // =========================================================
+      const preGap = netLiquidityNeed;
+    
+      let liquidityStateChange = '';
+    
+      if (Math.abs(gap) < Math.abs(preGap)) {
+        liquidityStateChange = 'được thu hẹp';
+      } else if (Math.abs(gap) > Math.abs(preGap)) {
+        liquidityStateChange = 'bị gia tăng';
+      } else {
+        liquidityStateChange = 'không thay đổi đáng kể';
+      }
+    
+    
+      // =========================================================
+      // 5. ÁP LỰC HUY ĐỘNG VỐN + ĐIỀU KIỆN THANH KHOẢN
+      // =========================================================
       let liquidityPressure = '';
       let marketCondition = '';
-      let remainingText = '';
-
-      if (gap > 0) {
-        liquidityState = 'vẫn còn thiếu thanh khoản';
-        liquidityPressure = 'giảm';
-        marketCondition = 'nới lỏng nhưng chưa hoàn toàn';
-        remainingText = `${gap.toLocaleString()} tỷ đồng thanh khoản chưa được đáp ứng`;
-      } else if (gap < 0) {
-        liquidityState = 'chuyển sang trạng thái dư thừa thanh khoản';
+    
+      if (postRate < preRate) {
         liquidityPressure = 'giảm';
         marketCondition = 'nới lỏng';
-        remainingText = `${Math.abs(gap).toLocaleString()} tỷ đồng thanh khoản dư thừa`;
-      } else {
-        liquidityState = 'được cân bằng';
-        liquidityPressure = postRate < preRate ? 'giảm' : postRate > preRate ? 'tăng' : 'không thay đổi đáng kể';
-        marketCondition = postRate < preRate
-          ? 'nới lỏng'
-          : postRate > preRate
-            ? 'thắt chặt'
-            : 'tương đối cân bằng';
-        remainingText = '0 tỷ đồng thanh khoản chưa được đáp ứng';
-      }
-
-      let rateDirection = '';
-      if (postRate < preRate) {
-        rateDirection = `giảm xuống ${postRate.toFixed(2)}%`;
       } else if (postRate > preRate) {
-        rateDirection = `tăng lên ${postRate.toFixed(2)}%`;
+        liquidityPressure = 'tăng';
+        marketCondition = 'bị thắt chặt';
       } else {
-        rateDirection = `duy trì ở mức ${postRate.toFixed(2)}%`;
+        liquidityPressure = 'không thay đổi đáng kể';
+        marketCondition = 'không thay đổi đáng kể';
       }
-
+    
+    
+      // =========================================================
+      // 6. HƯỚNG CAN THIỆP
+      //
+      // + netLiquidityNeed > 0:
+      //   Cần BƠM thanh khoản
+      //   Buy Securities / Reverse Repo = Phù hợp
+      //   Sell Securities / Repo       = Ngược chiều
+      //
+      // + netLiquidityNeed < 0:
+      //   Cần HÚT thanh khoản
+      //   Sell Securities / Repo       = Phù hợp
+      //   Buy Securities / Reverse Repo = Ngược chiều
+      // =========================================================
+      let interventionDirection = '';
+    
+      if (netLiquidityNeed > 0) {
+    
+        if (
+          action === 'Buy Securities' ||
+          action === 'Reverse Repo'
+        ) {
+          interventionDirection = 'Phù hợp';
+        } else {
+          interventionDirection = 'Ngược';
+        }
+    
+      } else if (netLiquidityNeed < 0) {
+    
+        if (
+          action === 'Sell Securities' ||
+          action === 'Repo'
+        ) {
+          interventionDirection = 'Phù hợp';
+        } else {
+          interventionDirection = 'Ngược';
+        }
+    
+      } else {
+        // Trường hợp không có nhu cầu thanh khoản ròng.
+        // Không xem là phù hợp vì không có hướng can thiệp cần thiết.
+        interventionDirection = 'Ngược';
+      }
+    
+    
+      // =========================================================
+      // 7. INTERVENTION RATIO
+      //
+      // |Volume| / |Real Liquidity Demand + Maturity|
+      // =========================================================
+      let interventionRatio = 0;
+    
+      if (Math.abs(netLiquidityNeed) > 0) {
+        interventionRatio =
+          Math.abs(Number(volume)) /
+          Math.abs(netLiquidityNeed);
+      }
+    
+    
+      // =========================================================
+      // 8. ĐÁNH GIÁ TỔNG THỂ
+      //    CHƯA XÉT CÁC YẾU TỐ VĨ MÔ
+      // =========================================================
       let overallAssessment = '';
-
-      if (gap > 0 && postRate < preRate) {
+    
+      if (interventionDirection === 'Ngược') {
+    
         overallAssessment =
-          'Quyết định OMO đã giúp cải thiện điều kiện thanh khoản và giảm áp lực trên thị trường liên ngân hàng, nhưng vẫn còn một phần nhu cầu thanh khoản chưa được đáp ứng.';
-      } else if (gap > 0 && postRate >= preRate) {
-        overallAssessment =
-          'Can thiệp OMO chưa đủ để đáp ứng hoàn toàn nhu cầu thanh khoản, do đó áp lực trên thị trường liên ngân hàng vẫn còn.';
-      } else if (gap < 0 && postRate < preRate) {
-        overallAssessment =
-          'Quyết định OMO đã tạo ra trạng thái thanh khoản dư thừa và làm giảm áp lực huy động vốn trên thị trường liên ngân hàng.';
-      } else if (gap < 0 && postRate > preRate) {
-        overallAssessment =
-          'Mặc dù hệ thống chuyển sang trạng thái dư thừa thanh khoản, lãi suất liên ngân hàng vẫn tăng, cho thấy tác động nới lỏng chưa phản ánh hoàn toàn vào điều kiện thị trường.';
+          `Can thiệp của NHNN đã làm gia tăng tình trạng ` +
+          `${gap > 0 ? 'thiếu' : gap < 0 ? 'dư' : ''} thanh khoản`;
+    
       } else {
-        overallAssessment =
-          'Quyết định OMO đưa trạng thái thanh khoản về gần mức cân bằng và giúp duy trì điều kiện thị trường tiền tệ tương đối ổn định.';
+    
+        if (interventionRatio < 0.5) {
+    
+          overallAssessment =
+            'Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô nhỏ hơn nhu cầu của hệ thống.';
+    
+        } else if (interventionRatio > 1) {
+    
+          overallAssessment =
+            'Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô lớn hơn nhu cầu của hệ thống.';
+    
+        } else {
+    
+          overallAssessment =
+            'Can thiệp của NHNN có hiệu quả và quy mô tương đối phù hợp.';
+        }
       }
-
+    
+    
+      // =========================================================
+      // 9. LÃI SUẤT LIÊN NGÂN HÀNG
+      // =========================================================
+      let rateDirection = '';
+    
+      if (postRate < preRate) {
+    
+        rateDirection =
+          `giảm xuống ${postRate.toFixed(2)}%`;
+    
+      } else if (postRate > preRate) {
+    
+        rateDirection =
+          `tăng lên ${postRate.toFixed(2)}%`;
+    
+      } else {
+    
+        rateDirection =
+          `duy trì ở mức ${postRate.toFixed(2)}%`;
+      }
+    
+    
+      // =========================================================
+      // 10. TẠO POST-PHASE EXPLANATION
+      // =========================================================
       return (
-        `Sau quyết định can thiệp của NHNN, mức ${gap > 0 ? 'thiếu hụt' : gap < 0 ? 'dư thừa' : 'cân bằng'} thanh khoản trong hệ thống ${liquidityState}. ` +
-        `Áp lực huy động vốn trên thị trường liên ngân hàng ${liquidityPressure}, với lãi suất liên ngân hàng ${rateDirection}, ` +
+        `Sau quyết định can thiệp của NHNN, mức ${liquidityType} ` +
+        `thanh khoản trong hệ thống ${liquidityStateChange}. ` +
+    
+        `Áp lực huy động vốn trên thị trường liên ngân hàng ${liquidityPressure}, ` +
+        `với lãi suất liên ngân hàng ${rateDirection}, ` +
         `cho thấy điều kiện thanh khoản trên thị trường được ${marketCondition}. ` +
+    
         `Sau can thiệp, các ngân hàng báo cáo còn ${remainingText}. ` +
+    
         `${overallAssessment}`
       );
     }
