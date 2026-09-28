@@ -512,7 +512,7 @@
               <h3 id="res-eval-title" class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400">Will be updates so stay tuned</h3>
             </div>
             <span class="px-3 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-800">
-              ⚡ Đã Thực Thi
+              Executed
             </span>
           </div>
           <p id="res-analysis" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium mt-3 border-t border-slate-200 dark:border-slate-800 pt-3">
@@ -1016,22 +1016,6 @@ function renderMaturityEventsTable(events) {
               </p>
             </div>
 
-            <div class="pt-1 space-y-1">
-              <p>
-                <strong>Nhu cầu thanh khoản:</strong>
-                <span class="font-bold text-rose-600 dark:text-rose-400">
-                  +1.900 tỷ đồng
-                </span>
-              </p>
-
-              <p>
-                <strong>Lãi suất liên ngân hàng ON:</strong>
-                <span class="font-bold">
-                  4,50%
-                </span>
-              </p>
-            </div>
-
             <div class="pt-1">
               <p>
                 NHNN Quốc gia X cần đánh giá diễn biến thị trường và xác định liệu
@@ -1360,7 +1344,7 @@ function renderMaturityEventsTable(events) {
           interbankHistory = [{ phase: 1, rate: Number(phaseConfig[1].preMetrics.rate) }];
           renderChart();
           switchTab('indicators');
-          showToast(`⚡ Chào mừng ${teamName}!`, 'info');
+          showToast(`Chào mừng ${teamName}!`, 'info');
         } else {
           showToast('Lỗi khởi tạo game: ' + data.message, 'warning');
         }
@@ -1561,7 +1545,7 @@ function renderMaturityEventsTable(events) {
             nextBtn.innerHTML = `<span>VIEW FINAL SIMULATION REPORT</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
           }
     
-          showToast(`⚡ Đã chạy xong mô phỏng Python cho ${cfg.title}!`, "success");
+          showToast(`Đã chạy xong mô phỏng Python cho ${cfg.title}!`, "success");
           switchTab('results');
         } else {
           showToast('Lỗi từ Python Backend: ' + result.message, 'warning');
