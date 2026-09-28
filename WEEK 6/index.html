@@ -371,6 +371,32 @@
             </div>
           </div>
         </div>
+
+        <!-- OUTSTANDING - current instruments only (Tab 1) -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5">
+          <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">SBV BILL OUTSTANDING</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs sim-table border-collapse min-w-[650px]">
+                <thead><tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
+                  <th>ID</th><th>Issue Date</th><th>Maturity</th><th class="text-right">Rate</th><th class="text-right">Remaining Volume</th>
+                </tr></thead>
+                <tbody id="ind-sbv-bill-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]"><tr><td colspan="5" class="text-center py-2 text-slate-400">Trống</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">REPO / REVERSE REPO OUTSTANDING</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs sim-table border-collapse min-w-[700px]">
+                <thead><tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
+                  <th>ID</th><th>Issue Date</th><th>Maturity</th><th class="text-right">Rate</th><th class="text-right">Volume</th><th class="text-right">Price</th>
+                </tr></thead>
+                <tbody id="ind-repo-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]"><tr><td colspan="6" class="text-center py-2 text-slate-400">Trống</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TAB 2: OMO DECISION CONSOLE -->
@@ -497,6 +523,15 @@
               </thead>
               <tbody id="bids-table-body" class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
               </tbody>
+              <tfoot class="border-t-2 border-slate-300 dark:border-slate-600 font-mono font-black">
+                <tr>
+                  <td class="font-sans uppercase">TOTAL</td>
+                  <td></td>
+                  <td id="total-bid-volume">0 Tỷ</td>
+                  <td id="total-real-volume">0 Tỷ</td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
@@ -557,6 +592,23 @@
             </table>
           </div>
         </div>
+          </div>
+
+          <!-- MATURITY - cash flows occurring in this phase -->
+          <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">MATURITY</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs sim-table border-collapse min-w-[650px]">
+                <thead><tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
+                  <th>ID</th><th>Issue Date</th><th>Maturity</th><th class="text-right">Rate</th><th class="text-right">Cash Flow</th>
+                </tr></thead>
+                <tbody id="res-maturity-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]"><tr><td colspan="5" class="text-center py-2 text-slate-400">Trống</td></tr></tbody>
+              </table>
+              <div class="flex justify-between items-center pt-2 mt-2 border-t border-slate-200 dark:border-slate-700 font-mono text-xs font-bold">
+                <span class="text-slate-700 dark:text-slate-300 uppercase">TOTAL CASH FLOW</span>
+                <span id="res-total-cash-flow" class="text-rose-600 dark:text-rose-400">0.00</span>
+              </div>
+            </div>
           </div>
 
           <div class="overflow-x-auto -mx-2 sm:mx-0 pt-2">
@@ -691,8 +743,9 @@ function renderPythonPhaseState(state) {
 
 
 function renderSBVBillTable(bills) {
-  const body = document.getElementById('res-sbv-bill-body');
-  if (!body) return;
+  const bodies = ['res-sbv-bill-body','ind-sbv-bill-body'].map(id => document.getElementById(id)).filter(Boolean);
+  if (!bodies.length) return;
+  const body = bodies[0];
 
   if (!Array.isArray(bills) || bills.length === 0) {
     body.innerHTML = `
@@ -702,6 +755,7 @@ function renderSBVBillTable(bills) {
         </td>
       </tr>
     `;
+    bodies.slice(1).forEach(el => { el.innerHTML = body.innerHTML; });
     return;
   }
 
@@ -728,12 +782,14 @@ function renderSBVBillTable(bills) {
       </td>
     </tr>
   `).join('');
+  bodies.slice(1).forEach(el => { el.innerHTML = body.innerHTML; });
 }
 
 
 function renderRepoTable(repos) {
-  const body = document.getElementById('res-repo-body');
-  if (!body) return;
+  const bodies = ['res-repo-body','ind-repo-body'].map(id => document.getElementById(id)).filter(Boolean);
+  if (!bodies.length) return;
+  const body = bodies[0];
 
   if (!Array.isArray(repos) || repos.length === 0) {
     body.innerHTML = `
@@ -743,6 +799,7 @@ function renderRepoTable(repos) {
         </td>
       </tr>
     `;
+    bodies.slice(1).forEach(el => { el.innerHTML = body.innerHTML; });
     return;
   }
 
@@ -773,6 +830,7 @@ function renderRepoTable(repos) {
       </td>
     </tr>
   `).join('');
+  bodies.slice(1).forEach(el => { el.innerHTML = body.innerHTML; });
 }
 
 function renderMaturityEventsTable(events) {
@@ -1473,6 +1531,12 @@ function renderMaturityEventsTable(events) {
             `;
           });
           bidsTableBody.innerHTML = bidsHtml;
+          const totalBidVolume = result.bids.reduce((sum, b) => sum + Math.round(Number(b.bid_volume || 0)), 0);
+          const totalRealVolume = result.bids.reduce((sum, b) => sum + Math.round(Number(b.real_volume || 0)), 0);
+          const totalBidEl = document.getElementById('total-bid-volume');
+          const totalRealEl = document.getElementById('total-real-volume');
+          if (totalBidEl) totalBidEl.textContent = `${totalBidVolume.toLocaleString()} Tỷ`;
+          if (totalRealEl) totalRealEl.textContent = `${totalRealVolume.toLocaleString()} Tỷ`;
     
           renderMacroResultsChart(pre.rate, result.interbank_rate, pre.dep, pre.dep, pre.cpi, pre.cpi);
     
