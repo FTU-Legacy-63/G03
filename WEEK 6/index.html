@@ -290,7 +290,7 @@
             </h3>
   
             <p class="text-[10px] text-slate-500 dark:text-slate-400">
-              Learning Card
+              Thẻ Khái niệm
             </p>
           </div>
         </div>
@@ -453,7 +453,17 @@
 
             <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-3">
               <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
-                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Lịch đáo hạn</h3>
+                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 inline-flex items-center">
+                  Lịch đáo hạn
+                  <button
+                    type="button"
+                    class="learning-help"
+                    onclick="openLearningCard('maturity')"
+                    aria-label="Tìm hiểu về lịch đáo hạn"
+                  >
+                    ?
+                  </button>
+                </h3>
                 <span id="mat-issue-date" class="text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400">Ngày phát hành: 02/02/2025</span>
               </div>
               
@@ -479,11 +489,31 @@
             <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-2 text-xs">
               <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">Chỉ số Vĩ mô / Thị trường</h3>
               <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span class="text-slate-600 dark:text-slate-400">Lãi suất LNH (%)</span>
+                <span class="text-slate-600 dark:text-slate-400 inline-flex items-center">
+                  Lãi suất LNH (%)
+                  <button
+                    type="button"
+                    class="learning-help"
+                    onclick="openLearningCard('interbank')"
+                    aria-label="Tìm hiểu về lãi suất liên ngân hàng"
+                  >
+                    ?
+                  </button>
+                </span>
                 <span id="ind-interbank" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.95%</span>
               </div>
               <div class="flex justify-between py-1">
-                <span class="text-slate-600 dark:text-slate-400">Nhu cầu thanh khoản</span>
+                <span class="text-slate-600 dark:text-slate-400 inline-flex items-center">
+                  Nhu cầu thanh khoản
+                  <button
+                    type="button"
+                    class="learning-help"
+                    onclick="openLearningCard('liquidity')"
+                    aria-label="Tìm hiểu về nhu cầu thanh khoản"
+                  >
+                    ?
+                  </button>
+                </span>
                 <span id="ind-liquidity" class="font-mono font-bold text-rose-600 dark:text-rose-400">1,900 Tỷ</span>
               </div>
             </div>
