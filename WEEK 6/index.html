@@ -231,7 +231,59 @@
 
     </div>
   </div>
-
+  
+  <!-- LEARNING CARD MODAL -->
+  <div
+    id="learning-card-modal"
+    onclick="if(event.target === this) closeLearningCard()"
+    class="fixed inset-0 z-[60] hidden items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm"
+  >
+    <div
+      class="app-card rounded-2xl w-full max-w-2xl max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700 relative animate-slide-down"
+    >
+  
+      <!-- Header -->
+      <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700 shrink-0">
+  
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-sky-950 flex items-center justify-center border border-emerald-300 dark:border-sky-700">
+            <span class="text-emerald-700 dark:text-sky-300 font-black text-sm">?</span>
+          </div>
+  
+          <div>
+            <h3
+              id="learning-card-title"
+              class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400"
+            >
+              Khái niệm
+            </h3>
+  
+            <p class="text-[10px] text-slate-500 dark:text-slate-400">
+              Learning Card
+            </p>
+          </div>
+        </div>
+  
+        <button
+          onclick="closeLearningCard()"
+          class="w-8 h-8 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
+  
+      </div>
+  
+      <!-- Content -->
+      <div
+        id="learning-card-content"
+        class="overflow-y-auto px-5 py-5 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300 space-y-4"
+      >
+      </div>
+  
+    </div>
+  </div>
+  
   <!-- HEADER NAVBAR -->
   <header class="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-3 pb-4 border-b border-slate-300 dark:border-slate-700 relative">
     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 shrink-0">
@@ -1288,7 +1340,341 @@ function renderMaturityEventsTable(events) {
         }
       }
     };
-
+    const learningCards = {
+      auction: {
+        title: "Phương thức đấu thầu",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Phương thức các ngân hàng tham gia đấu thầu với NHNN
+            trong một nghiệp vụ OMO.
+          </p>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-2">
+              Cách đọc
+            </h4>
+    
+            <div class="space-y-3">
+              <div>
+                <strong>Đấu thầu lãi suất</strong>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                  <li>NHNN ấn định khối lượng chào thầu.</li>
+                  <li>Các ngân hàng đưa ra mức lãi suất đấu thầu và khối lượng muốn giao dịch.</li>
+                  <li>Các mức giá/lãi suất đấu thầu được xếp hạng theo quy tắc đấu thầu.</li>
+                  <li>NHNN xác định các mức đấu thầu được chấp nhận dựa trên thứ tự đó.</li>
+                </ul>
+              </div>
+    
+              <div>
+                <strong>Đấu thầu khối lượng</strong>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                  <li>NHNN công bố trước mức lãi suất áp dụng.</li>
+                  <li>Các ngân hàng đưa ra khối lượng muốn giao dịch.</li>
+                  <li>Nếu tổng khối lượng yêu cầu vượt quá khối lượng NHNN cung cấp, khối lượng phân bổ có thể được phân bổ theo tỷ lệ.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Tại sao quan trọng?
+            </h4>
+            <p>
+              Đấu thầu lãi suất cho phép các ngân hàng cạnh tranh về
+              mức lãi suất, trong khi đấu thầu khối lượng xác định trước
+              lãi suất và cho phép các ngân hàng cạnh tranh về khối lượng.
+            </p>
+          </div>
+        `
+      },
+    
+      pricing: {
+        title: "Phương thức xác định giá",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Phương thức xác định mức lãi suất áp dụng cho các hồ sơ trúng thầu.
+          </p>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-2">
+              Cách đọc
+            </h4>
+    
+            <ul class="list-disc pl-5 space-y-2">
+              <li>
+                <strong>Đơn giá:</strong>
+                Các ngân hàng trúng thầu cùng áp dụng một mức lãi suất trúng thầu.
+              </li>
+              <li>
+                <strong>Đa giá:</strong>
+                Mỗi ngân hàng trúng thầu áp dụng mức lãi suất đấu thầu
+                được chấp nhận của chính ngân hàng đó.
+              </li>
+            </ul>
+          </div>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Tại sao quan trọng?
+            </h4>
+            <p>
+              Phương thức xác định giá chủ yếu ảnh hưởng đến cách xác định
+              lãi suất trúng thầu, không quyết định hướng bơm hay hút thanh khoản.
+            </p>
+          </div>
+    
+          <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700">
+            <strong>Lưu ý:</strong>
+            Phương thức xác định giá chỉ áp dụng cho
+            <strong>Đấu thầu lãi suất</strong>.
+          </div>
+        `
+      },
+    
+      omo: {
+        title: "Nghiệp vụ OMO",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Nghiệp vụ OMO là hoạt động NHNN mua hoặc bán giấy tờ có giá (trong bối cảnh game là tín phiếu)
+            với các ngân hàng để điều tiết thanh khoản trong hệ thống ngân hàng.
+          </p>
+    
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-800">
+                  <th class="text-left p-2">Nghiệp vụ</th>
+                  <th class="text-left p-2">Bản chất</th>
+                  <th class="text-left p-2">Tác động ban đầu</th>
+                </tr>
+              </thead>
+    
+              <tbody>
+                <tr class="border-t border-slate-200 dark:border-slate-700">
+                  <td class="p-2 font-semibold">Mua đứt tín phiếu</td>
+                  <td class="p-2">NHNN mua tín phiếu từ ngân hàng và nắm giữ tín phiếu.</td>
+                  <td class="p-2 text-emerald-600 dark:text-sky-400">↑ Bơm</td>
+                </tr>
+    
+                <tr class="border-t border-slate-200 dark:border-slate-700">
+                  <td class="p-2 font-semibold">Bán đứt tín phiếu</td>
+                  <td class="p-2">NHNN bán tín phiếu cho ngân hàng.</td>
+                  <td class="p-2 text-rose-600">↓ Hút</td>
+                </tr>
+    
+                <tr class="border-t border-slate-200 dark:border-slate-700">
+                  <td class="p-2 font-semibold">Bán có kỳ hạn (REPO)</td>
+                  <td class="p-2">NHNN bán tín phiếu và có thỏa thuận mua lại vào thời điểm xác định.</td>
+                  <td class="p-2 text-rose-600">↓ Hút tạm thời</td>
+                </tr>
+    
+                <tr class="border-t border-slate-200 dark:border-slate-700">
+                  <td class="p-2 font-semibold">Mua có kỳ hạn (Reverse REPO)</td>
+                  <td class="p-2">NHNN mua tín phiếu và có thỏa thuận bán lại vào thời điểm xác định.</td>
+                  <td class="p-2 text-emerald-600 dark:text-sky-400">↑ Bơm tạm thời</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    
+          <p>
+            Trong game, REPO/Reverse REPO được gọi theo góc nhìn của NHNN.
+            Các nghiệp vụ này còn tạo ra tác động theo thời gian vì giao dịch sẽ đáo hạn,
+            trong khi mua/bán đứt không có cùng cơ chế hoàn trả theo kỳ hạn.
+          </p>
+        `
+      },
+    
+      volume: {
+        title: "Khối lượng chào thầu",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Khối lượng chứng khoán hoặc vốn được thực hiện trong nghiệp vụ OMO.
+          </p>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Cách đọc
+            </h4>
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong>Khối lượng lớn hơn</strong> → có khả năng tạo ra tác động thanh khoản lớn hơn.</li>
+              <li><strong>Khối lượng nhỏ hơn</strong> → có khả năng tạo ra tác động thanh khoản nhỏ hơn.</li>
+            </ul>
+          </div>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Tại sao quan trọng?
+            </h4>
+            <p>
+              Khối lượng quyết định quy mô can thiệp của NHNN.
+            </p>
+          </div>
+    
+          <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700">
+            <strong>Lưu ý:</strong>
+            Khối lượng chào thầu không đồng nghĩa với tác động thanh khoản cuối cùng.
+            Tác động thực tế còn phụ thuộc vào khối lượng được phân bổ qua đấu thầu
+            và các giao dịch đến hạn.
+          </div>
+        `
+      },
+    
+      auctionRate: {
+        title: "Lãi suất chào thầu của NHNN",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Mức lãi suất áp dụng cho nghiệp vụ OMO.
+          </p>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Cách đọc
+            </h4>
+            <p>
+              <strong>Khi bơm thanh khoản:</strong>
+              Lãi suấtthấp hơn có thể khiến nguồn vốn từ NHNN
+              hấp dẫn hơn đối với các ngân hàng.
+            </p>
+    
+            <p class="mt-2">
+              <strong>Khi hút thanh khoản:</strong>
+              Lãi suất cao hơn có thể khiến nghiệp vụ hấp dẫn hơn
+              đối với các ngân hàng do mang lại mức sinh lời cao hơn.
+            </p>
+          </div>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Tại sao quan trọng?
+            </h4>
+            <p>
+              Lãi suất có thể ảnh hưởng đến hành vi tham gia đấu thầu
+              của các ngân hàng và từ đó ảnh hưởng đến kết quả phân bổ thanh khoản.
+            </p>
+          </div>
+    
+          <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700">
+            <strong>Lưu ý:</strong>
+            Lãi suất OMO không giống với lãi suất liên ngân hàng.
+          </div>
+        `
+      },
+    
+      maturity: {
+        title: "Lịch đáo hạn",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Lịch thể hiện các khoản OMO sẽ đáo hạn và khối lượng thanh khoản
+            sẽ được hoàn trả hoặc thu hồi trong từng giai đoạn.
+          </p>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Tại sao quan trọng?
+            </h4>
+            <p>
+              Lịch đáo hạn giúp người chơi nắm được các giao dịch OMO
+              từ những giai đoạn trước. Vì vậy, cần xem xét cả quyết định OMO mới
+              và các khoản đáo hạn trước khi xác định quy mô can thiệp.
+            </p>
+          </div>
+        `
+      },
+    
+      liquidity: {
+        title: "Nhu cầu thanh khoản",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Mức nhu cầu thanh khoản của hệ thống ngân hàng trong màn hiện tại.
+          </p>
+    
+          <div>
+            <h4 class="font-bold text-emerald-600 dark:text-sky-400 mb-1">
+              Cách đọc
+            </h4>
+    
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong>Dương (+):</strong> Hệ thống thiếu thanh khoản.</li>
+              <li><strong>Bằng 0:</strong> Nhu cầu thanh khoản về cơ bản cân bằng.</li>
+              <li><strong>Âm (−):</strong> Hệ thống có thanh khoản dư thừa.</li>
+            </ul>
+          </div>
+    
+          <p>
+            Khi nhu cầu tăng, hệ thống cần thêm thanh khoản và áp lực thanh khoản tăng.
+            Khi nhu cầu giảm, nhu cầu bổ sung thanh khoản giảm.
+          </p>
+        `
+      },
+    
+      interbank: {
+        title: "Lãi suất liên ngân hàng",
+        content: `
+          <p>
+            <strong>Đây là gì?</strong><br>
+            Lãi suất áp dụng khi các ngân hàng vay và cho vay vốn
+            trên thị trường liên ngân hàng.
+          </p>
+    
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>Lãi suất tăng:</strong> áp lực huy động vốn trên thị trường liên ngân hàng tăng.</li>
+            <li><strong>Lãi suất giảm:</strong> áp lực thanh khoản trên thị trường liên ngân hàng giảm.</li>
+          </ul>
+    
+          <p>
+            Lãi suất liên ngân hàng phản ánh điều kiện thanh khoản trên thị trường
+            liên ngân hàng và là một trong những kết quả quan trọng để quan sát sau OMO.
+          </p>
+    
+          <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700">
+            <strong>Lưu ý:</strong>
+            Lãi suất liên ngân hàng trong game là kết quả mô phỏng của Mô hình kinh tế,
+            không phải dự báo chính xác lãi suất thực tế.
+          </div>
+        `
+      },
+    };
+    function openLearningCard(key) {
+      const card = learningCards[key];
+    
+      if (!card) return;
+    
+      const modal = document.getElementById('learning-card-modal');
+      const title = document.getElementById('learning-card-title');
+      const content = document.getElementById('learning-card-content');
+    
+      if (!modal || !title || !content) return;
+    
+      title.textContent = card.title;
+      content.innerHTML = card.content;
+    
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+    
+    function closeLearningCard() {
+      const modal = document.getElementById('learning-card-modal');
+    
+      if (!modal) return;
+    
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLearningCard();
+      }
+    });
     function openGuideModal() {
       const modal = document.getElementById('guide-modal');
       if (modal) modal.classList.remove('hidden');
@@ -1309,13 +1695,13 @@ function renderMaturityEventsTable(events) {
         html.classList.remove('light');
         html.classList.add('dark');
         if (themeIcon) themeIcon.innerText = '🌙';
-        if (themeText) themeText.innerText = 'Dark';
+        if (themeText) themeText.innerText = 'Chế độ Tối';
       } else {
         currentTheme = 'light';
         html.classList.remove('dark');
         html.classList.add('light');
         if (themeIcon) themeIcon.innerText = '☀️';
-        if (themeText) themeText.innerText = 'Light';
+        if (themeText) themeText.innerText = 'Chế độ Sáng';
       }
 
       if (phaseConfig[currentPhase]) {
