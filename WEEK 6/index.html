@@ -173,8 +173,8 @@
             Công Cụ & Phương Thức Đấu Thầu (OMO Console)
           </h4>
           <ul class="list-disc pl-5 text-xs space-y-1.5">
-            <li><strong>Repo / Sell Securities:</strong> NHNN bán giấy tờ có giá để hút tiền thanh khoản (hoặc mua lại ở đáo hạn).</li>
-            <li><strong>Reverse Repo / Buy Securities:</strong> NHNN mua giấy tờ có giá để bơm thanh khoản (hoặc bán lại ở đáo hạn).</li>
+            <li><strong>Repo / Sell Securities:</strong> NHNN bán tín phiếu để hút tiền thanh khoản (hoặc mua lại ở đáo hạn).</li>
+            <li><strong>Reverse Repo / Buy Securities:</strong> NHNN mua tín phiếu để bơm thanh khoản (hoặc bán lại ở đáo hạn).</li>
             <li><strong>Volume Auction (Đấu thầu khối lượng):</strong> NHNN ấn định trước lãi suất, NHTM đăng ký khối lượng mua.</li>
             <li><strong>Interest-rate Auction (Đấu thầu lãi suất):</strong> NHNN ấn định khối lượng chào thầu, các NHTM tự đặt mức lãi suất cạnh tranh.</li>
           </ul>
@@ -437,8 +437,8 @@
               <div class="md:col-span-2">
                 <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">3. OMO Action Type</label>
                 <select id="omoAction" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
-                  <option value="Repo" selected>Repo (NHNN bán giấy tờ có giá và mua lại trong tương lai)</option>
-                  <option value="Reverse Repo">Reverse Repo (NHNN mua giấy tờ có giá và bán lại trong tương lai)</option>
+                  <option value="Repo" selected>Repo (NHNN bán tín phiếu và mua lại trong tương lai)</option>
+                  <option value="Reverse Repo">Reverse Repo (NHNN mua tín phiếu và bán lại trong tương lai)</option>
                   <option value="Buy Securities">Buy Securities (Mua đứt Tín phiếu)</option>
                   <option value="Sell Securities">Sell Securities (Bán đứt Tín phiếu)</option>
                 </select>
@@ -512,7 +512,7 @@
               <h3 id="res-eval-title" class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400">Will be updates so stay tuned</h3>
             </div>
             <span class="px-3 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-800">
-              ⚡ Đã Thực Thi
+              Executed
             </span>
           </div>
           <p id="res-analysis" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium mt-3 border-t border-slate-200 dark:border-slate-800 pt-3">
@@ -1360,7 +1360,7 @@ function renderMaturityEventsTable(events) {
           interbankHistory = [{ phase: 1, rate: Number(phaseConfig[1].preMetrics.rate) }];
           renderChart();
           switchTab('indicators');
-          showToast(`⚡ Chào mừng ${teamName}!`, 'info');
+          showToast(`Chào mừng ${teamName}!`, 'info');
         } else {
           showToast('Lỗi khởi tạo game: ' + data.message, 'warning');
         }
@@ -1561,10 +1561,10 @@ function renderMaturityEventsTable(events) {
             nextBtn.innerHTML = `<span>VIEW FINAL SIMULATION REPORT</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
           }
     
-          showToast(`⚡ Đã chạy xong mô phỏng Python cho ${cfg.title}!`, "success");
+          showToast(`Đã chạy xong mô phỏng cho ${cfg.title}!`, "success");
           switchTab('results');
         } else {
-          showToast('Lỗi từ Python Backend: ' + result.message, 'warning');
+          showToast('Lỗi từ Backend: ' + result.message, 'warning');
         }
       } catch (err) {
         showToast('Lỗi kết nối API tới server Python!', 'warning');
