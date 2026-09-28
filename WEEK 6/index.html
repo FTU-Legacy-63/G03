@@ -319,14 +319,9 @@
   <!-- HEADER NAVBAR -->
   <header class="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-3 pb-4 border-b border-slate-300 dark:border-slate-700 relative">
     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 shrink-0">
-      <button
-        type="button"
-        onclick="resetGame()"
-        title="Về màn hình bắt đầu"
-        class="text-base sm:text-lg md:text-xl font-black tracking-wider text-emerald-600 dark:text-sky-400 select-none whitespace-nowrap shrink-0 hover:opacity-80 transition"
-      >
+      <span class="text-base sm:text-lg md:text-xl font-black tracking-wider text-emerald-600 dark:text-sky-400 select-none whitespace-nowrap shrink-0">
         WHO RUNS THE W<span class="inline-block hover:rotate-180 transition-transform duration-500">🌍</span>RLD?
-      </button>
+      </span>
 
       <div id="header-team-badge" class="hidden flex items-center justify-center px-3 py-1 rounded-full bg-emerald-100 dark:bg-sky-900/80 text-emerald-800 dark:text-sky-200 text-xs font-bold border border-emerald-300 dark:border-sky-600 shadow-sm transition-all whitespace-nowrap">
         <span class="opacity-75 mr-1 shrink-0">Team:</span>
@@ -350,33 +345,9 @@
 
       <!-- Phase Stepper -->
       <div id="phase-stepper" class="hidden flex items-center gap-1 nav-box p-1 rounded-lg border text-[11px] sm:text-xs font-semibold">
-        <button
-          id="badge-p1"
-          type="button"
-          onclick="handlePhaseBadgeClick(1)"
-          class="px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-bold transition-all"
-        >
-          M1
-        </button>
-      
-        <button
-          id="badge-p2"
-          type="button"
-          onclick="handlePhaseBadgeClick(2)"
-          class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400 transition-all"
-        >
-          M2
-        </button>
-      
-        <button
-          id="badge-p3"
-          type="button"
-          onclick="handlePhaseBadgeClick(3)"
-          class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400 transition-all"
-        >
-          M3
-        </button>
-      
+        <span id="badge-p1" class="px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-bold">M1</span>
+        <span id="badge-p2" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">M2</span>
+        <span id="badge-p3" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">M3</span>
       </div>
 
       <!-- Main App Tabs -->
@@ -982,455 +953,6 @@
     let chartInstance = null;
     let macroResultsChartInstance = null;
     let interbankHistory = [];
-    // =========================
-    // GAME SESSION PERSISTENCE
-    // =========================
-    const GAME_SESSION_KEY = 'omo_game_session_v1';
-    
-    let completedPhases = [];
-    let phaseResults = {};
-    let initialGameState = {
-      tbill_inventory: [],
-      repo_inventory: []
-    };
-    
-    let activeTab = 'indicators';
-    
-    // null = đang xem màn hiện tại
-    // 1/2/3 = đang xem lại kết quả của màn đã hoàn thành
-    let viewingPhase = null;
-function saveGameSession() {
-  const session = {
-    started: true,
-    teamName,
-    currentPhase,
-    scores,
-    completedPhases,
-    phaseResults,
-    initialGameState,
-    interbankHistory,
-    activeTab,
-    viewingPhase
-  };
-
-  sessionStorage.setItem(
-    GAME_SESSION_KEY,
-    JSON.stringify(session)
-  );
-}
-
-
-function clearGameSession() {
-  sessionStorage.removeItem(GAME_SESSION_KEY);
-}
-
-
-function showGameInterface() {
-  document.getElementById('slide-title').classList.add('hidden');
-  document.getElementById('slide-app').classList.remove('hidden');
-
-  document.getElementById('header-team-badge').classList.remove('hidden');
-  document.getElementById('phase-stepper').classList.remove('hidden');
-  document.getElementById('nav-tabs').classList.remove('hidden');
-
-  const teamEl = document.getElementById('current-team-name');
-  if (teamEl) {
-    teamEl.innerText = teamName;
-  }
-}
-
-
-function restoreGameSession() {
-  const raw = sessionStorage.getItem(GAME_SESSION_KEY);
-
-  if (!raw) {
-    return;
-  }
-
-  try {
-    const saved = JSON.parse(raw);
-
-    if (!saved.started) {
-      return;
-    }
-
-    teamName = saved.teamName || teamName;
-    currentPhase = Number(saved.currentPhase || 1);
-
-    scores = saved.scores || {
-      p1: null,
-      p2: null,
-      p3: null
-    };
-
-    completedPhases = Array.isArray(saved.completedPhases)
-      ? saved.completedPhases
-      : [];
-
-    phaseResults = saved.phaseResults || {};
-
-    initialGameState = saved.initialGameState || {
-      tbill_inventory: [],
-      repo_inventory: []
-    };
-
-    interbankHistory = Array.isArray(saved.interbankHistory)
-      ? saved.interbankHistory
-      : [];
-
-    activeTab = saved.activeTab || 'indicators';
-
-    viewingPhase =
-      saved.viewingPhase !== null &&
-      saved.viewingPhase !== undefined
-        ? Number(saved.viewingPhase)
-        : null;
-
-    showGameInterface();
-
-    // Khôi phục đúng Màn đang chơi
-    loadPhase(currentPhase);
-
-    // Khôi phục dữ liệu OMO đang lưu hành
-    let stateToRender = null;
-
-    if (viewingPhase !== null && phaseResults[viewingPhase]) {
-      stateToRender = phaseResults[viewingPhase].result;
-    } else if (
-      currentPhase > 1 &&
-      phaseResults[currentPhase - 1]
-    ) {
-      stateToRender = phaseResults[currentPhase - 1].result;
-    } else {
-      stateToRender = initialGameState;
-    }
-
-    if (stateToRender) {
-      renderPythonPhaseState(stateToRender);
-    }
-
-    // Khôi phục đúng trang người chơi đang xem trước khi F5
-    if (
-      viewingPhase !== null &&
-      phaseResults[viewingPhase]
-    ) {
-      showSavedPhaseResult(viewingPhase);
-    } else {
-      viewingPhase = null;
-
-      if (
-        completedPhases.includes(currentPhase) &&
-        phaseResults[currentPhase] &&
-        activeTab === 'results'
-      ) {
-        showSavedPhaseResult(currentPhase);
-      } else {
-        isResultUnlocked = false;
-        switchTab(activeTab || 'indicators');
-      }
-    }
-
-    updatePhaseStepper();
-
-    if (interbankHistory.length > 0) {
-      renderChart();
-    }
-
-  } catch (err) {
-    console.error('Không thể khôi phục phiên chơi:', err);
-    clearGameSession();
-  }
-}
-function updatePhaseStepper() {
-  const displayPhase =
-    viewingPhase !== null
-      ? viewingPhase
-      : currentPhase;
-
-  for (let p = 1; p <= 3; p++) {
-    const badge = document.getElementById(`badge-p${p}`);
-    if (!badge) continue;
-
-    const completed = completedPhases.includes(p);
-
-    if (p === displayPhase) {
-
-      badge.className =
-        "px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-extrabold shadow-sm transition-all";
-
-    } else if (completed) {
-
-      badge.className =
-        "px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold hover:bg-emerald-200 dark:hover:bg-emerald-900 cursor-pointer transition-all";
-
-    } else {
-
-      badge.className =
-        "px-2.5 py-1 rounded text-slate-400 dark:text-slate-500 font-medium opacity-60 cursor-not-allowed transition-all";
-
-    }
-  }
-}
-
-
-function handlePhaseBadgeClick(phaseNum) {
-
-  // Màn hiện tại nhưng chưa hoàn thành
-  if (!completedPhases.includes(phaseNum)) {
-
-    if (phaseNum === currentPhase) {
-      viewingPhase = null;
-      switchTab('indicators');
-      saveGameSession();
-      updatePhaseStepper();
-      return;
-    }
-
-    showToast(
-      `Màn ${phaseNum} chưa được thực thi. Không thể xem kết quả.`,
-      'warning'
-    );
-
-    return;
-  }
-
-  // Màn đã hoàn thành → xem kết quả
-  showSavedPhaseResult(phaseNum);
-}
-
-
-function showSavedPhaseResult(phaseNum) {
-  const record = phaseResults[phaseNum];
-  if (!record || !record.result) {
-    showToast(
-      `Chưa có kết quả của Màn ${phaseNum}.`,
-      'warning'
-    );
-    return;
-  }
-
-  viewingPhase = phaseNum;
-  isResultUnlocked = true;
-
-  renderSavedResultUI(
-    phaseNum,
-    record.result,
-    record.action,
-    record.volume,
-    record.pre
-  );
-
-  updatePhaseStepper();
-
-  switchTab('results');
-
-  saveGameSession();
-}
-function renderSavedResultUI(
-  phaseNum,
-  result,
-  action,
-  volume,
-  pre
-) {
-
-  // Đồng bộ state OMO
-  renderPythonPhaseState(result);
-
-  const resultTitle =
-    document.getElementById('res-eval-title');
-
-  if (resultTitle) {
-    resultTitle.innerText =
-      `Quyết định đưa ra trong màn ${phaseNum} đã được thực thi`;
-  }
-
-  const analysis =
-    document.getElementById('res-analysis');
-
-  if (analysis) {
-    analysis.innerText =
-      buildPolicyExplanation(
-        result,
-        action,
-        volume,
-        pre
-      );
-  }
-
-  const preRate =
-    document.getElementById('row-pre-rate');
-
-  if (preRate) {
-    preRate.innerText =
-      `${Number(pre.rate).toFixed(2)}%`;
-  }
-
-  const postRate =
-    document.getElementById('row-post-rate');
-
-  if (postRate) {
-    postRate.innerText =
-      `${Number(result.interbank_rate).toFixed(2)}%`;
-  }
-
-  const deltaRate =
-    document.getElementById('row-delta-rate');
-
-  if (deltaRate) {
-    const delta =
-      Number(result.interbank_rate) -
-      Number(pre.rate);
-
-    deltaRate.innerText =
-      `${delta >= 0 ? '+' : ''}${delta.toFixed(2)}%`;
-  }
-
-  // Bảng kết quả đấu thầu
-  const bidsTableBody =
-    document.getElementById('bids-table-body');
-
-  if (bidsTableBody) {
-
-    let bidsHtml = "";
-
-    let totalBidVolume = 0;
-    let totalRealVolume = 0;
-
-    (result.bids || []).forEach(b => {
-
-      const bidVolume =
-        Number(b.bid_volume || 0);
-
-      const realVolume =
-        Number(b.real_volume || 0);
-
-      totalBidVolume += bidVolume;
-      totalRealVolume += realVolume;
-
-      const statusColor = b.won
-        ? "text-emerald-600 dark:text-sky-400 font-bold"
-        : "text-slate-400";
-
-      bidsHtml += `
-        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-
-          <td class="font-bold text-slate-800 dark:text-slate-200 font-sans">
-            ${b.bank}
-          </td>
-
-          <td>
-            ${Number(b.bid_rate || 0).toFixed(2)}%
-          </td>
-
-          <td>
-            ${bidVolume.toLocaleString()} Tỷ
-          </td>
-
-          <td class="font-bold text-slate-900 dark:text-slate-100">
-            ${realVolume.toLocaleString()} Tỷ
-          </td>
-
-          <td class="${statusColor} font-sans font-semibold">
-            ${b.status}
-          </td>
-
-        </tr>
-      `;
-    });
-
-    bidsHtml += `
-      <tr class="border-t-2 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/70">
-
-        <td class="font-extrabold text-slate-900 dark:text-white text-left">
-          TỔNG
-        </td>
-
-        <td></td>
-
-        <td class="font-extrabold text-slate-900 dark:text-white">
-          ${totalBidVolume.toLocaleString()} Tỷ
-        </td>
-
-        <td class="font-extrabold text-slate-900 dark:text-white">
-          ${totalRealVolume.toLocaleString()} Tỷ
-        </td>
-
-        <td></td>
-
-      </tr>
-    `;
-
-    bidsTableBody.innerHTML = bidsHtml;
-  }
-
-  // Chart kết quả
-  renderMacroResultsChart(
-    Number(pre.rate),
-    Number(result.interbank_rate),
-    Number(pre.dep),
-    Number(pre.dep),
-    Number(pre.cpi),
-    Number(pre.cpi)
-  );
-
-  // Nút tiếp tục phải dựa trên MÀN THỰC TẾ đang chơi,
-  // không dựa trên màn lịch sử đang xem.
-  const nextBtn =
-    document.getElementById('btn-next-phase');
-
-  if (nextBtn) {
-
-    if (currentPhase < 3) {
-
-      nextBtn.innerHTML = `
-        <span>TIẾP TỤC ĐẾN MÀN ${currentPhase + 1}</span>
-
-        <svg class="w-4 h-4"
-             fill="none"
-             stroke="currentColor"
-             viewBox="0 0 24 24">
-
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2.5"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-
-        </svg>
-      `;
-
-    } else {
-
-      nextBtn.innerHTML = `
-        <span>XEM TỔNG KẾT LƯỢT CHƠI</span>
-
-        <svg class="w-4 h-4"
-             fill="none"
-             stroke="currentColor"
-             viewBox="0 0 24 24">
-
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2.5"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0"
-          />
-
-        </svg>
-      `;
-    }
-  }
-
-  const titleRes =
-    document.getElementById('p-title-res');
-
-  if (titleRes) {
-    titleRes.innerText =
-      phaseConfig[phaseNum].title;
-  }
-}
     // Python backend is the single source of truth for OMO state.
 let lastPythonState = null;
 
@@ -1682,14 +1204,8 @@ function renderMaturityEventsTable(events) {
 
     // Gọi hàm lấy state ngay khi trang vừa tải xong
     document.addEventListener("DOMContentLoaded", () => {
-      const savedSession =
-        sessionStorage.getItem(GAME_SESSION_KEY);
-      if (savedSession) {
-        restoreGameSession();
-      } else {
         fetchGameState();
-      }
-  });
+    });
 
     const phaseConfig = {
       1: {
@@ -2383,18 +1899,6 @@ function renderMaturityEventsTable(events) {
         const data = await response.json();
         
         if (data.status === 'success') {
-          initialGameState = {
-            tbill_inventory: data.tbill_inventory || [],
-            repo_inventory: data.repo_inventory || []
-          };
-          
-          completedPhases = [];
-          phaseResults = {};
-          currentPhase = 1;
-          viewingPhase = null;
-          activeTab = 'indicators';
-          
-          saveGameSession();
           document.getElementById('current-team-name').innerText = teamName;
           document.getElementById('slide-title').classList.add('hidden');
           document.getElementById('slide-app').classList.remove('hidden');
@@ -2422,16 +1926,6 @@ function renderMaturityEventsTable(events) {
     }
 
     function resetGame() {
-      clearGameSession();
-      completedPhases = [];
-      phaseResults = {};
-      initialGameState = {
-        tbill_inventory: [],
-        repo_inventory: []
-      };
-    
-      viewingPhase = null;
-      activeTab = 'indicators';
       currentPhase = 1;
       scores = { p1: null, p2: null, p3: null };
       interbankHistory = [];
@@ -2448,190 +1942,92 @@ function renderMaturityEventsTable(events) {
     }
 
     function loadPhase(phaseNum) {
-      currentPhase = phaseNum;
-      viewingPhase = null;
-    
-      const cfg = phaseConfig[phaseNum];
-      if (!cfg) return;
-    
-      // Khi bước vào một màn mới, chưa được xem Kết quả
-      isResultUnlocked = false;
-    
-      const resBtn = document.getElementById('tab-btn-results');
-    
-      if (resBtn) {
-        resBtn.disabled = true;
-        resBtn.innerHTML = "Kết quả 🔒";
-        resBtn.title = "Cần gửi Quyết định OMO trước khi xem Kết quả";
-        resBtn.className =
-          "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
-      }
-    
-      // Cập nhật tiêu đề
-      const titleInd = document.getElementById('p-title-ind');
-      if (titleInd) titleInd.innerText = cfg.title;
-    
-      const titleDec = document.getElementById('p-title-dec');
-      if (titleDec) titleDec.innerText = cfg.title;
-    
-      const titleRes = document.getElementById('p-title-res');
-      if (titleRes) titleRes.innerText = cfg.title;
-    
-      // Cập nhật bối cảnh
-      const scText = document.getElementById('scenario-text');
-      if (scText) scText.innerHTML = cfg.scenario;
-    
-      const decScText =
-        document.getElementById('decision-scenario-text');
-    
-      if (decScText) {
-        decScText.innerHTML = cfg.scenario;
-      }
-    
-      // Cập nhật chỉ số
-      const indGdp = document.getElementById('ind-gdp');
-      if (indGdp) {
-        indGdp.innerText = cfg.indicators.gdp;
-      }
-    
-      const indCpi = document.getElementById('ind-cpi');
-      if (indCpi) {
-        indCpi.innerText = cfg.indicators.cpi;
-      }
-    
-      const indInter =
-        document.getElementById('ind-interbank');
-    
-      if (indInter) {
-        indInter.innerText = cfg.indicators.interbank;
-      }
-    
-      const liqEl =
-        document.getElementById('ind-liquidity');
-    
-      if (liqEl) {
-        liqEl.innerText = cfg.indicators.liquidity;
-    
-        liqEl.className =
-          cfg.indicators.liquidity.startsWith('+')
-            ? "font-mono font-bold text-emerald-600 dark:text-sky-400"
-            : "font-mono font-bold text-rose-600 dark:text-rose-400";
-      }
-    
-      // Cập nhật form quyết định
-      const auctionMethod =
-        document.getElementById('auctionMethod');
-    
-      if (auctionMethod) {
-        auctionMethod.value = cfg.method;
-      }
-    
-      const volumeInput =
-        document.getElementById('volumeInput');
-    
-      if (volumeInput) {
-        volumeInput.value = cfg.defaultVol;
-      }
-    
-      const inputRate =
-        document.getElementById('inputRate');
-    
-      if (inputRate) {
-        inputRate.value =
-          cfg.defaultRate.toFixed(2);
-      }
-    
-      const omoActionSelect =
-        document.getElementById('omoAction');
-    
-      if (omoActionSelect) {
-        omoActionSelect.value = cfg.action;
-      }
-    
-      if (typeof toggleRateVisibility === 'function') {
-        toggleRateVisibility();
-      }
-    
-      if (typeof renderChart === 'function') {
-        renderChart();
-      }
-    
-      // Cập nhật trạng thái M1 / M2 / M3
-      if (typeof updatePhaseStepper === 'function') {
-        updatePhaseStepper();
-      }
-    }
+          currentPhase = phaseNum;
+          const cfg = phaseConfig[phaseNum];
+          if (!cfg) return;
+
+          isResultUnlocked = false;
+          const resBtn = document.getElementById('tab-btn-results');
+          if (resBtn) {
+            resBtn.disabled = true;
+            resBtn.innerHTML = "Kết quả 🔒";
+            resBtn.title = "Cần gửi Quyết định OMO trước khi xem Kết quả";
+            resBtn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
+          }
+
+          for (let p = 1; p <= 3; p++) {
+            const badge = document.getElementById(`badge-p${p}`);
+            if (!badge) continue;
+            if (p === phaseNum) {
+              badge.className = "px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-extrabold shadow-sm transition-all";
+            } else if (p < phaseNum) {
+              badge.className = "px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold transition-all";
+            } else {
+              badge.className = "px-2.5 py-1 rounded text-slate-400 dark:text-slate-500 font-medium transition-all opacity-70";
+            }
+          }
+
+          // Gán an toàn các tiêu đề (tránh lỗi null)
+          const titleInd = document.getElementById('p-title-ind'); if (titleInd) titleInd.innerText = cfg.title;
+          const titleDec = document.getElementById('p-title-dec'); if (titleDec) titleDec.innerText = cfg.title;
+          const titleRes = document.getElementById('p-title-res'); if (titleRes) titleRes.innerText = cfg.title;
+
+          const scText = document.getElementById('scenario-text'); 
+          if (scText) scText.innerHTML = cfg.scenario;
+
+          const decScText = document.getElementById('decision-scenario-text'); 
+          if (decScText) decScText.innerHTML = cfg.scenario;
+
+          const indGdp = document.getElementById('ind-gdp'); if (indGdp) indGdp.innerText = cfg.indicators.gdp;
+          const indCpi = document.getElementById('ind-cpi'); if (indCpi) indCpi.innerText = cfg.indicators.cpi;
+          const indInter = document.getElementById('ind-interbank'); if (indInter) indInter.innerText = cfg.indicators.interbank;
+
+          const liqEl = document.getElementById('ind-liquidity');
+          if (liqEl) {
+            liqEl.innerText = cfg.indicators.liquidity;
+            liqEl.className = cfg.indicators.liquidity.startsWith('+') ? 
+              "font-mono font-bold text-emerald-600 dark:text-sky-400" : 
+              "font-mono font-bold text-rose-600 dark:text-rose-400";
+          }
+
+          const auctionMethod = document.getElementById('auctionMethod'); if (auctionMethod) auctionMethod.value = cfg.method;
+          const volumeInput = document.getElementById('volumeInput'); if (volumeInput) volumeInput.value = cfg.defaultVol;
+          const inputRate = document.getElementById('inputRate'); if (inputRate) inputRate.value = cfg.defaultRate.toFixed(2);
+
+          const omoActionSelect = document.getElementById('omoAction');
+          if (omoActionSelect) omoActionSelect.value = cfg.action;
+
+          if (typeof toggleRateVisibility === 'function') toggleRateVisibility();
+          if (typeof renderChart === 'function') renderChart();
         }
     function switchTab(tabName) {
-      // Không cho chỉnh sửa quyết định khi đang xem lại
-      // kết quả của một màn cũ.
-      if (
-        viewingPhase !== null &&
-        tabName === 'decisions'
-      ) {
-        showToast(
-          `Bạn đang xem lại kết quả Màn ${viewingPhase}. Hãy quay về Màn ${currentPhase} để tiếp tục điều hành.`,
-          'warning'
-        );
-        return;
-      }
-    
       if (tabName === 'results' && !isResultUnlocked) {
-        showToast(
-          "⚠️ Vui lòng nhấn 'GỬI QUYẾT ĐỊNH' ở thẻ Quyết định trước khi xem Kết quả!",
-          "warning"
-        );
+        showToast("⚠️ Vui lòng nhấn 'GỬI QUYẾT ĐỊNH' ở thẻ Quyết định trước khi xem Kết quả!", "Cảnh báo");
         return;
       }
-    
-      // Ghi nhớ tab hiện tại để F5 vẫn giữ nguyên giao diện
-      activeTab = tabName;
-    
+
       const tabs = ['indicators', 'decisions', 'results'];
-    
       tabs.forEach(t => {
         const content = document.getElementById(`tab-content-${t}`);
         const btn = document.getElementById(`tab-btn-${t}`);
-    
-        if (!content || !btn) return;
-    
         if (t === tabName) {
-    
           content.classList.remove('hidden');
-    
-          btn.className =
-            "px-2.5 sm:px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 dark:bg-sky-600 text-white whitespace-nowrap";
-    
+          btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 dark:bg-sky-600 text-white whitespace-nowrap";
         } else {
-    
           content.classList.add('hidden');
-    
           if (t === 'results' && !isResultUnlocked) {
-    
-            btn.className =
-              "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
-    
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
           } else {
-    
-            btn.className =
-              "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap";
-    
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap";
           }
         }
       });
-    
-      if (
-        tabName === 'indicators' &&
-        phaseConfig[currentPhase]
-      ) {
+
+      if (tabName === 'indicators' && phaseConfig[currentPhase]) {
         renderChart();
       }
-    
-      // Lưu trạng thái để khi F5 có thể khôi phục đúng tab
-      if (typeof saveGameSession === 'function') {
-        saveGameSession();
-      }
     }
+
     async function submitDecision() {
       const method = document.getElementById('auctionMethod').value;
       const pricing = document.getElementById('pricingMechanism').value;
@@ -2666,19 +2062,6 @@ function renderMaturityEventsTable(events) {
         
         const result = await response.json();
         if (response.ok) {
-          // Lưu kết quả của màn vừa thực thi
-          phaseResults[currentPhase] = {
-            result: result,
-            action: action,
-            volume: volume,
-            pre: pre
-          };
-          
-          if (!completedPhases.includes(currentPhase)) {
-            completedPhases.push(currentPhase);
-          }
-          
-          viewingPhase = null;
           const rateDiff = Math.abs(result.interbank_rate - pre.rate);
           let phaseScore = Math.max(60, Math.round(100 - rateDiff * 25));
           scores[`p${currentPhase}`] = phaseScore;
@@ -2781,8 +2164,7 @@ function renderMaturityEventsTable(events) {
           } else {
             nextBtn.innerHTML = `<span>XEM TỔNG KẾT LƯỢT CHƠI</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
           }
-          activeTab = 'results';
-          saveGameSession();
+    
           showToast(`Đã chạy xong mô phỏng cho ${cfg.title}!`, "success");
           switchTab('results');
         } else {
@@ -3061,42 +2443,14 @@ function renderMaturityEventsTable(events) {
     }
 
     function nextPhase() {
-      // Nếu đang xem lịch sử M1/M2 thì không cho
-      // nút này chuyển màn.
-      if (viewingPhase !== null) {
-        viewingPhase = null;
-    
-        loadPhase(currentPhase);
-        switchTab('results');
-    
-        return;
-      }
-    
       if (currentPhase < 3) {
-        currentPhase += 1;
-        viewingPhase = null;
-        loadPhase(currentPhase);
-    
-        // Sau khi sang màn mới, trạng thái OMO
-        // phải là kết quả của màn trước.
-        const previousResult =
-          phaseResults[currentPhase - 1];
-        if (previousResult) {
-          renderPythonPhaseState(
-            previousResult.result
-          );
-        }
-    
-        activeTab = 'indicators';
-        saveGameSession();
+        loadPhase(currentPhase + 1);
         switchTab('indicators');
-    
       } else {
         showSummary();
-        activeTab = 'summary';
-        saveGameSession();
       }
     }
+
     function showSummary() {
       document.getElementById('tab-content-indicators').classList.add('hidden');
       document.getElementById('tab-content-decisions').classList.add('hidden');
