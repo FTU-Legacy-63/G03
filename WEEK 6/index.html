@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WHO RUNS THE WORLD? - Central Bank OMO Simulator</title>
+  <title>WHO RUNS THE WORLD? - GAME MÔ PHỎNG NGHIỆP VỤ THỊ TRƯỜNG MỞ (OMO)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -112,8 +112,8 @@
             <span class="text-emerald-700 dark:text-sky-300 font-extrabold text-sm">i</span>
           </div>
           <div>
-            <h3 class="text-base sm:text-lg font-black uppercase tracking-wider text-emerald-600 dark:text-sky-400">WHAT TO KNOW 101</h3>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Tệp Hướng dẫn Chi tiết & Quy tắc Điều hành OMO</p>
+            <h3 class="text-base sm:text-lg font-black uppercase tracking-wider text-emerald-600 dark:text-sky-400">HƯỚNG DẪN</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Hướng dẫn Chi tiết & Quy tắc Điều hành</p>
           </div>
         </div>
         <button onclick="closeGuideModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition">
@@ -261,16 +261,16 @@
 
       <!-- Phase Stepper -->
       <div id="phase-stepper" class="hidden flex items-center gap-1 nav-box p-1 rounded-lg border text-[11px] sm:text-xs font-semibold">
-        <span id="badge-p1" class="px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-bold">P1</span>
-        <span id="badge-p2" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">P2</span>
-        <span id="badge-p3" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">P3</span>
+        <span id="badge-p1" class="px-2.5 py-1 rounded bg-emerald-600 dark:bg-sky-600 text-white font-bold">M1</span>
+        <span id="badge-p2" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">M2</span>
+        <span id="badge-p3" class="px-2.5 py-1 rounded text-slate-500 dark:text-slate-400">M3</span>
       </div>
 
       <!-- Main App Tabs -->
       <nav id="nav-tabs" class="hidden flex gap-1 nav-box p-1 rounded-lg border overflow-x-auto">
-        <button onclick="switchTab('indicators')" id="tab-btn-indicators" class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 dark:bg-sky-600 text-white whitespace-nowrap">Indicators</button>
-        <button onclick="switchTab('decisions')" id="tab-btn-decisions" class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap">Decisions</button>
-        <button onclick="switchTab('results')" id="tab-btn-results" disabled class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap" title="Cần gửi Quyết định OMO trước khi xem Kết quả">Results 🔒</button>
+        <button onclick="switchTab('indicators')" id="tab-btn-indicators" class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 dark:bg-sky-600 text-white whitespace-nowrap">Chỉ số thị trường</button>
+        <button onclick="switchTab('decisions')" id="tab-btn-decisions" class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap">Quyết định</button>
+        <button onclick="switchTab('results')" id="tab-btn-results" disabled class="px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap" title="Cần gửi Quyết định trước khi xem Kết quả">Kết quả 🔒</button>
       </nav>
 
     </div>
@@ -283,7 +283,7 @@
       
       <div class="app-card rounded-3xl p-6 sm:p-8 md:p-10 w-full max-w-3xl shadow-xl relative overflow-hidden border border-slate-200 dark:border-slate-800">
         <div class="inline-block px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-sky-950 border border-emerald-300 dark:border-sky-700 text-emerald-800 dark:text-sky-300 text-[11px] sm:text-xs font-bold tracking-wider uppercase mb-3 sm:mb-4">
-          Central Bank OMO Policy Simulator
+          GAME MÔ PHỎNG NGHIỆP VỤ THỊ TRƯỜNG MỞ (OMO)
         </div>
         
         <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-3 text-slate-900 dark:text-white leading-tight">
@@ -292,7 +292,7 @@
         </h1>
         
         <p class="max-w-xl mx-auto text-slate-600 dark:text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed font-medium">
-          Đóng vai Ban Điều hành Nghiệp vụ Thị trường Mở (NHNN). Trải qua 3 Phase điều hành thực tế từ Đấu thầu Khối lượng, Đấu thầu Lãi suất cho đến Quản trị Trade-off Vĩ mô.
+          Đóng vai Ban Điều hành Nghiệp vụ Thị trường Mở (NHNN). Trải qua 3 màn mô phỏng điều hành Nghiệp vụ Thị trường Mở từ Đấu thầu Khối lượng, Đấu thầu Lãi suất cho đến Quản trị những đánh đổi về Kinh tế vĩ mô.
         </p>
       </div>
 
@@ -304,7 +304,7 @@
             <span class="text-lg">⚙️</span>
             <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400">Thiết Lập Đội Chơi</h3>
           </div>
-          <span class="text-[11px] font-mono text-slate-400">Single Player Mode</span>
+          <span class="text-[11px] font-mono text-slate-400">Chế độ Một người chơi</span>
         </div>
 
         <div>
@@ -320,10 +320,10 @@
             </div>
             <div>
               <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-800 dark:text-sky-300 flex items-center gap-1.5">
-                <span>WHAT TO KNOW 101</span>
-                <span class="px-2 py-0.2 rounded bg-emerald-200 dark:bg-sky-950 text-emerald-900 dark:text-sky-200 text-[10px] font-mono">Tệp hướng dẫn</span>
+                <span>HƯỚNG DẪN</span>
+                <span class="px-2 py-0.2 rounded bg-emerald-200 dark:bg-sky-950 text-emerald-900 dark:text-sky-200 text-[10px] font-mono">hướng dẫn</span>
               </div>
-              <div class="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Bấm để đọc tệp hướng dẫn & quy tắc điều hành OMO</div>
+              <div class="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Bấm để đọc hướng dẫn & quy tắc điều hành</div>
             </div>
           </div>
           <div class="flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-sky-400 group-hover:translate-x-1 transition-transform shrink-0">
@@ -335,7 +335,7 @@
         <div class="pt-2">
           <button onclick="startGame()" 
                   class="w-full flex items-center justify-center gap-3 py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black text-sm sm:text-base rounded-xl transition shadow-lg hover:scale-[1.01] active:scale-95">
-            <span>START SIMULATION</span>
+            <span>BẮT ĐẦU TRÒ CHƠI</span>
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
         </div>
@@ -351,8 +351,8 @@
         <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
           <div class="flex items-center gap-2.5">
             <div>
-              <h2 id="p-title-ind" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Phase 1</h2>
-              <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Đánh giá bối cảnh vĩ mô, tình trạng thanh khoản và lịch đáo hạn OMO</p>
+              <h2 id="p-title-ind" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Màn 1</h2>
+              <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Đánh giá bối cảnh vĩ mô, tình trạng thanh khoản và lịch đáo hạn</p>
             </div>
           </div>
         </div>
@@ -362,15 +362,15 @@
           <div class="lg:col-span-5 space-y-4">
             
             <div class="app-card rounded-xl p-3.5 sm:p-4 border-l-4 border-emerald-500 dark:border-sky-500">
-              <h4 class="text-[11px] sm:text-xs font-bold uppercase text-emerald-600 dark:text-sky-400 mb-1.5">Scenario</h4>
+              <h4 class="text-[11px] sm:text-xs font-bold uppercase text-emerald-600 dark:text-sky-400 mb-1.5">Bối cảnh</h4>
               <p id="scenario-text" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                Scenario pending
+                Đang tải...
               </p>
             </div>
 
             <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-3">
               <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
-                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Schedule of Maturity</h3>
+                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Lịch đáo hạn</h3>
                 <span id="mat-issue-date" class="text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400">Ngày phát hành: 02/02/2025</span>
               </div>
               
@@ -380,7 +380,7 @@
                     <tr class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 text-[11px] font-bold">
                       <th class="py-1.5 px-2 text-left">Công cụ</th>
                       <th class="py-1.5 px-2 text-center">Khối lượng (Tỷ)</th>
-                      <th class="py-1.5 px-2 text-right">Lãi suất (%)</th>
+                      <th class="py-1.5 px-2 text-right">Lãi suất (%/năm)</th>
                       <th class="py-1.5 px-2 text-right">Ngày đáo hạn</th>
                     </tr>
                   </thead>
@@ -396,11 +396,11 @@
             <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-2 text-xs">
               <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">Key Macro & Market Metrics</h3>
               <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span class="text-slate-600 dark:text-slate-400">Interbank Rate</span>
+                <span class="text-slate-600 dark:text-slate-400">Lãi suất LNH (%)</span>
                 <span id="ind-interbank" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.95%</span>
               </div>
               <div class="flex justify-between py-1">
-                <span class="text-slate-600 dark:text-slate-400">Liquidity Demand</span>
+                <span class="text-slate-600 dark:text-slate-400">Nhu cầu thanh khoản</span>
                 <span id="ind-liquidity" class="font-mono font-bold text-rose-600 dark:text-rose-400">1,900 Tỷ</span>
               </div>
             </div>
@@ -410,7 +410,7 @@
           <!-- Right Column: Trend Chart & Navigation -->
           <div class="lg:col-span-7 app-card rounded-xl p-4 sm:p-5 flex flex-col justify-between space-y-4">
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400 mb-3">Interbank Rate Trend Line (%)</h3>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400 mb-3">Lãi suất LNH (%)</h3>
               <div class="relative w-full h-56 sm:h-72">
                 <canvas id="indicatorsChart"></canvas>
               </div>
@@ -418,7 +418,7 @@
 
             <div class="pt-2 flex justify-end">
               <button onclick="switchTab('decisions')" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-                <span>GO TO OMO DECISION CONSOLE</span>
+                <span>RA QUYẾT ĐỊNH NGHIỆP VỤ THỊ TRƯỜNG MỞ</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
               </button>
             </div>
@@ -430,15 +430,15 @@
       <section id="tab-content-decisions" class="hidden space-y-5">
         <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
           <div>
-            <h2 id="p-title-dec" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Phase 1</h2>
+            <h2 id="p-title-dec" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Màn 1</h2>
             <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Thiết lập thông số đấu thầu OMO để điều tiết lượng cung tiền</p>
           </div>
         </div>
 
         <div class="app-card rounded-xl p-3.5 sm:p-4 border-l-4 border-emerald-500 dark:border-sky-500">
-          <h4 class="text-[11px] sm:text-xs font-bold uppercase text-emerald-600 dark:text-sky-400 mb-1">Scenario Briefing</h4>
+          <h4 class="text-[11px] sm:text-xs font-bold uppercase text-emerald-600 dark:text-sky-400 mb-1">Bối cảnh</h4>
           <p id="decision-scenario-text" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-            Scenario pending
+            Đang tải...
           </p>
         </div>
 
@@ -447,47 +447,47 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">1. OMO Auction Method</label>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">1. Phương thức đấu thầu</label>
                 <select id="auctionMethod" onchange="toggleRateVisibility()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
-                  <option value="Volume auction">Volume Auction (Đấu thầu khối lượng)</option>
-                  <option value="Interest-rate auction">Interest-rate Auction (Đấu thầu lãi suất)</option>
+                  <option value="Volume auction">Đấu thầu khối lượng</option>
+                  <option value="Interest-rate auction">Đấu thầu lãi suất</option>
                 </select>
               </div>
 
               <div id="pricingContainer" class="hidden">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">2. Pricing Method</label>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">2. Phương thức xác định lãi suất trúng thầu</label>
                 <select id="pricingMechanism" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
-                  <option value="Single-price">Single-price (Đơn giá)</option>
-                  <option value="Multi-price">Multiple-price (Đa giá)</option>
+                  <option value="Single-price">Đơn giá</option>
+                  <option value="Multi-price">Đa giá</option>
                 </select>
               </div>
 
               <div class="md:col-span-2">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">3. OMO Action Type</label>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">3. Nghiệp vụ OMO</label>
                 <select id="omoAction" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
                   <option value="Repo" selected>Repo (NHNN bán tín phiếu và mua lại trong tương lai)</option>
                   <option value="Reverse Repo">Reverse Repo (NHNN mua tín phiếu và bán lại trong tương lai)</option>
-                  <option value="Buy Securities">Buy Securities (Mua đứt Tín phiếu)</option>
-                  <option value="Sell Securities">Sell Securities (Bán đứt Tín phiếu)</option>
+                  <option value="Buy Securities">Mua đứt Tín phiếu</option>
+                  <option value="Sell Securities">Bán đứt Tín phiếu</option>
                 </select>
               </div>
 
               <div class="md:col-span-2 space-y-2">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">4. Target Volume (Khối lượng chào thầu - Tỷ VND)</label>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">4. Khối lượng chào thầu (Tỷ)</label>
                 <div class="flex gap-2">
                   <input type="number" id="volumeInput" step="500" value="5000" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono font-bold text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm" placeholder="Nhập số tiền...">
                 </div>
                 <div class="flex flex-wrap gap-2 pt-1">
-                  <span class="text-[11px] text-slate-500 self-center font-medium">Quick select:</span>
-                  <button type="button" onclick="setFixedVolume(3000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">3,000B</button>
-                  <button type="button" onclick="setFixedVolume(5000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">5,000B</button>
-                  <button type="button" onclick="setFixedVolume(8000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">8,000B</button>
-                  <button type="button" onclick="setFixedVolume(10000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">10,000B</button>
+                  <span class="text-[11px] text-slate-500 self-center font-medium">Chọn nhanh:</span>
+                  <button type="button" onclick="setFixedVolume(3000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">3,000T</button>
+                  <button type="button" onclick="setFixedVolume(5000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">5,000T</button>
+                  <button type="button" onclick="setFixedVolume(8000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">8,000T</button>
+                  <button type="button" onclick="setFixedVolume(10000)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-sky-900/40 font-mono font-semibold">10,000T</button>
                 </div>
               </div>
 
               <div id="rateContainer" class="md:col-span-2">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">5. OMO / Repo Rate (%/năm)</label>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">5. Lãi suất chào thầu của NHNN (%/năm)</label>
                 <input type="number" id="inputRate" step="0.05" value="4.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono text-slate-800 focus:outline-none focus:border-emerald-500 shadow-sm">
               </div>
 
@@ -495,14 +495,14 @@
 
             <div class="pt-3 flex justify-end">
               <button onclick="submitDecision()" class="w-full md:w-auto px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black rounded-xl transition shadow-lg text-xs sm:text-sm">
-                SUBMIT OMO DECISION
+                GỬI QUYẾT ĐỊNH
               </button>
             </div>
           </div>
 
           <div class="lg:col-span-4 space-y-4">
             <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-2">Policy Execution Rules</h3>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-2">Hướng dẫn chính sách</h3>
               <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 leading-relaxed font-medium">
                 <li class="flex items-start gap-2">
                   <span class="text-emerald-500 font-bold">•</span>
@@ -514,7 +514,7 @@
                 </li>
                 <li class="flex items-start gap-2">
                   <span class="text-emerald-500 font-bold">•</span>
-                  <span>Kết quả phân bổ chi tiết và danh sách bids của từng NHTM sẽ xuất hiện ở <strong>Tab 3: Results</strong>.</span>
+                  <span>Kết quả phân bổ chi tiết và danh sách bids của từng NHTM sẽ xuất hiện ở <strong>Thẻ 3: Kết quả</strong>.</span>
                 </li>
               </ul>
             </div>
@@ -526,18 +526,18 @@
       <section id="tab-content-results" class="hidden space-y-6">
         <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
           <div>
-            <h2 id="p-title-res" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Phase 1</h2>
+            <h2 id="p-title-res" class="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Màn 1</h2>
             <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Kết quả truyền dẫn chính sách vĩ mô và bảng tổng hợp phản ứng thị trường</p>
           </div>
-          <span class="px-3 py-1 rounded-full bg-emerald-100 dark:bg-sky-950 text-emerald-800 dark:text-sky-300 text-[11px] sm:text-xs font-bold border border-emerald-300 dark:border-sky-700">EXECUTION COMPLETE</span>
+          <span class="px-3 py-1 rounded-full bg-emerald-100 dark:bg-sky-950 text-emerald-800 dark:text-sky-300 text-[11px] sm:text-xs font-bold border border-emerald-300 dark:border-sky-700">ĐÃ THỰC THI</span>
         </div>
 
         <!-- Policy Assessment Header -->
         <div class="app-card rounded-2xl p-4 sm:p-5 border-l-4 border-emerald-500 dark:border-sky-500">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
             <div>
-              <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Policy Assessment</span>
-              <h3 id="res-eval-title" class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400">Will be updates so stay tuned</h3>
+              <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Đánh giá</span>
+              <h3 id="res-eval-title" class="text-base sm:text-lg font-black text-emerald-600 dark:text-sky-400">Đang tải...</h3>
             </div>
             <span class="px-3 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-800">
               Executed
@@ -552,8 +552,8 @@
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Auction Result - Kết Quả Đấu Thầu Các NHTM</h3>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mô phỏng phản ứng đặt thầu của các Ngân hàng thương mại (Bank A - E)</p>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Kết Quả Đấu Thầu Các NHTM</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mô phỏng phản ứng đặt thầu của các Ngân hàng thương mại (NHTM A - E)</p>
             </div>
           </div>
           <div class="overflow-x-auto -mx-2 sm:mx-0">
@@ -562,8 +562,8 @@
                 <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
                   <th>Tổ chức tín dụng (NHTM)</th>
                   <th>Lãi suất đặt thầu (%/năm)</th>
-                  <th>Khối lượng đặt (Tỷ VND)</th>
-                  <th>Khối lượng trúng thầu (Tỷ VND)</th>
+                  <th>Khối lượng đặt (Tỷ)</th>
+                  <th>Khối lượng trúng thầu (Tỷ)</th>
                   <th>Trạng thái trúng thầu</th>
                 </tr>
               </thead>
@@ -577,16 +577,16 @@
 
         <!-- 1. SBV BILL OUTSTANDING -->
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">SBV BILL OUTSTANDING</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">TÍN PHIẾU NHNN ĐANG LƯU HÀNH</h4>
           <div class="overflow-x-auto">
             <table class="w-full text-xs sim-table border-collapse min-w-[650px]">
               <thead>
                 <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
                   <th class="py-1 text-left font-semibold">ID</th>
-                  <th class="py-1 text-left font-semibold">Issue Date</th>
-                  <th class="py-1 text-left font-semibold">Maturity</th>
-                  <th class="py-1 text-right font-semibold">Rate</th>
-                  <th class="py-1 text-right font-semibold">Remaining Volume</th>
+                  <th class="py-1 text-left font-semibold">Ngày phát hành</th>
+                  <th class="py-1 text-left font-semibold">Ngày đáo hạn</th>
+                  <th class="py-1 text-right font-semibold">Lãi suất (%/năm)</th>
+                  <th class="py-1 text-right font-semibold">Khối lượng đang lưu hành (Tỷ)</th>
                 </tr>
               </thead>
               <tbody id="res-sbv-bill-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
@@ -598,17 +598,17 @@
 
         <!-- 2. REPO / REVERSE REPO OUTSTANDING -->
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">REPO / REVERSE REPO OUTSTANDING</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">KHỐI LƯỢNG LƯU HÀNH TRÊN KÊNH CẦM CỐ</h4>
           <div class="overflow-x-auto">
             <table class="w-full text-xs sim-table border-collapse min-w-[700px]">
               <thead>
                 <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
                   <th class="py-1 text-left font-semibold">ID</th>
-                  <th class="py-1 text-left font-semibold">Issue Date</th>
-                  <th class="py-1 text-left font-semibold">Maturity</th>
-                  <th class="py-1 text-right font-semibold">Rate</th>
-                  <th class="py-1 text-right font-semibold">Volume</th>
-                  <th class="py-1 text-right font-semibold">Price</th>
+                  <th class="py-1 text-left font-semibold">Ngày phát hành</th>
+                  <th class="py-1 text-left font-semibold">Ngày đáo hạn</th>
+                  <th class="py-1 text-right font-semibold">Lãi suất (%/năm)</th>
+                  <th class="py-1 text-right font-semibold">Khối lượng (Tỷ)</th>
+                  <th class="py-1 text-right font-semibold">Giá giao dịch (Tỷ) </th>
                 </tr>
               </thead>
               <tbody id="res-repo-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
@@ -620,16 +620,16 @@
 
         <!-- 3. MATURITY -->
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">MATURITY</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">LỊCH ĐÁO HẠN</h4>
           <div class="overflow-x-auto">
             <table class="w-full text-xs sim-table border-collapse min-w-[650px]">
               <thead>
                 <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
                   <th class="py-1 text-left font-semibold">ID</th>
-                  <th class="py-1 text-left font-semibold">Issue Date</th>
-                  <th class="py-1 text-left font-semibold">Maturity</th>
-                  <th class="py-1 text-right font-semibold">Rate</th>
-                  <th class="py-1 text-right font-semibold">Cash Flow</th>
+                  <th class="py-1 text-left font-semibold">Ngày phát hành</th>
+                  <th class="py-1 text-left font-semibold">Ngày đáo hạn</th>
+                  <th class="py-1 text-right font-semibold">Lãi suất (%/năm)</th>
+                  <th class="py-1 text-right font-semibold">Dòng tiền (Tỷ)</th>
                 </tr>
               </thead>
               <tbody id="res-maturity-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
@@ -639,7 +639,7 @@
             
             <!-- Total Cash Flow Footer -->
             <div class="flex justify-between items-center pt-2 mt-2 border-t border-slate-200 dark:border-slate-700 font-mono text-xs font-bold">
-              <span class="text-slate-700 dark:text-slate-300 uppercase">TOTAL CASH FLOW</span>
+              <span class="text-slate-700 dark:text-slate-300 uppercase">TỔNG DÒNG TIỀN (TỶ)</span>
               <span id="res-total-cash-flow" class="text-rose-600 dark:text-rose-400">0.00</span>
             </div>
           </div>
@@ -649,8 +649,8 @@
         <!-- MACRO IMPACT ANALYSIS -->
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-4">
           <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Macro Impact Analysis (Phân Tích Tác Động Vĩ Mô)</h3>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">So sánh lãi suất liên ngân hàng trước và sau quyết định OMO.</p>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Phân Tích Tác Động Vĩ Mô</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">So sánh lãi suất liên ngân hàng trước và sau quyết định OMO</p>
           </div>
 
           <div class="space-y-2">
@@ -665,15 +665,15 @@
               <thead>
                 <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
                   <th>Chỉ số Vĩ mô / Thị trường</th>
-                  <th>Trước OMO (Pre)</th>
-                  <th>Sau OMO (Post)</th>
+                  <th>Trước OMO</th>
+                  <th>Sau OMO</th>
                   <th>Thay đổi (Delta)</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                 <tr class="bg-emerald-50/50 dark:bg-sky-950/30">
                   <td class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                    <span>Interbank Rate (Lãi suất LNH)</span>
+                    <span>Lãi suất LNH (%)</span>
                   </td>
                   <td id="row-pre-rate" class="font-mono">3.95%</td>
                   <td id="row-post-rate" class="font-mono font-bold text-emerald-600 dark:text-sky-400">3.80%</td>
@@ -687,7 +687,7 @@
         <div class="flex justify-end pt-2">
           <button id="btn-next-phase" onclick="nextPhase()" 
                   class="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-            <span>PROCEED TO PHASE 2</span>
+            <span>TIẾP TỤC ĐẾN MÀN 2</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </button>
         </div>
@@ -700,14 +700,14 @@
           <!-- Top Badge -->
           <div>
             <span class="px-4 py-1.5 rounded-full bg-emerald-100 dark:bg-sky-950 text-emerald-800 dark:text-sky-300 text-xs font-bold tracking-wider uppercase">
-              FINAL SIMULATION REPORT
+              TỔNG KẾT LƯỢT CHƠI
             </span>
           </div>
           
           <!-- Title & Team Header -->
           <div class="space-y-1">
             <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-              GAME COMPLETED!
+              HOÀN THÀNH LƯỢT CHƠI!
             </h2>
             <p id="summary-team-title" class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-sky-400">
               Team: Nhóm 1 – Central Bankers
@@ -716,7 +716,7 @@
 
           <!-- Subtitle Description -->
           <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-xl mx-auto font-medium leading-relaxed">
-            Bạn đã hoàn thành xuất sắc 3 Phase điều hành Nghiệp vụ Thị trường Mở (OMO) với tư cách Ban Điều hành NHNN.
+            Bạn đã hoàn thành xuất sắc 3 màn với nhiệm vụ điều hành Nghiệp vụ Thị trường Mở (OMO).
           </p>
 
           <!-- 3 PHASE SCORE CARDS ROW -->
@@ -743,13 +743,13 @@
               GOVERNOR'S OVERALL REVIEW:
             </h4>
             <p id="final-review-text" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-              XUẤT SẮC! Ban Điều hành đã điều tiết lượng cung tiền linh hoạt qua 3 Phase. Lãi suất liên ngân hàng được duy trì ổn định quanh mục tiêu, kiểm soát hiệu quả lạm phát và giữ vững tăng trưởng GDP.
+              XUẤT SẮC! Ban Điều hành đã điều tiết lượng cung tiền linh hoạt qua 3 màn Lãi suất liên ngân hàng được duy trì ổn định quanh mục tiêu, kiểm soát hiệu quả lạm phát và giữ vững tăng trưởng GDP.
             </p>
           </div>
 
           <div class="pt-2">
             <button onclick="resetGame()" class="w-full sm:w-auto px-10 py-3.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-black rounded-xl transition text-sm shadow-lg">
-              RESTART SIMULATION
+              BẮT ĐẦU LẠI
             </button>
           </div>
         </div>
@@ -891,7 +891,7 @@ function renderMaturityEventsTable(events) {
     body.innerHTML = `
       <tr>
         <td colspan="5" class="text-center py-2 text-slate-400">
-          Không có sự kiện đáo hạn trong Phase này
+          Không có khối lượng đáo hạn trong màn này
         </td>
       </tr>
     `;
@@ -1000,7 +1000,7 @@ function renderMaturityEventsTable(events) {
 
     const phaseConfig = {
       1: {
-        title: "Phase 1",
+        title: "Màn 1",
         scenario: `
           <div class="space-y-3">
 
@@ -1076,7 +1076,7 @@ function renderMaturityEventsTable(events) {
         }
       },
       2: {
-        title: "Phase 2",
+        title: "Màn 2",
         scenario: `
           <div class="space-y-3">
 
@@ -1163,7 +1163,7 @@ function renderMaturityEventsTable(events) {
         }
       },
       3: {
-        title: "Phase 3",
+        title: "Màn 3",
         scenario: `
           <div class="space-y-3">
 
@@ -1459,7 +1459,7 @@ function renderMaturityEventsTable(events) {
         }
     function switchTab(tabName) {
       if (tabName === 'results' && !isResultUnlocked) {
-        showToast("⚠️ Vui lòng nhấn 'SUBMIT OMO DECISION' ở Tab Decisions trước khi xem Kết quả!", "warning");
+        showToast("⚠️ Vui lòng nhấn 'GỬI QUYẾT ĐỊNH' ở thẻ Quyết định trước khi xem Kết quả!", "Cảnh báo");
         return;
       }
 
@@ -1537,8 +1537,8 @@ function renderMaturityEventsTable(events) {
           else interbankHistory.push(historyPoint);
           interbankHistory.sort((a, b) => a.phase - b.phase);
           renderChart();
-          document.getElementById('res-eval-title').innerText = `Phase ${currentPhase} Executed`;
-          document.getElementById('res-eval-title').innerText = `Phase ${currentPhase} Executed`;
+          document.getElementById('res-eval-title').innerText = `Quyết định đưa ra trong màn ${currentPhase} đã được thực thi`;
+          document.getElementById('res-eval-title').innerText = `Quyết định đưa ra trong màn ${currentPhase} đã được thực thi`;
           const policyExplanation = buildPolicyExplanation(result, action, volume, pre);
 
           document.getElementById('res-analysis').innerText = policyExplanation;
@@ -1568,18 +1568,18 @@ function renderMaturityEventsTable(events) {
     
           const nextBtn = document.getElementById('btn-next-phase');
           if (currentPhase < 3) {
-            nextBtn.innerHTML = `<span>PROCEED TO PHASE ${currentPhase + 1}</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>`;
+            nextBtn.innerHTML = `<span>TIẾP TỤC ĐẾN MÀN ${currentPhase + 1}</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>`;
           } else {
-            nextBtn.innerHTML = `<span>VIEW FINAL SIMULATION REPORT</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            nextBtn.innerHTML = `<span>XEM TỔNG KẾT LƯỢT CHƠI</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
           }
     
-          showToast(`Đã chạy xong mô phỏng Python cho ${cfg.title}!`, "success");
+          showToast(`Đã chạy xong mô phỏng cho ${cfg.title}!`, "success");
           switchTab('results');
         } else {
-          showToast('Lỗi từ Python Backend: ' + result.message, 'warning');
+          showToast('Lỗi từ Backend: ' + result.message, 'warning');
         }
       } catch (err) {
-        showToast('Lỗi kết nối API tới server Python!', 'warning');
+        showToast('Lỗi kết nối API!', 'warning');
         console.error(err);
       }
     }
@@ -1639,10 +1639,8 @@ function renderMaturityEventsTable(events) {
     
       /*
        * Maturity description
-       *
        * Không có maturity:
-       *   "Trong giai đoạn này không có khối lượng đáo hạn."
-       *
+       *   "Trong giai đoạn này không có khối lượng đáo hạn.
        * Có maturity:
        *   Dựa vào dấu của maturity_volume để mô tả đúng tác động.
        */
@@ -1663,7 +1661,6 @@ function renderMaturityEventsTable(events) {
        * Với trường hợp đáo hạn:
        *   shortage tăng nếu maturity < 0
        *   shortage giảm nếu maturity > 0
-       *
        * Vì vậy liquidityAfterMaturity là mức thiếu/dư
        * thực tế trước khi OMO hiện tại được thực hiện.
        */
@@ -1876,11 +1873,11 @@ function renderMaturityEventsTable(events) {
 
       const reviewText = document.getElementById('final-review-text');
       if (avgScore >= 90) {
-        reviewText.innerText = `XUẤT SẮC (${avgScore}/100)! Ban Điều hành ${teamName} đã điều tiết cung tiền linh hoạt qua 3 Phase. Lãi suất liên ngân hàng được duy trì ổn định quanh mục tiêu, kiểm soát hiệu quả lạm phát và giữ vững đà tăng trưởng vĩ mô.`;
+        reviewText.innerText = `XUẤT SẮC (${avgScore}/100)! Ban Điều hành ${teamName} đã điều tiết cung tiền linh hoạt qua 3 màn. Lãi suất liên ngân hàng được duy trì ổn định quanh mục tiêu, kiểm soát hiệu quả lạm phát và giữ vững đà tăng trưởng vĩ mô.`;
       } else if (avgScore >= 75) {
         reviewText.innerText = `KHÁ (Đạt ${avgScore}/100). Ban Điều hành ${teamName} đã cơ bản đáp ứng thanh khoản hệ thống. Cần chú ý tinh chỉnh khối lượng chào thầu sát hơn để tối ưu hóa hiệu quả truyền dẫn điều hành.`;
       } else {
-        reviewText.innerText = `CẦN CẢI THIỆN (${avgScore}/100). Quyết định bơm/rút tiền ở các Phase chưa bám sát nhu cầu thanh khoản thực tế, khiến lãi suất liên ngân hàng biến động mạnh.`;
+        reviewText.innerText = `CẦN CẢI THIỆN (${avgScore}/100). Quyết định bơm/rút tiền ở các màn chưa bám sát nhu cầu thanh khoản thực tế, khiến lãi suất liên ngân hàng biến động mạnh.`;
       }
     }
     
@@ -1900,7 +1897,7 @@ function renderMaturityEventsTable(events) {
       chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: interbankHistory.map(p => `Phase ${p.phase}`),
+          labels: interbankHistory.map(p => `Màn ${p.phase}`),
           datasets: [{
             label: 'Interbank Rate (%)',
             data: interbankHistory.map(p => p.rate),
