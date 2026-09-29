@@ -546,6 +546,41 @@
               </p>
             </div>
 
+            <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
+                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 inline-flex items-center">
+                  Lịch đáo hạn
+                  <button
+                    type="button"
+                    class="learning-help"
+                    onclick="openLearningCard('maturity')"
+                    aria-label="Tìm hiểu về lịch đáo hạn"
+                  >
+                    ?
+                  </button>
+                </h3>
+                <span id="mat-issue-date" class="text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400">Ngày phát hành: 02/02/2025</span>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs sim-table border-collapse">
+                  <thead>
+                    <tr class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 text-[11px] font-bold">
+                      <th class="py-1.5 px-2 text-left">Công cụ</th>
+                      <th class="py-1.5 px-2 text-center">Khối lượng (Tỷ)</th>
+                      <th class="py-1.5 px-2 text-right">Lãi suất (%/năm)</th>
+                      <th class="py-1.5 px-2 text-right">Ngày đáo hạn</th>
+                    </tr>
+                  </thead>
+                  <tbody id="maturity-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-[11px]">
+                    <tr>
+                      <td colspan="3" class="text-center py-2 text-slate-400">Đang tải...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-2 text-xs">
               <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">Chỉ số Vĩ mô / Thị trường</h3>
               <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
@@ -589,41 +624,6 @@
               </div>
             </div>
 
-            <div class="app-card rounded-xl p-3.5 sm:p-4 space-y-3">
-              <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
-                <h3 class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 inline-flex items-center">
-                  Lịch đáo hạn
-                  <button
-                    type="button"
-                    class="learning-help"
-                    onclick="openLearningCard('maturity')"
-                    aria-label="Tìm hiểu về lịch đáo hạn"
-                  >
-                    ?
-                  </button>
-                </h3>
-                <span id="mat-issue-date" class="text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400">Ngày phát hành: 02/02/2025</span>
-              </div>
-              
-              <div class="overflow-x-auto">
-                <table class="w-full text-xs sim-table border-collapse">
-                  <thead>
-                    <tr class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 text-[11px] font-bold">
-                      <th class="py-1.5 px-2 text-left">Công cụ</th>
-                      <th class="py-1.5 px-2 text-center">Khối lượng (Tỷ)</th>
-                      <th class="py-1.5 px-2 text-right">Lãi suất (%/năm)</th>
-                      <th class="py-1.5 px-2 text-right">Ngày đáo hạn</th>
-                    </tr>
-                  </thead>
-                  <tbody id="maturity-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-[11px]">
-                    <tr>
-                      <td colspan="3" class="text-center py-2 text-slate-400">Đang tải...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
             <div class="pt-2 flex justify-end">
               <button onclick="switchTab('decisions')" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-sky-600 dark:hover:bg-sky-500 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
                 <span>RA QUYẾT ĐỊNH NGHIỆP VỤ THỊ TRƯỜNG MỞ</span>
@@ -881,11 +881,10 @@
                   <th class="py-1 text-left font-semibold">Ngày đáo hạn</th>
                   <th class="py-1 text-right font-semibold">Lãi suất (%/năm)</th>
                   <th class="py-1 text-right font-semibold">Khối lượng (Tỷ)</th>
-                  <th class="py-1 text-right font-semibold">Giá giao dịch (Tỷ) </th>
                 </tr>
               </thead>
               <tbody id="res-repo-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
-                <tr><td colspan="6" class="text-center py-2 text-slate-400">Trống</td></tr>
+                <tr><td colspan="5" class="text-center py-2 text-slate-400">Trống</td></tr>
               </tbody>
             </table>
           </div>
@@ -2036,10 +2035,8 @@ function renderMaturityEventsTable(events) {
 
     function resetGame() {
       // =========================
-      // 1. XÓA SESSION CỦA GAME
+      // 1. RESET SESSION STATE
       // =========================
-      clearGameSession();
-    
       completedPhases = [];
       phaseResults = {};
     
