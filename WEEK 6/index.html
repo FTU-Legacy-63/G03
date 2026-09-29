@@ -1119,7 +1119,7 @@ function renderRepoTable(repos) {
   if (!Array.isArray(repos) || repos.length === 0) {
     body.innerHTML = `
       <tr>
-        <td colspan="6" class="text-center py-2 text-slate-400">
+        <td colspan="5" class="text-center py-2 text-slate-400">
           Trống
         </td>
       </tr>
@@ -1128,14 +1128,11 @@ function renderRepoTable(repos) {
   }
 
   let totalVolume = 0;
-  let totalPrice = 0;
 
   const rows = repos.map(r => {
     const volume = Number(r.remaining_volume || 0);
-    const price = Number(r.initial_price || 0);
 
     totalVolume += volume;
-    totalPrice += price;
 
     return `
       <tr>
@@ -1158,10 +1155,6 @@ function renderRepoTable(repos) {
         <td class="py-1 text-right">
           ${volume.toLocaleString()}
         </td>
-
-        <td class="py-1 text-right font-bold text-sky-600 dark:text-sky-400">
-          ${price.toFixed(2)}
-        </td>
       </tr>
     `;
   }).join('');
@@ -1180,9 +1173,6 @@ function renderRepoTable(repos) {
         ${totalVolume.toLocaleString()}
       </td>
 
-      <td class="py-1.5 text-right font-extrabold text-sky-600 dark:text-sky-400">
-        ${totalPrice.toFixed(2)}
-      </td>
     </tr>
   `;
 }
