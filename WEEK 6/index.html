@@ -94,6 +94,100 @@
     .animate-slide-down {
       animation: slideDown 0.3s forwards ease-out;
     }
+    /* Responsive fit: keep the simulator inside the visible viewport. */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    
+    header,
+    main,
+    #slide-app,
+    #slide-app section,
+    .grid,
+    .app-card,
+    .lg\:col-span-5,
+    .lg\:col-span-7,
+    .lg\:col-span-8,
+    .lg\:col-span-4 {
+      min-width: 0;
+    }
+    
+    #nav-tabs {
+      max-width: 100%;
+    }
+    
+    .sim-table {
+      width: 100%;
+      max-width: 100%;
+      table-layout: auto;
+    }
+    
+    .sim-table th,
+    .sim-table td {
+      white-space: normal;
+      overflow-wrap: anywhere;
+      vertical-align: middle;
+    }
+    
+    @media (max-width: 1180px) {
+      body {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+      }
+    
+      header,
+      main {
+        max-width: 100% !important;
+      }
+    
+      .sim-table {
+        font-size: 10px;
+      }
+    
+      .sim-table th,
+      .sim-table td {
+        padding: 7px 6px;
+      }
+    
+      #nav-tabs button {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+    }
+    
+    @media (max-width: 900px) {
+      header {
+        align-items: stretch;
+      }
+    
+      header > div {
+        max-width: 100%;
+      }
+    
+      #phase-stepper,
+      #nav-tabs {
+        width: 100%;
+        justify-content: center;
+      }
+    
+      #nav-tabs button {
+        flex: 1 1 0;
+      }
+    
+      .sim-table {
+        table-layout: fixed;
+      }
+    
+      .sim-table th,
+      .sim-table td {
+        padding: 6px 4px;
+        font-size: 9px;
+      }
+    
+      .overflow-x-auto {
+        max-width: 100%;
+      }
+    }
         /* =========================
        LEARNING CARD - HELP BUTTON
        ========================= */
