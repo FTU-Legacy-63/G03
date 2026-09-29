@@ -973,9 +973,11 @@ function renderPythonPhaseState(state) {
   renderMaturityEventsTable(state.maturity_events || []);
 
   // 4. Đồng bộ bảng Schedule of Maturity bên Indicators
-  renderMaturityTable(state.tbill_inventory || []);
+  renderMaturityTable(
+    state.tbill_inventory || [],
+    state.repo_inventory || []
+  );
 }
-
 
 function renderSBVBillTable(bills) {
   const body = document.getElementById('res-sbv-bill-body');
@@ -1909,8 +1911,11 @@ function renderMaturityEventsTable(events) {
           document.getElementById('phase-stepper').classList.remove('hidden');
           document.getElementById('nav-tabs').classList.remove('hidden');
     
-          if (data.tbill_inventory) {
-            renderMaturityTable(data.tbill_inventory);
+          if (data.tbill_inventory || data.repo_inventory) {
+            renderMaturityTable(
+              data.tbill_inventory || [],
+              data.repo_inventory || []
+            );
           }
     
           loadPhase(1);
@@ -2704,37 +2709,148 @@ function renderMaturityEventsTable(events) {
     window.nextPhase = nextPhase;
     window.showSummary = showSummary;
 
-    function renderMaturityTable(tbillList) {
-      const tbody = document.getElementById('maturity-table-body');
+    function renderMaturityTable(
+      tbillList = [],
+      repoList = []
+    ) {
+      const tbody =
+        document.getElementById('maturity-table-body');
+    
+      const issueDateEl =
+        document.getElementById('mat-issue-date');
+    
       if (!tbody) return;
-      
-      if (!tbillList || tbillList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-2 text-slate-400">Không có tín phiếu đang lưu hành</td></tr>`;
-        return;
+    
+      const bills =
+        Array.isArray(tbillList)
+          ? tbillList
+          : [];
+    
+      const repos =
+        Array.isArray(repoList)
+          ? repoList
+          : [];
+    
+      const rows = [];
+    
+      // =========================
+      // 1. T-BILL ĐANG LƯU HÀNH
+      // =========================
+      bills.forEach(tb => {
+        const volume = Number(
+          tb.remaining_volume ??
+          tb.volume ??
+          0
+        );
+    
+        if (volume <= 0) return;
+    
+        rows.push({
+          id: tb.sbv_bill_id || 'SBV Bill',
+          type: 'SBV Bill',
+          volume,
+          rate: Number(tb.rate ?? 0),
+          maturity: tb.maturity_date || '-'
+        });
+      });
+    
+      // =========================
+      // 2. REPO / REVERSE REPO
+      // =========================
+      repos.forEach(r => {
+        const volume = Number(
+          r.remaining_volume ??
+          r.volume ??
+          0
+        );
+    
+        if (volume <= 0) return;
+    
+        rows.push({
+          id: r.repo_id ||
+             'Repo / Reverse Repo',
+          type: 'Repo / Reverse Repo',
+          volume,
+          rate: Number(r.rate ?? 0),
+          maturity: r.maturity_date || '-'
+        });
+      });
+    
+      // Đáo hạn gần nhất lên trước
+      rows.sort(
+        (a, b) =>
+          String(a.maturity)
+            .localeCompare(String(b.maturity))
+      );
+    
+      // Ngày quan sát
+      if (issueDateEl) {
+        issueDateEl.textContent =
+          `Outstanding • ${formatChartDate(
+            getPhaseDate(lastCompletedPhase)
+          )}`;
       }
-
-      let html = '';
-      tbillList.forEach(tb => {
-        html += `
+    
+      if (rows.length === 0) {
+        tbody.innerHTML = `
           <tr>
-            <td class="font-sans font-semibold py-1.5 px-2 text-left text-slate-800 dark:text-slate-200">
-              ${tb.sbv_bill_id}
-            </td>
-            <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-sky-400">
-              ${tb.remaining_volume.toLocaleString()}
-            </td>
-            <td class="py-1.5 px-2 text-right text-slate-700 dark:text-slate-300">
-              ${tb.rate.toFixed(2)}%
-            </td>
-            <td class="py-1.5 px-2 text-right font-mono text-slate-600 dark:text-slate-400">
-              ${tb.maturity_date}
+            <td
+              colspan="4"
+              class="text-center py-2 text-slate-400"
+            >
+              Không có công cụ đang lưu hành
             </td>
           </tr>
         `;
-      });
-      tbody.innerHTML = html;
-    }
+        return;
+      }
     
+      tbody.innerHTML = rows.map(row => `
+        <tr>
+          <td class="py-1.5 px-2 text-left">
+            <span
+              class="font-sans font-semibold
+                     text-slate-800 dark:text-slate-200"
+            >
+              ${row.id}
+            </span>
+    
+            <span
+              class="block text-[9px]
+                     text-slate-400"
+            >
+              ${row.type}
+            </span>
+          </td>
+    
+          <td
+            class="py-1.5 px-2 text-right
+                   font-bold
+                   text-emerald-600
+                   dark:text-sky-400"
+          >
+            ${row.volume.toLocaleString()}
+          </td>
+    
+          <td
+            class="py-1.5 px-2 text-right
+                   text-slate-700
+                   dark:text-slate-300"
+          >
+            ${row.rate.toFixed(2)}%
+          </td>
+    
+          <td
+            class="py-1.5 px-2 text-right
+                   font-mono
+                   text-slate-600
+                   dark:text-slate-400"
+          >
+            ${row.maturity}
+          </td>
+        </tr>
+      `).join('');
+    }
      // TEMPORARY DEBUG - Decision Contract
     function debugDecisionContract() {
       const method = document.getElementById('auctionMethod').value;
