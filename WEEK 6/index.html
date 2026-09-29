@@ -1914,7 +1914,15 @@ function renderMaturityEventsTable(events) {
           }
     
           loadPhase(1);
-          interbankHistory = [{ phase: 1, rate: Number(phaseConfig[1].preMetrics.rate) }];
+          interbankHistory = [
+            {
+              date: getPhaseDate(0),
+              rate: Number(
+                data.interbank_rate ??
+                phaseConfig[1].preMetrics.rate
+              )
+            }
+          ];
           renderChart();
           switchTab('indicators');
           showToast(`Chào mừng ${teamName}!`, 'info');
@@ -2178,11 +2186,40 @@ function renderMaturityEventsTable(events) {
             resBtn.title = "Xem kết quả OMO";
           }
           renderPythonPhaseState(result);
-          const existingHistoryIndex = interbankHistory.findIndex(p => p.phase === currentPhase);
-          const historyPoint = { phase: currentPhase, rate: Number(result.interbank_rate) };
-          if (existingHistoryIndex >= 0) interbankHistory[existingHistoryIndex] = historyPoint;
-          else interbankHistory.push(historyPoint);
-          interbankHistory.sort((a, b) => a.phase - b.phase);
+          
+          lastCompletedPhase = currentPhase;
+
+          // Cập nhật lãi suất hiện tại
+          const indInterbank =
+            document.getElementById('ind-interbank');
+          
+          if (indInterbank) {
+            indInterbank.innerText =
+              `${Number(result.interbank_rate).toFixed(2)}%`;
+          }
+          
+          // Thêm điểm mới theo ngày
+          const historyDate = getPhaseDate(currentPhase);
+          
+          const existingHistoryIndex =
+            interbankHistory.findIndex(
+              p => p.date === historyDate
+            );
+          const historyPoint = {
+            date: historyDate,
+            rate: Number(result.interbank_rate)
+          };
+          if (existingHistoryIndex >= 0) {
+            interbankHistory[existingHistoryIndex] =
+              historyPoint;
+          } else {
+            interbankHistory.push(historyPoint);
+          }
+          interbankHistory.sort(
+            (a, b) => a.date.localeCompare(b.date)
+          );
+          
+          renderChart();
           renderChart();
           document.getElementById('res-eval-title').innerText = `Quyết định đưa ra trong màn ${currentPhase} đã được thực thi`;
           document.getElementById('res-eval-title').innerText = `Quyết định đưa ra trong màn ${currentPhase} đã được thực thi`;
@@ -2576,7 +2613,25 @@ function renderMaturityEventsTable(events) {
         reviewText.innerText = `CẦN CẢI THIỆN (${avgScore}/100). Quyết định bơm/rút tiền ở các màn chưa bám sát nhu cầu thanh khoản thực tế, khiến lãi suất liên ngân hàng biến động mạnh.`;
       }
     }
+    function getPhaseDate(pointIndex) {
+      // Ngày bắt đầu mô phỏng: 02/02/2025
+      // Mỗi Phase cách nhau 30 ngày
+      const start = new Date(Date.UTC(2025, 1, 2));
     
+      start.setUTCDate(
+        start.getUTCDate() + (Number(pointIndex || 0) * 30)
+      );
+    
+      return start.toISOString().slice(0, 10);
+    }
+    
+    function formatChartDate(isoDate) {
+      if (!isoDate) return '-';
+    
+      const [y, m, d] = isoDate.split('-');
+    
+      return `${d}/${m}/${y}`;
+    }
     function renderChart() {
       const ctx = document.getElementById('indicatorsChart');
       if (!ctx) return;
@@ -2593,7 +2648,7 @@ function renderMaturityEventsTable(events) {
       chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: interbankHistory.map(p => `Màn ${p.phase}`),
+          labels: interbankHistory.map(p => formatChartDate(p.date)),
           datasets: [{
             label: 'Interbank Rate (%)',
             data: interbankHistory.map(p => p.rate),
