@@ -94,6 +94,31 @@
     .animate-slide-down {
       animation: slideDown 0.3s forwards ease-out;
     }
+  
+    /* Responsive fit: keep the simulator inside the visible viewport. */
+    *, *::before, *::after { box-sizing: border-box; }
+    header, main, #slide-app, #slide-app section, .grid, .app-card, .lg\:col-span-5, .lg\:col-span-7, .lg\:col-span-8, .lg\:col-span-4 { min-width: 0; }
+    #nav-tabs { max-width: 100%; }
+    .sim-table { width: 100%; max-width: 100%; table-layout: auto; }
+    .sim-table th, .sim-table td { white-space: normal; overflow-wrap: anywhere; vertical-align: middle; }
+
+    @media (max-width: 1180px) {
+      body { padding-left: 12px !important; padding-right: 12px !important; }
+      header, main { max-width: 100% !important; }
+      .sim-table { font-size: 10px; }
+      .sim-table th, .sim-table td { padding: 7px 6px; }
+      #nav-tabs button { padding-left: 8px; padding-right: 8px; }
+    }
+
+    @media (max-width: 900px) {
+      header { align-items: stretch; }
+      header > div { max-width: 100%; }
+      #phase-stepper, #nav-tabs { width: 100%; justify-content: center; }
+      #nav-tabs button { flex: 1 1 0; }
+      .sim-table { table-layout: fixed; }
+      .sim-table th, .sim-table td { padding: 6px 4px; font-size: 9px; }
+      .overflow-x-auto { max-width: 100%; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between p-2 sm:p-4 md:p-6 transition-colors duration-200">
@@ -556,7 +581,7 @@
         <div class="app-card rounded-2xl p-4 sm:p-5 space-y-3">
           <h4 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800 pb-2">REPO / REVERSE REPO OUTSTANDING</h4>
           <div class="overflow-x-auto">
-            <table class="w-full text-xs sim-table border-collapse min-w-[700px]">
+            <table class="w-full text-xs sim-table border-collapse">
               <thead>
                 <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700 font-bold">
                   <th class="py-1 text-left font-semibold">ID</th>
@@ -564,11 +589,10 @@
                   <th class="py-1 text-left font-semibold">Maturity</th>
                   <th class="py-1 text-right font-semibold">Rate</th>
                   <th class="py-1 text-right font-semibold">Volume</th>
-                  <th class="py-1 text-right font-semibold">Price</th>
                 </tr>
               </thead>
               <tbody id="res-repo-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
-                <tr><td colspan="6" class="text-center py-2 text-slate-400">Trống</td></tr>
+                <tr><td colspan="5" class="text-center py-2 text-slate-400">Trống</td></tr>
               </tbody>
             </table>
           </div>
@@ -832,9 +856,6 @@ function renderRepoTable(repos) {
         ${Number(r.remaining_volume || 0).toLocaleString()}
       </td>
 
-      <td class="py-1 text-right font-bold text-sky-600 dark:text-sky-400">
-        ${Number(r.initial_price || 0).toFixed(2)}
-      </td>
     </tr>
   `).join('');
 }
@@ -1362,9 +1383,14 @@ function renderMaturityEventsTable(events) {
         macroResultsChartInstance = null;
       }
 
-      document.getElementById('slide-app').classList.add('hidden');
+      // Return cleanly to the title screen so a brand-new game can be started.
+      document.getElementById('tab-content-indicators').classList.remove('hidden');
+      document.getElementById('tab-content-decisions').classList.add('hidden');
+      document.getElementById('tab-content-results').classList.add('hidden');
       document.getElementById('tab-content-summary').classList.add('hidden');
+      document.getElementById('slide-app').classList.add('hidden');
       document.getElementById('slide-title').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
       document.getElementById('header-team-badge').classList.add('hidden');
       document.getElementById('phase-stepper').classList.add('hidden');
@@ -1401,6 +1427,20 @@ function renderMaturityEventsTable(events) {
             decisionBtn.innerHTML = "Decisions";
             decisionBtn.title = "Mở OMO Decision Console";
           }
+
+          // Every new Phase starts with a fresh editable Decision Console.
+          // Phase 1's submitted controls were disabled, so explicitly re-enable them here.
+          ['auctionMethod', 'pricingMechanism', 'omoAction', 'volumeInput', 'inputRate'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = false;
+          });
+          const submitBtn = document.querySelector('#tab-content-decisions button[onclick="submitDecision()"]');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'SUBMIT OMO DECISION';
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+
           const resBtn = document.getElementById('tab-btn-results');
           if (resBtn) {
             resBtn.disabled = true;
@@ -1467,11 +1507,8 @@ function renderMaturityEventsTable(events) {
           if (typeof renderChart === 'function') renderChart();
         }
     function switchTab(tabName) {
-      if (tabName === 'decisions' && isDecisionLocked) {
-        showToast("🔒 Decision đã được chốt cho Phase này và không thể quay lại!", "warning");
-        return;
-      }
-
+      // After submission, the Decisions tab remains viewable as read-only.
+      // Editing is prevented by disabling the form controls and submit button.
       if (tabName === 'results' && !isResultUnlocked) {
         showToast("⚠️ Vui lòng nhấn 'SUBMIT OMO DECISION' ở Tab Decisions trước khi xem Kết quả!", "warning");
         return;
@@ -1489,7 +1526,7 @@ function renderMaturityEventsTable(events) {
           if (t === 'results' && !isResultUnlocked) {
             btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
           } else if (t === 'decisions' && isDecisionLocked) {
-            btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap";
           } else {
             btn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap";
           }
@@ -1551,10 +1588,10 @@ function renderMaturityEventsTable(events) {
           // This prevents changing the decision after seeing the result.
           const decisionBtn = document.getElementById('tab-btn-decisions');
           if (decisionBtn) {
-            decisionBtn.disabled = true;
+            decisionBtn.disabled = false;
             decisionBtn.innerHTML = "Decisions 🔒";
-            decisionBtn.title = "Decision đã được chốt cho Phase này";
-            decisionBtn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50 whitespace-nowrap";
+            decisionBtn.title = "Xem lại decision đã chốt (chỉ đọc)";
+            decisionBtn.className = "px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap";
           }
           ['auctionMethod', 'pricingMechanism', 'omoAction', 'volumeInput', 'inputRate'].forEach(id => {
             const el = document.getElementById(id);
@@ -1611,6 +1648,16 @@ function renderMaturityEventsTable(events) {
               </tr>
             `;
           });
+          const totalBidVolume = result.bids.reduce((sum, b) => sum + Number(b.bid_volume || 0), 0);
+          const totalWonVolume = result.bids.reduce((sum, b) => sum + Number(b.real_volume || 0), 0);
+          bidsHtml += `
+            <tr class="bg-slate-100 dark:bg-slate-800 border-t-2 border-slate-300 dark:border-slate-600 font-bold">
+              <td class="font-black text-slate-900 dark:text-white font-sans">TOTAL</td>
+              <td class="text-slate-400">—</td>
+              <td class="font-black text-slate-900 dark:text-white">${totalBidVolume.toLocaleString()} Tỷ</td>
+              <td class="font-black text-emerald-600 dark:text-sky-400">${totalWonVolume.toLocaleString()} Tỷ</td>
+              <td class="text-slate-400 font-sans">—</td>
+            </tr>`;
           bidsTableBody.innerHTML = bidsHtml;
     
           renderMacroResultsChart(pre.rate, result.interbank_rate, pre.dep, pre.dep, pre.cpi, pre.cpi);
