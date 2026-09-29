@@ -2035,19 +2035,140 @@ function renderMaturityEventsTable(events) {
     }
 
     function resetGame() {
+      // =========================
+      // 1. XÓA SESSION CỦA GAME
+      // =========================
+      clearGameSession();
+    
+      completedPhases = [];
+      phaseResults = {};
+    
+      initialGameState = {
+        tbill_inventory: [],
+        repo_inventory: []
+      };
+    
+      viewingPhase = null;
+      activeTab = 'indicators';
+    
+      // =========================
+      // 2. RESET GAME STATE
+      // =========================
       currentPhase = 1;
-      scores = { p1: null, p2: null, p3: null };
+      lastCompletedPhase = 0;
+    
+      scores = {
+        p1: null,
+        p2: null,
+        p3: null
+      };
+    
       interbankHistory = [];
+    
       isResultUnlocked = false;
-      gameEngine = new CentralBankGameEngine();
-
-      document.getElementById('slide-app').classList.add('hidden');
-      document.getElementById('tab-content-summary').classList.add('hidden');
-      document.getElementById('slide-title').classList.remove('hidden');
-
-      document.getElementById('header-team-badge').classList.add('hidden');
-      document.getElementById('phase-stepper').classList.add('hidden');
-      document.getElementById('nav-tabs').classList.add('hidden');
+      isDecisionLocked = false;
+    
+      lastPythonState = null;
+    
+      // =========================
+      // 3. HỦY CHART CŨ
+      // =========================
+      if (chartInstance) {
+        chartInstance.destroy();
+        chartInstance = null;
+      }
+    
+      if (macroResultsChartInstance) {
+        macroResultsChartInstance.destroy();
+        macroResultsChartInstance = null;
+      }
+    
+      // =========================
+      // 4. QUAY VỀ MÀN HÌNH BẮT ĐẦU
+      // =========================
+      document
+        .getElementById('tab-content-indicators')
+        .classList.remove('hidden');
+    
+      document
+        .getElementById('tab-content-decisions')
+        .classList.add('hidden');
+    
+      document
+        .getElementById('tab-content-results')
+        .classList.add('hidden');
+    
+      document
+        .getElementById('tab-content-summary')
+        .classList.add('hidden');
+    
+      document
+        .getElementById('slide-app')
+        .classList.add('hidden');
+    
+      document
+        .getElementById('slide-title')
+        .classList.remove('hidden');
+    
+      // =========================
+      // 5. ẨN HEADER GAME
+      // =========================
+      document
+        .getElementById('header-team-badge')
+        .classList.add('hidden');
+    
+      document
+        .getElementById('phase-stepper')
+        .classList.add('hidden');
+    
+      document
+        .getElementById('nav-tabs')
+        .classList.add('hidden');
+    
+      // =========================
+      // 6. MỞ LẠI FORM DECISION
+      // =========================
+      const decisionBtn =
+        document.getElementById('tab-btn-decisions');
+    
+      if (decisionBtn) {
+        decisionBtn.disabled = false;
+        decisionBtn.innerHTML = 'Decisions';
+        decisionBtn.title = '';
+      }
+    
+      [
+        'auctionMethod',
+        'pricingMechanism',
+        'omoAction',
+        'volumeInput',
+        'inputRate'
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = false;
+      });
+    
+      const submitBtn = document.querySelector(
+        '#tab-content-decisions button[onclick="submitDecision()"]'
+      );
+    
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'SUBMIT OMO DECISION';
+    
+        submitBtn.classList.remove(
+          'opacity-50',
+          'cursor-not-allowed'
+        );
+      }
+    
+      // =========================
+      // 7. CUỘN VỀ ĐẦU
+      // =========================
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
 
     function loadPhase(phaseNum) {
