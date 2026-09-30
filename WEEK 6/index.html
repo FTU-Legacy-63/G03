@@ -2531,8 +2531,26 @@ function renderMaturityEventsTable(events) {
       const preRate = Number(result.previous_interbank_rate ?? pre.rate ?? 0);
       const postRate = Number(result.interbank_rate ?? 0);
     
-      // Nhu cầu thanh khoản trước khi xét OMO hiện tại
-      const realLiquidityDemand = Number(result.real_liquidity_demand ?? 0);
+      // Scenario Liquidity Demand do Python Engine xác định theo Phase
+      const scenarioLiquidityDemand =
+        Number(result.scenario_liquidity_demand ?? 0);
+    
+      // Phần thiếu hụt thanh khoản còn lại từ Phase trước
+      const unmetFromPreviousPhase =
+        Number(result.unmet_from_previous_phase ?? 0);
+    
+      // Nhu cầu thanh khoản thực tế trước khi xét OMO hiện tại
+      const realLiquidityDemand =
+        Number(result.real_liquidity_demand ?? 0);
+    
+      console.log("=== LIQUIDITY DEMAND ===");
+      console.log("Scenario:", scenarioLiquidityDemand);
+      console.log("Unmet previous phase:", unmetFromPreviousPhase);
+      console.log("Real demand:", realLiquidityDemand);
+      console.log(
+        "Check:",
+        scenarioLiquidityDemand + unmetFromPreviousPhase
+      );
     
       // Maturity volume mang dấu theo tác động thanh khoản:
       // > 0 = đáo hạn bơm tiền vào hệ thống
