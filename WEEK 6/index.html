@@ -2344,6 +2344,7 @@ function renderMaturityEventsTable(events) {
         });
         
         const result = await response.json();
+        scenarioLiquidityDemand = Number(result.scenario_liquidity_demand ?? 0);
         const scenarioDemand = Number(result.scenario_liquidity_demand);
         console.log(
           "Scenario Liquidity Demand từ Python:",
@@ -2407,7 +2408,6 @@ function renderMaturityEventsTable(events) {
           }
           const indLiquidity = document.getElementById('ind-liquidity');
           if (indLiquidity) {
-            const scenarioLiquidityDemand = Number(result.scenario_liquidity_demand ?? 0);
             indLiquidity.innerText = `${scenarioLiquidityDemand.toLocaleString()} Tỷ`;
             indLiquidity.className = "font-mono font-bold text-rose-600 dark:text-rose-400";
           }
