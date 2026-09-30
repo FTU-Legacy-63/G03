@@ -1986,6 +1986,7 @@ function renderMaturityEventsTable(events) {
           body: JSON.stringify({ start_date: "02/02/2025", initial_rate: 3.95 })
         });
         const data = await response.json();
+        scenarioLiquidityDemand = Number(data.scenario_liquidity_demand ?? 0);
         
         if (data.status === 'success') {
           document.getElementById('current-team-name').innerText = teamName;
@@ -2242,12 +2243,9 @@ function renderMaturityEventsTable(events) {
 
           const liqEl = document.getElementById('ind-liquidity');
           if (liqEl) {
-            liqEl.innerText = cfg.indicators.liquidity;
-            liqEl.className = cfg.indicators.liquidity.startsWith('+') ? 
-              "font-mono font-bold text-emerald-600 dark:text-sky-400" : 
-              "font-mono font-bold text-rose-600 dark:text-rose-400";
+            liqEl.innerText = `${scenarioLiquidityDemand.toLocaleString()} Tỷ`;
+            liqEl.className = "font-mono font-bold text-rose-600 dark:text-rose-400";
           }
-
           const auctionMethod = document.getElementById('auctionMethod'); if (auctionMethod) auctionMethod.value = cfg.method;
           const volumeInput = document.getElementById('volumeInput'); if (volumeInput) volumeInput.value = cfg.defaultVol;
           const inputRate = document.getElementById('inputRate'); if (inputRate) inputRate.value = cfg.defaultRate.toFixed(2);
