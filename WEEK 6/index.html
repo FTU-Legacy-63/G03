@@ -2345,6 +2345,11 @@ function renderMaturityEventsTable(events) {
         });
         
         const result = await response.json();
+        const scenarioDemand = Number(result.scenario_liquidity_demand);
+        console.log(
+          "Scenario Liquidity Demand từ Python:",
+          scenarioDemand
+        );
         if (response.ok) {
           const rateDiff = Math.abs(result.interbank_rate - pre.rate);
           let phaseScore = Math.max(60, Math.round(100 - rateDiff * 25));
