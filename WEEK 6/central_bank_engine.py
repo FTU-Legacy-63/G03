@@ -617,6 +617,22 @@ class CentralBankGame:
         return round(total, 2), events
 
     def run_phase(self, scenario_liquidity_demand, decision):
+        # Scenario Liquidity Demand is fixed by phase for the current 3-phase setup.
+        # Keep the existing function signature so the current API/frontend contract
+        # does not need to change; the incoming scenario_liquidity_demand is ignored.
+        liquidity_demand_by_phase = {
+            1: 5000.0,
+            2: 2000.0,
+            3: 1000.0,
+        }
+
+        if self.phase not in liquidity_demand_by_phase:
+            raise ValueError(
+                f"Scenario Liquidity Demand is not configured for Phase {self.phase}."
+            )
+
+        scenario_liquidity_demand = liquidity_demand_by_phase[self.phase]
+
         prev_rate = self.interbank_rate
         unmet = self.previous_liquidity_gap
 
@@ -666,3 +682,4 @@ class CentralBankGame:
                             "sbv_bill_rate": x.tbill_rate, "maturity_date": x.maturity_date.isoformat(),
                             "price": x.price} for x in p.securities],
         } for p in self.repo_positions if p.status == "active"]
+
