@@ -2244,7 +2244,16 @@ function renderMaturityEventsTable(events) {
           const liqEl = document.getElementById('ind-liquidity');
           if (liqEl) {
             liqEl.innerText = `${scenarioLiquidityDemand.toLocaleString()} Tỷ`;
-            liqEl.className = "font-mono font-bold text-rose-600 dark:text-rose-400";
+            if (scenarioLiquidityDemand > 0) {
+              liqEl.className =
+                "font-mono font-bold text-rose-600 dark:text-rose-400";
+            } else if (scenarioLiquidityDemand < 0) {
+              liqEl.className =
+                "font-mono font-bold text-amber-500 dark:text-amber-400";
+            } else {
+              liqEl.className =
+                "font-mono font-bold text-slate-500 dark:text-slate-400";
+            }
           }
           const auctionMethod = document.getElementById('auctionMethod'); if (auctionMethod) auctionMethod.value = cfg.method;
           const volumeInput = document.getElementById('volumeInput'); if (volumeInput) volumeInput.value = cfg.defaultVol;
