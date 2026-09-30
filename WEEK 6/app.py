@@ -54,8 +54,6 @@ def run_phase():
     data = request.json or {}
     
     try:
-        scenario_demand = float(data.get('scenario_demand', -1900))
-        
         # Nhận dữ liệu và ánh xạ vào dataclass Decision của Python
         auction_method = data.get('auction_method')  # "Interest-rate auction" hoặc "Volume auction"
         omo_action = data.get('omo_action')          # "Repo", "Reverse Repo", "Buy Securities", "Sell Securities"
@@ -75,7 +73,7 @@ def run_phase():
         )
         
         # Gọi trực tiếp logic python gốc trong central_bank_engine.py
-        result = game_instance.run_phase(scenario_demand, decision)
+        result = game_instance.run_phase(None, decision)
         
         # Chuyển đổi PhaseResult thành dạng JSON để trả về cho Frontend
         bids_list = [
