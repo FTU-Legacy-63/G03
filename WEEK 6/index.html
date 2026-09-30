@@ -565,7 +565,7 @@
               </div>
               <div class="flex justify-between py-1">
                 <span class="text-slate-600 dark:text-slate-400 inline-flex items-center">
-                  Nhu cầu thanh khoản
+                  Nhu cầu thanh khoản mới
                   <button
                     type="button"
                     class="learning-help"
@@ -2401,14 +2401,17 @@ function renderMaturityEventsTable(events) {
           lastCompletedPhase = currentPhase;
 
           // Cập nhật lãi suất hiện tại
-          const indInterbank =
-            document.getElementById('ind-interbank');
-          
+          const indInterbank = document.getElementById('ind-interbank');
           if (indInterbank) {
             indInterbank.innerText =
               `${Number(result.interbank_rate).toFixed(2)}%`;
           }
-          
+          const indLiquidity = document.getElementById('ind-liquidity');
+          if (indLiquidity) {
+            const scenarioLiquidityDemand = Number(result.scenario_liquidity_demand ?? 0);
+            indLiquidity.innerText = `${scenarioLiquidityDemand.toLocaleString()} Tỷ`;
+            indLiquidity.className = "font-mono font-bold text-rose-600 dark:text-rose-400";
+          }
           // Thêm điểm mới theo ngày
           const historyDate = getPhaseDate(currentPhase);
           
