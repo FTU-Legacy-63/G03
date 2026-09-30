@@ -33,7 +33,8 @@ def start_game():
             "message": "Game initialized successfully via Python backend",
             "current_date": game_instance.current_date.strftime("%d/%m/%Y"),
             "initial_interbank_rate": game_instance.interbank_rate,
-	    "tbill_inventory": game_instance.tbill_inventory(),
+			"scenario_liquidity_demand": 5000.0,
+	   	 	"tbill_inventory": game_instance.tbill_inventory(),
             "repo_inventory": game_instance.repo_inventory(),
             "initial_tbill": {
                 "id": tb.security_id,
