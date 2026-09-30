@@ -2327,11 +2327,9 @@ function renderMaturityEventsTable(events) {
       }
     
       const cfg = phaseConfig[currentPhase];
-      const scenarioDemand = cfg.preMetrics.liq;
       const pre = cfg.preMetrics;
     
       const payload = {
-        scenario_demand: scenarioDemand,
         auction_method: method,
         pricing_method: method === 'Interest-rate auction' ? pricing : null,
         omo_action: action,
