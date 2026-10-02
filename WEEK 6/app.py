@@ -14,7 +14,7 @@ game_instance = None
 # FRONTEND
 @app.route("/")
 def index():
-    return send_from_directory(".", "omo_refactored_v64.html")
+    return send_from_directory(".", "index.html")
 
 # START GAME
 
