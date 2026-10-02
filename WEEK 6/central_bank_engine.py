@@ -33,6 +33,7 @@ class Decision:
     volume: float
     pricing_method: Optional[PricingMethod] = None
     repo_rate: Optional[float] = None
+    expected_inflation: Optional[float] = None
 
     def validate(self):
         if self.volume < 0:
@@ -113,17 +114,27 @@ class PhaseResult:
     total_supply: float
     liquidity_gap: float
     liquidity_pressure: float
-    liquidity_adjusted_volume: float
     previous_interbank_rate: float
     interbank_rate: float
+    total_cash_bid_volume: float
     total_bid_volume: float
     total_real_volume: float
     win_rate: float
     auction_bids: list[AuctionBid]
     maturity_events: list[dict]
+    expected_inflation: Optional[float] = None
+    real_interest_rate: Optional[float] = None
+    output_gap: Optional[float] = None
+    gdp_growth: Optional[float] = None
+    inflation: Optional[float] = None
 
     def auction_table(self):
-        return [asdict(x) for x in self.auction_bids]
+        rows = []
+        for x in self.auction_bids:
+            row = asdict(x)
+            row["cash_bid_volume"] = getattr(x, "cash_bid_volume", None)
+            rows.append(row)
+        return rows
 
 
 class MarketTBillInventory:
@@ -316,6 +327,17 @@ class CentralBankGame:
         self.history = []
         self._repo_counter = 1
 
+        # Macro block: calculated once every 3 phases.
+        # Percentage-point units are used throughout (4.00 means 4%).
+        self.neutral_real_rate = 1.5
+        self.output_gap_persistence = 0.5603
+        self.output_gap_rate_sensitivity = 0.0984
+        self.potential_gdp_growth = 6.5
+        self.inflation_expectation_weight = 0.2254
+        self.inflation_output_gap_sensitivity = 0.2726
+        self.last_macro_output_gap = 1.0  # Starting Output Gap at Phase 1
+        self.pending_expected_inflation = None
+
     def initial_tbill_rate(self):
         return excel_round(self.interbank_rate - safe_normal(self.rng, 0.64, 0.63), 2)
 
@@ -356,7 +378,7 @@ class CentralBankGame:
             rates.append(excel_round(value, 2))
         return rates
 
-    def _interest_total_bid(self, action, rld, volume):
+    def _interest_total_cash_bid(self, action, rld, volume):
         """
         Confirmed formula:
         - If action matches the sign of RLD, Total Bid = ABS(RLD).
@@ -368,10 +390,10 @@ class CentralBankGame:
             return float(whole(abs(rld)))
         return float(whole(volume * self.rng.randint(50, 80) / 100))
 
-    def _volume_total_bid(self, rld, volume, rate):
-        raise RuntimeError("Use _volume_total_bid_for_action")
+    def _volume_total_cash_bid(self, rld, volume, rate):
+        raise RuntimeError("Use _volume_total_cash_bid_for_action")
 
-    def _volume_total_bid_for_action(self, action, rld, volume, rate):
+    def _volume_total_cash_bid_for_action(self, action, rld, volume, rate):
         """
         Exact confirmed volume-auction formula.
 
@@ -436,6 +458,40 @@ class CentralBankGame:
     def _new_cb_security_price(self, fv, auction_rate):
         return price(fv, auction_rate, self.tbill_tenor_days)
 
+    def _cash_bid_to_face_volume(self, cash_bid, action, settlement_rate):
+        """Convert a bank's cash bid into whole-unit security face volume.
+
+        Sell Securities / Repo: new CB security, 90-day tenor, settlement rate.
+        Buy Securities / Reverse Repo: FIFO market SBV bills, each lot's own
+        stored rate and remaining maturity (no weighted-average rate).
+        """
+        cash_bid = max(0.0, float(cash_bid))
+        if cash_bid <= 1e-12:
+            return 0.0
+
+        if action in ("Sell Securities", "Repo"):
+            fv = cash_bid * (1 + settlement_rate * self.tbill_tenor_days / 36500)
+            return float(max(0, whole(fv)))
+
+        min_days = self.repo_tenor_days if action == "Reverse Repo" else 0
+        cutoff = self.current_date + timedelta(days=min_days)
+        cash_left = cash_bid
+        fv_total = 0.0
+        for lot in sorted(self.market_inventory.lots, key=lambda x: (x.issue_date, x.security_id)):
+            if lot.face_value <= 1e-9 or lot.maturity_date < cutoff:
+                continue
+            days = max((lot.maturity_date - self.current_date).days, 0)
+            unit_price = 1 / (1 + lot.rate * days / 36500)
+            max_cash = lot.face_value * unit_price
+            if cash_left >= max_cash - 1e-9:
+                fv_total += lot.face_value
+                cash_left -= max_cash
+            else:
+                fv_total += cash_left / unit_price
+                cash_left = 0.0
+                break
+        return float(max(0, whole(fv_total)))
+
     def run_auction(self, decision, rld):
         decision.validate()
         banks = self._banks()
@@ -444,56 +500,48 @@ class CentralBankGame:
             win = self._win_rate(decision.omo_action, rld)
             bid_rates = self._interest_rates(win, decision.omo_action)
             weights = [self.rng.random() for _ in range(5)]
-            total_bid = self._interest_total_bid(decision.omo_action, rld, decision.volume)
-            bid_vols = whole_distribution(weights, total_bid)
+            total_cash_bid = self._interest_total_cash_bid(decision.omo_action, rld, decision.volume)
+            cash_bid_vols = whole_distribution(weights, total_cash_bid)
 
-            # Interest-rate auction ordering follows the ACTION:
-            # Buy Securities / Reverse Repo (injection): high -> low.
-            # Sell Securities / Repo (absorption): LOW -> HIGH.
-            # This remains true even if the player's action is opposite to
-            # the current Real Liquidity Demand sign.
-            rows = list(zip(banks, bid_rates, bid_vols))
+            rows = list(zip(banks, bid_rates, cash_bid_vols))
             injection_action = decision.omo_action in ("Buy Securities", "Reverse Repo")
             rows.sort(key=lambda x: x[1], reverse=injection_action)
             banks = [x[0] for x in rows]
             bid_rates = [x[1] for x in rows]
-            bid_vols = [x[2] for x in rows]
-
-            settlement = [
-                win if decision.pricing_method == "Single-price" else r
-                for r in bid_rates
-            ]
-
-            wanted = whole(min(decision.volume, total_bid))
-            total_real = whole(self._max_real(decision.omo_action, wanted))
-
-            real_vols, left = [], int(total_real)
-            for b in bid_vols:
-                take = min(int(b), left)
-                real_vols.append(float(take))
-                left -= take
-
+            cash_bid_vols = [x[2] for x in rows]
+            settlement = [win if decision.pricing_method == "Single-price" else r for r in bid_rates]
         else:
             win = round(float(decision.repo_rate), 2)
             bid_rates = [win] * 5
             settlement = bid_rates[:]
             weights = [5+self.rng.random(), 4+self.rng.random(), 3+self.rng.random(),
                        2+self.rng.random(), 1+self.rng.random()]
-            total_bid = self._volume_total_bid_for_action(
-                decision.omo_action, rld, decision.volume, float(decision.repo_rate)
-            )
-            bid_vols = whole_distribution(weights, total_bid)
-            wanted = whole(min(decision.volume, total_bid))
-            total_real = whole(self._max_real(decision.omo_action, wanted))
+            total_cash_bid = self._volume_total_cash_bid_for_action(
+                decision.omo_action, rld, decision.volume, float(decision.repo_rate))
+            cash_bid_vols = whole_distribution(weights, total_cash_bid)
 
-            if total_bid <= 1e-12 or total_real <= 0:
+        # NEW FLOW: random formula creates CASH BID first, then cash is grossed up
+        # into actual face-value BID VOLUME using the same instrument pricing rule.
+        bid_vols = [self._cash_bid_to_face_volume(c, decision.omo_action, settlement[i])
+                    for i, c in enumerate(cash_bid_vols)]
+        total_bid_volume = float(whole(sum(bid_vols)))
+
+        wanted = whole(min(decision.volume, total_bid_volume))
+        total_real = whole(self._max_real(decision.omo_action, wanted))
+
+        if decision.auction_method == "Interest-rate auction":
+            real_vols, left = [], int(total_real)
+            for b in bid_vols:
+                take = min(int(b), left)
+                real_vols.append(float(take))
+                left -= take
+        else:
+            if total_bid_volume <= 1e-12 or total_real <= 0:
                 real_vols = [0.0] * 5
-            elif total_bid == total_real:
+            elif whole(total_bid_volume) == whole(total_real):
                 real_vols = bid_vols[:]
             else:
-                # Excel proportional allocation, reconciled so all security volumes
-                # are whole numbers AND sum exactly to Total Real Volume.
-                raw_weights = [x / total_bid for x in bid_vols]
+                raw_weights = [x / total_bid_volume for x in bid_vols]
                 real_vols = whole_distribution(raw_weights, total_real)
 
         bids = []
@@ -504,40 +552,30 @@ class CentralBankGame:
             p = 0.0
             if rv > 1e-9:
                 action = decision.omo_action
-
                 if action == "Buy Securities":
                     slices = self.market_inventory.take_fifo(rv, self.current_date)
-                    # Agreed rule: outright CB purchase uses each FIFO SBV Bill's
-                    # own stored rate and its own remaining maturity; never average.
                     p = self._market_slice_price(slices)
-
                 elif action == "Reverse Repo":
-                    # CB buys NHTM T-bills now, then sells them back at maturity.
                     slices = self.market_inventory.take_fifo(
                         rv, self.current_date, min_remaining_days=self.repo_tenor_days)
                     p = self._market_slice_price(slices)
                     purchased_temp.extend(slices)
-
                 elif action == "Sell Securities":
-                    # CB sells/issues new T-bills; REAL volume becomes market inventory.
                     p = self._new_cb_security_price(rv, settlement[i])
                     self.market_inventory.add_lot(
-                        rv, self.current_date, settlement[i], self.tbill_tenor_days
-                    )
-
+                        rv, self.current_date, settlement[i], self.tbill_tenor_days)
                 elif action == "Repo":
-                    # CB sells security now; source is unlimited. Temporary only.
                     p = self._new_cb_security_price(rv, settlement[i])
 
             p = excel_round(p, 2)
             cash_abs += p
-            bids.append(AuctionBid(
-                i+1, banks[i], excel_round(bid_rates[i], 2), excel_round(settlement[i], 2),
-                float(whole(bid_vols[i])), float(whole(rv)), p, rv > 1e-9
-            ))
+            bid = AuctionBid(i+1, banks[i], excel_round(bid_rates[i], 2),
+                             excel_round(settlement[i], 2), float(whole(bid_vols[i])),
+                             float(whole(rv)), p, rv > 1e-9)
+            # Test-only extra attribute; does not rename existing AuctionBid fields.
+            bid.cash_bid_volume = float(whole(cash_bid_vols[i]))
+            bids.append(bid)
 
-        # Repo / Reverse Repo ledger: NEVER average rates.
-        # Each winning bank keeps its exact settlement rate, volume and price.
         if decision.omo_action in ("Repo", "Reverse Repo") and cash_abs > 1e-9:
             rr_slices = list(purchased_temp)
             rr_index = 0
@@ -553,9 +591,8 @@ class CentralBankGame:
                         available = src.face_value - rr_used
                         take = min(needed, available)
                         if take > 1e-9:
-                            sp = excel_round(
-                                price(take, src.tbill_rate, (src.maturity_date-self.current_date).days), 2
-                            )
+                            sp = excel_round(price(take, src.tbill_rate,
+                                (src.maturity_date-self.current_date).days), 2)
                             bank_slices.append(SecuritySlice(src.security_id, take, src.tbill_rate,
                                 src.issue_date, src.maturity_date, sp))
                         needed -= take
@@ -567,18 +604,17 @@ class CentralBankGame:
                     position_id=(f"RP{self._repo_counter:04d}" if decision.omo_action == "Repo"
                                  else f"RRP{self._repo_counter:04d}"),
                     bank=b.bank, action=decision.omo_action,
-                    start_date=self.current_date, maturity_date=self.current_date + timedelta(days=self.repo_tenor_days),
-                    face_value=b.real_volume, initial_cash=b.price, transaction_rate=b.settlement_rate,
-                    securities=bank_slices))
+                    start_date=self.current_date,
+                    maturity_date=self.current_date + timedelta(days=self.repo_tenor_days),
+                    face_value=b.real_volume, initial_cash=b.price,
+                    transaction_rate=b.settlement_rate, securities=bank_slices))
                 self._repo_counter += 1
 
-        # Auction-time liquidity signs:
-        # Repo / Sell Securities = absorption (-)
-        # Reverse Repo / Buy Securities = injection (+)
         sign = +1 if decision.omo_action in ("Buy Securities", "Reverse Repo") else -1
-
         return dict(
-            bids=bids, win_rate=win, total_bid_volume=total_bid,
+            bids=bids, win_rate=win,
+            total_cash_bid_volume=float(whole(sum(cash_bid_vols))),
+            total_bid_volume=total_bid_volume,
             total_real_volume=float(whole(sum(b.real_volume for b in bids))),
             supply=excel_round(sign*cash_abs, 2)
         )
@@ -596,11 +632,29 @@ class CentralBankGame:
             ), 2)
 
             if pos.action == "Repo":
-                # CB buys securities back -> pays NHTMs -> injection (+)
+                # CB buys securities back -> injection (+).
                 flow = +value
             else:
-                # Reverse Repo: CB sells securities back -> receives cash -> absorption (-)
+                # Reverse Repo: CB sells securities back -> absorption (-).
                 flow = -value
+
+                # Underlying SBV Bills are outside market_inventory during an RRP.
+                # If one reaches its own maturity on/before RRP maturity, recognize
+                # its SBV Bill maturity cash flow as well (confirmed game rule).
+                for sec in pos.securities:
+                    if sec.maturity_date <= self.current_date and sec.face_value > 1e-9:
+                        bill_flow = excel_round(sec.face_value, 2)
+                        total += bill_flow
+                        events.append({
+                            "type": "SBV Bill maturity", "id": sec.security_id,
+                            "bank": pos.bank, "action": "SBV Bill",
+                            "issue_date": sec.issue_date.isoformat(),
+                            "maturity_date": sec.maturity_date.isoformat(),
+                            "rate": sec.tbill_rate, "volume": sec.face_value,
+                            "cash_flow": bill_flow,
+                        })
+
+                # Only non-matured bills are returned to market outstanding.
                 self.market_inventory.return_slices(pos.securities, self.current_date)
 
             pos.status = "matured"
@@ -614,7 +668,8 @@ class CentralBankGame:
                 "cash_flow": flow, "repayment": value,
             })
 
-        return round(total, 2), events
+        return excel_round(total, 2), events
+
     def get_scenario_liquidity_demand(self):
         liquidity_demand_by_phase = {
             1: 5000.0,
@@ -626,9 +681,59 @@ class CentralBankGame:
                 f"Scenario Liquidity Demand is not configured for Phase {self.phase}."
             )
         return liquidity_demand_by_phase[self.phase]
-        
+    def get_next_scenario_liquidity_demand(self):
+        liquidity_demand_by_phase = {
+            1: 5000.0,
+            2: 2000.0,
+            3: 1000.0,
+        }
+        if self.phase not in liquidity_demand_by_phase:
+            return None
+
+        return liquidity_demand_by_phase[self.phase]
+    def _calculate_macro_block(self, interbank_rate):
+        """Macro result published once every 3 phases."""
+        if self.pending_expected_inflation is None:
+            raise ValueError("Expected inflation is missing for this 3-phase macro block.")
+
+        expected = float(self.pending_expected_inflation)
+        real_rate = excel_round(interbank_rate - expected, 2)
+        output_gap = excel_round(
+            self.output_gap_persistence * self.last_macro_output_gap
+            - self.output_gap_rate_sensitivity * (real_rate - self.neutral_real_rate),
+            2
+        )
+        gdp_growth = excel_round(self.potential_gdp_growth + output_gap, 2)
+        inflation = excel_round(
+            self.inflation_expectation_weight * expected
+            + self.inflation_output_gap_sensitivity * output_gap,
+            2
+        )
+
+        self.last_macro_output_gap = output_gap
+        self.pending_expected_inflation = None
+        return {
+            "expected_inflation": expected,
+            "real_interest_rate": real_rate,
+            "output_gap": output_gap,
+            "gdp_growth": gdp_growth,
+            "inflation": inflation,
+        }
+
     def run_phase(self, scenario_liquidity_demand, decision):
         scenario_liquidity_demand = self.get_scenario_liquidity_demand()
+
+        # Expected inflation is entered at Phase 1, 4, 7, ... and used
+        # for the macro result at Phase 3, 6, 9, ... respectively.
+        block_start = ((self.phase - 1) % 3 == 0)
+        if block_start:
+            if decision.expected_inflation is None:
+                raise ValueError(
+                    f"Phase {self.phase} requires Expected Inflation for Phase {self.phase + 2}."
+                )
+            self.pending_expected_inflation = float(decision.expected_inflation)
+        elif decision.expected_inflation is not None:
+            raise ValueError("Expected Inflation is entered only at Phase 1, 4, 7, ...")
 
         prev_rate = self.interbank_rate
         unmet = self.previous_liquidity_gap
@@ -640,17 +745,48 @@ class CentralBankGame:
         supply = auction["supply"]
         total_supply = excel_round(supply + maturity, 2)
         gap = excel_round(rld - total_supply, 2)
-        pressure = 0.0 if abs(rld) < 1e-12 else gap / abs(rld)
-        adjusted = excel_round(abs(total_supply) * pressure, 2)
-        new_rate = excel_round(0.069 * prev_rate + 0.000123 * adjusted + 3.584, 2)
+        liquidity_pressure = (
+            excel_round(gap / abs(rld), 6) if abs(rld) > 1e-12 else 0.0
+        )
+
+        # Interbank now uses signed Liquidity Gap directly.
+        new_rate = excel_round(0.069 * prev_rate + 0.000123 * gap + 3.584, 2)
+
+        macro = {
+            "expected_inflation": None,
+            "real_interest_rate": None,
+            "output_gap": None,
+            "gdp_growth": None,
+            "inflation": None,
+        }
+        if self.phase % 3 == 0:
+            macro = self._calculate_macro_block(new_rate)
 
         result = PhaseResult(
-            self.phase, self.current_date, decision,
-            scenario_liquidity_demand, unmet, rld,
-            supply, maturity, total_supply, gap, pressure, adjusted,
-            prev_rate, new_rate,
-            auction["total_bid_volume"], auction["total_real_volume"],
-            auction["win_rate"], auction["bids"], maturity_events
+            phase=self.phase,
+            phase_date=self.current_date,
+            decision=decision,
+            scenario_liquidity_demand=scenario_liquidity_demand,
+            unmet_from_previous_phase=unmet,
+            real_liquidity_demand=rld,
+            supply=supply,
+            maturity_volume=maturity,
+            total_supply=total_supply,
+            liquidity_gap=gap,
+            liquidity_pressure=liquidity_pressure,
+            previous_interbank_rate=prev_rate,
+            interbank_rate=new_rate,
+            total_cash_bid_volume=auction["total_cash_bid_volume"],
+            total_bid_volume=auction["total_bid_volume"],
+            total_real_volume=auction["total_real_volume"],
+            win_rate=auction["win_rate"],
+            auction_bids=auction["bids"],
+            maturity_events=maturity_events,
+            expected_inflation=macro["expected_inflation"],
+            real_interest_rate=macro["real_interest_rate"],
+            output_gap=macro["output_gap"],
+            gdp_growth=macro["gdp_growth"],
+            inflation=macro["inflation"],
         )
 
         self.history.append(result)
@@ -679,4 +815,3 @@ class CentralBankGame:
                             "sbv_bill_rate": x.tbill_rate, "maturity_date": x.maturity_date.isoformat(),
                             "price": x.price} for x in p.securities],
         } for p in self.repo_positions if p.status == "active"]
-
