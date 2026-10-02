@@ -109,7 +109,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .newslabel{font:800 10px/1.3 var(--font-ui);letter-spacing:.08em;color:#65776f}.headline{margin:12px 0;font:700 27px/1.12 var(--font-vintage);color:#233e38}.clipping p{font:15px/1.62 var(--font-vintage);color:#3d514b}
 .newsnumber{font:900 52px/1 Arial,sans-serif;color:var(--desk-teal);margin:18px 0 7px}.newscaption{font:700 10px/1.4 var(--font-ui);letter-spacing:.08em;color:#68766e;text-transform:uppercase}
 .market-page-head{padding-bottom:18px;border-bottom:4px double #214b4a}.market-page-head h2{font:700 clamp(46px,4.2vw,56px)/1.04 var(--font-vintage);color:#203a35;margin:7px 0}.market-page-head p{font:15px/1.6 var(--font-vintage);color:#51665f;max-width:900px}
-.chart-sheet{display:grid;grid-template-columns:1.45fr .55fr;gap:26px;margin-top:22px}.chart-box{border:1px solid #c3b495;background:rgba(255,252,244,.48);padding:18px}.chart-box svg{width:100%;height:330px;display:block}.chart-side{border-left:1px solid #c3b495;padding:12px 0 0 25px}.big-rate{font:900 48px/1 Arial;color:var(--desk-teal);margin:18px 0 8px}.chart-side p{font:14px/1.6 var(--font-vintage);color:#40534d}
+.chart-sheet{display:grid;grid-template-columns:1.45fr .55fr;gap:26px;margin-top:22px}.chart-box{position:relative;border:1px solid #c3b495;background:rgba(255,252,244,.48);padding:16px 18px 10px}.chart-box svg{width:100%;height:330px;display:block}.chart-side{border-left:1px solid #c3b495;padding:12px 0 0 25px}.phase-date-label{display:inline-block;margin-top:10px;padding:6px 9px;border:1px solid #c3b495;background:rgba(238,226,201,.44);font:850 9px/1 var(--font-ui);letter-spacing:.08em;color:#6d684f;text-transform:uppercase}.big-rate{font:900 48px/1 Arial;color:var(--desk-teal);margin:18px 0 8px}.chart-side p{font:14px/1.6 var(--font-vintage);color:#40534d}
 .out-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}.out-card{padding:20px 18px;border-top:5px solid #1a6d61;border-bottom:1px solid #c3b495;background:rgba(255,252,244,.48)}.out-card h3{font:900 18px/1.2 Arial;color:#24453e;margin:0 0 18px}.out-row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-top:1px dotted #c6b89c;font:13px/1.3 Arial}.out-row b{color:#116e64}.out-note{margin-top:22px;padding:14px 17px;border-left:4px solid #9e824a;background:#eee2c9;font:14px/1.6 var(--font-vintage);color:#4a4235}
 
 /* ---------------------------------------------------------------------
@@ -199,7 +199,7 @@ body{visibility:visible!important}
 .daily-inventory-stack{display:grid;gap:14px;margin-top:18px}.daily-inventory-block{border:1px solid #c3b495;background:rgba(255,252,244,.36);padding:12px 14px}.daily-inventory-block h3{margin:0 0 8px;font:800 13px/1.2 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#31554c}.daily-inventory-note{font:13px/1.5 var(--font-vintage);color:#65736c;margin-top:12px}
 
 /* Macro result: compact cards + one small comparison chart, only when backend publishes the block. */
-.macro-outcome{margin-top:18px;padding-top:16px;border-top:4px double #b7a98d}.macro-outcome-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:12px}.macro-outcome-head h3{margin:0;font:800 20px/1.05 var(--font-vintage);color:#25483f}.macro-outcome-head span{font:800 9px/1.2 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:#7a6c55}.macro-outcome-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.macro-card{border:1px solid #c3b495;background:rgba(255,252,244,.44);padding:11px 12px;min-height:76px}.macro-card strong{display:block;font:900 23px/1 var(--font-ui);color:#0b8178}.macro-card span{display:block;margin-top:7px;font:800 8px/1.35 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#69766e}.macro-bars{margin-top:12px;border:1px solid #c3b495;background:rgba(255,252,244,.34);padding:10px 12px}.macro-bar-row{display:grid;grid-template-columns:100px 1fr 56px;align-items:center;gap:9px;margin:7px 0;font:800 9px/1 var(--font-ui);letter-spacing:.05em;text-transform:uppercase;color:#627068}.macro-bar-track{height:8px;background:#ddd1b9;overflow:hidden}.macro-bar-fill{height:100%;background:linear-gradient(90deg,#0b8178,#d1ad52);min-width:2px}.macro-bar-row b{text-align:right;color:#29473e;font-size:11px}
+.macro-outcome{margin-top:16px;padding-top:14px;border-top:4px double #b7a98d}.macro-outcome-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:10px}.macro-outcome-head h3{margin:0;font:800 20px/1.05 var(--font-vintage);color:#25483f}.macro-outcome-head span{font:800 9px/1.2 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:#7a6c55}.macro-outcome-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.macro-card{border:1px solid #c3b495;background:rgba(255,252,244,.44);padding:10px 12px;min-height:70px}.macro-card strong{display:block;font:900 22px/1 var(--font-ui);color:#0b8178}.macro-card span{display:block;margin-top:7px;font:800 8px/1.35 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#69766e}.macro-trend-chart{margin-top:10px;border:1px solid #c3b495;background:rgba(255,252,244,.40);padding:8px 12px 6px}.macro-trend-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 3px;font:850 9px/1.2 var(--font-ui);letter-spacing:.08em;color:#627068;text-transform:uppercase}.macro-trend-title .legend{display:flex;gap:13px;align-items:center;font-size:8px;letter-spacing:.05em}.macro-trend-title i{display:inline-block;width:16px;height:3px;margin-right:5px;vertical-align:middle}.macro-trend-title i.gdp{background:#087f75}.macro-trend-title i.inf{background:#b7892f}.macro-trend-chart svg{width:100%;height:165px;display:block}.macro-chart-note{margin:3px 0 0;font:11px/1.35 var(--font-vintage);color:#746d5e;text-align:center}
 
 @media(max-width:800px){.macro-input-strip{grid-template-columns:1fr}.macro-outcome-grid{grid-template-columns:1fr 1fr}.paper-modal-sheet{padding:22px 20px}.paper-modal-head h2{font-size:28px}}
 .result-chart-main svg{height:235px!important}
@@ -260,6 +260,7 @@ let pgResult=null, pgDecision=null, pgPhase=1, pgNewsPage=0, pgReportPage=0, pgD
 let pgBackendState=null;
 let pgInitialState=null;
 let pgRateHistory=[];
+let pgMacroHistory=[];
 
 const phaseConfig={
   1:{method:'Volume auction',action:'Reverse Repo',defaultVol:5000,defaultRate:4.00,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:5000},matTable:{billVol:'10,000',billRate:'—',repoVol:'0',repoRate:'—',revVol:'0',revRate:'—'}},
@@ -268,6 +269,7 @@ const phaseConfig={
 };
 
 function getPhaseDate(pointIndex){const start=new Date(Date.UTC(2025,1,2));start.setUTCDate(start.getUTCDate()+Number(pointIndex||0)*30);return start.toISOString().slice(0,10)}
+function getPhaseDisplayDate(pointIndex){return pgDisplayDate(getPhaseDate(pointIndex))}
 function pgDisplayDate(value){if(!value)return '—';const s=String(value);if(/^\d{4}-\d{2}-\d{2}$/.test(s)){const [y,m,d]=s.split('-');return `${d}/${m}/${y}`}return s}
 function pgCurrentRate(){const n=Number(pgBackendState?.interbank_rate);return Number.isFinite(n)?n:Number(phaseConfig[pgPhase]?.preMetrics?.rate||3.95)}
 function pgCurrentLiquidityNeed(){const s=pgBackendState||{};const n=Number(s.next_scenario_liquidity_demand ?? s.scenario_liquidity_demand);return Number.isFinite(n)?n:Number(phaseConfig[pgPhase]?.preMetrics?.liq||0)}
@@ -299,7 +301,19 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeGuideModal();c
 const pg$ = id => document.getElementById(id);
 const pgDelay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const pgFmt = v => Number(v || 0).toLocaleString('en-US');
-const pgBankName = v => String(v || '').replace(/^NHTM\s*/i, 'Bank ');
+const pgBankLetter = v => {
+  const raw=String(v||'').trim();
+  const m=raw.match(/(?:BANK|NHTM)?\s*([A-E])$/i)||raw.match(/^([A-E])$/i);
+  return m?m[1].toUpperCase():'';
+};
+const pgBankName = v => {
+  const letter=pgBankLetter(v);
+  return letter?`Bank ${letter}`:String(v||'').replace(/^NHTM\s*/i,'Bank ');
+};
+function pgOrderedBidEntries(bids){
+  const bankOrder={A:0,B:1,C:2,D:3,E:4};
+  return (Array.isArray(bids)?bids:[]).map((bid,backendIndex)=>({bid,backendIndex,letter:pgBankLetter(bid.bank)})).sort((a,b)=>(bankOrder[a.letter]??99)-(bankOrder[b.letter]??99)||a.backendIndex-b.backendIndex);
+}
 
 // ---------------------------------------------------------------------
 // SECTION: SCREEN / HEADER STATE
@@ -341,7 +355,7 @@ function renderTitleScreen(){
 }
 async function paperStart(){
   const input=pg$('pg-team');teamName=input&&input.value.trim()?input.value.trim():'Team 1 – Central Bankers';
-  pgPhase=1;currentPhase=1;pgResult=null;pgDecision=null;pgNewsPage=0;pgReportPage=0;pgBackendState=null;pgInitialState=null;pgRateHistory=[];
+  pgPhase=1;currentPhase=1;pgResult=null;pgDecision=null;pgNewsPage=0;pgReportPage=0;pgBackendState=null;pgInitialState=null;pgRateHistory=[];pgMacroHistory=[];
   try{
     const r=await fetch('/api/start-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start_date:'02/02/2025',initial_rate:3.95})});
     const data=await r.json();if(!r.ok||data.status==='error')throw new Error(data.message||'Unable to start backend game.');
@@ -350,7 +364,7 @@ async function paperStart(){
   pgSyncPhaseFallbacks();paperBrief();
 }
 function paperRestart(){
-  pgPhase=1; currentPhase=1; pgResult=null; pgDecision=null; pgNewsPage=0; pgReportPage=0; pgDragCard=null; pgBackendState=null; pgInitialState=null; pgRateHistory=[];
+  pgPhase=1; currentPhase=1; pgResult=null; pgDecision=null; pgNewsPage=0; pgReportPage=0; pgDragCard=null; pgBackendState=null; pgInitialState=null; pgRateHistory=[]; pgMacroHistory=[];
   ['pg-brief','pg-decision','pg-send','pg-sort','pg-result','pg-report','pg-final'].forEach(id=>{const el=pg$(id);if(el)el.innerHTML=''});
   renderTitleScreen();
 }
@@ -365,13 +379,40 @@ const pgBriefCopy = {
   2:{hero:'Growth slows as credit demand weakens',dek:'The operations desk must balance support for growth against preserving room to contain inflation in later phases.',cards:[['MACROECONOMY','Growth momentum eases','After the holiday season, consumption returns to normal. Some sectors report weaker new orders while inventories rise.'],['CREDIT & INVESTMENT','Firms become more cautious','Demand for capacity expansion and new borrowing falls. Inflation remains low, although some input prices begin to edge higher.'],['QUICK INDICATOR','4.10%','Interbank rate','Liquidity need: +3,500 bn.']]},
   3:{hero:'Maturing cash flows change the liquidity position',dek:'Earlier operations begin to roll back onto the balance sheet. The new decision must consider current liquidity and the lagged transmission of previous policy actions.',cards:[['MACROECONOMY','Real-economy effects remain gradual','Production has not clearly recovered. Earlier decisions are still transmitting through credit, growth, and inflation.'],['MONEY MARKET','Maturities can reverse cash flows','Term operations from earlier phases may mature, causing liquidity conditions and the overnight rate to change quickly.'],['QUICK INDICATOR','3.20%','Interbank rate','Liquidity need: +6,000 bn.']]}
 };
-function pgChartSVG(values,highlightLast=false){
-  const vals=(values||[]).map(Number).filter(Number.isFinite),w=760,h=310,p=44,min=Math.min(...vals)-.25,max=Math.max(...vals)+.25,span=(max-min)||1;
-  const pts=vals.map((v,i)=>[p+i*(w-2*p)/Math.max(1,vals.length-1),h-p-(v-min)/span*(h-2*p),v]);
-  const grid=[0,.25,.5,.75,1].map(t=>{const y=p+t*(h-2*p),val=max-t*span;return `<line x1="${p}" y1="${y}" x2="${w-p}" y2="${y}" stroke="#c9bea9"/><text x="5" y="${y+4}" font-family="Arial" font-size="11" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
-  const path=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' ');
-  const dots=pts.map((q,i)=>{const last=highlightLast&&i===pts.length-1;return `<circle cx="${q[0]}" cy="${q[1]}" r="${last?9:6}" fill="${last?'#b7892f':'#087f75'}" stroke="${last?'#fff7de':'none'}" stroke-width="${last?4:0}"><title>${q[2].toFixed(2)}%</title></circle>${last?`<text x="${q[0]-38}" y="${Math.max(18,q[1]-18)}" font-family="Arial" font-size="11" font-weight="700" fill="#7b5b22">AFTER OMO</text>`:''}`}).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Interbank rate trend">${grid}<line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#52675f"/><path d="${path}" fill="none" stroke="#087f75" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`;
+function pgChartSVG(values,highlightLast=false,labels=null){
+  const vals=(values||[]).map(Number).filter(Number.isFinite);
+  const w=760,h=330,l=54,r=22,t=28,b=62;
+  if(!vals.length)return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Interbank rate trend"><text x="${w/2}" y="${h/2}" text-anchor="middle" font-family="Georgia" font-size="15" fill="#746d5e">No interbank observations yet</text></svg>`;
+  const min=Math.min(...vals)-.25,max=Math.max(...vals)+.25,span=(max-min)||1;
+  const x=(i)=>vals.length===1?l:l+i*(w-l-r)/Math.max(1,vals.length-1);
+  const y=(v)=>t+(max-v)/span*(h-t-b);
+  const pts=vals.map((v,i)=>[x(i),y(v),v]);
+  const dateLabels=Array.isArray(labels)&&labels.length===vals.length?labels:vals.map((_,i)=>getPhaseDisplayDate(i));
+  const grid=[0,.25,.5,.75,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="6" y="${yy+4}" font-family="Arial" font-size="11" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
+  const xaxis=dateLabels.map((lab,i)=>{const xx=x(i);return `<line x1="${xx}" y1="${h-b}" x2="${xx}" y2="${h-b+6}" stroke="#9d927c"/><text x="${xx}" y="${h-22}" text-anchor="middle" font-family="Arial" font-size="10" fill="#65736e">${lab}</text>`}).join('');
+  const path=pts.length>1?pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' '):'';
+  const dots=pts.map((q,i)=>{const last=highlightLast&&i===pts.length-1;return `<circle cx="${q[0]}" cy="${q[1]}" r="${last?9:6}" fill="${last?'#b7892f':'#087f75'}" stroke="${last?'#fff7de':'none'}" stroke-width="${last?4:0}"><title>${dateLabels[i]} · ${q[2].toFixed(2)}%</title></circle>${last?`<text x="${Math.max(l,q[0]-38)}" y="${Math.max(18,q[1]-18)}" font-family="Arial" font-size="11" font-weight="700" fill="#7b5b22">AFTER OMO</text>`:''}`}).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Interbank rate trend by 30-day phase">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${path?`<path d="${path}" fill="none" stroke="#087f75" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:''}${dots}</svg>`;
+}
+function pgMacroTrendSVG(history){
+  const rows=Array.isArray(history)?history:[];
+  const phases=[1,2,3];
+  const labels=phases.map((_,i)=>getPhaseDisplayDate(i));
+  const gdp=phases.map(p=>{const row=rows.find(x=>Number(x.phase)===p);const v=Number(row?.gdp);return Number.isFinite(v)?v:null});
+  const inflation=phases.map(p=>{const row=rows.find(x=>Number(x.phase)===p);const v=Number(row?.inflation);return Number.isFinite(v)?v:null});
+  const finite=[...gdp,...inflation].filter(Number.isFinite);
+  const w=760,h=220,l=54,r=22,t=22,b=52;
+  const x=i=>l+i*(w-l-r)/2;
+  if(!finite.length){
+    const ticks=labels.map((lab,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family="Arial" font-size="10" fill="#65736e">${lab}</text>`).join('');
+    return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation by phase"><line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${ticks}<text x="${w/2}" y="${h/2-6}" text-anchor="middle" font-family="Georgia" font-size="15" fill="#746d5e">Macro results are published by the backend after Phase 3</text></svg>`;
+  }
+  let min=Math.min(...finite),max=Math.max(...finite);const pad=Math.max(.35,(max-min)*.25);min-=pad;max+=pad;if(Math.abs(max-min)<.01){min-=.5;max+=.5}const span=max-min;
+  const y=v=>t+(max-v)/span*(h-t-b);
+  const grid=[0,.333,.666,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="6" y="${yy+4}" font-family="Arial" font-size="10" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
+  const xaxis=labels.map((lab,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family="Arial" font-size="10" fill="#65736e">${lab}</text>`).join('');
+  function series(values,color,name){const pts=values.map((v,i)=>Number.isFinite(v)?[x(i),y(v),v,i]:null).filter(Boolean);const path=pts.length>1?`<path d="${pts.map((q,j)=>(j?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:'';const dots=pts.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="6" fill="${color}" stroke="#fff7de" stroke-width="2"><title>${name} · ${labels[q[3]]} · ${q[2].toFixed(2)}%</title></circle>`).join('');return path+dots}
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation by 30-day phase">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${series(gdp,'#087f75','GDP growth')}${series(inflation,'#b7892f','Inflation')}</svg>`;
 }
 function pgOutstandingHTML(c){
   const state=pgBackendState||pgInitialState||{};
@@ -397,9 +438,10 @@ function paperBrief(){
   const x={...base,cards:base.cards.map(a=>[...a])};
   x.cards[2]=['QUICK INDICATOR',`${rate.toFixed(2)}%`,'Interbank rate',`Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`];
   const chartValues=(pgRateHistory.length?pgRateHistory:c.chartData).slice(-4);
+  const chartLabels=chartValues.map((_,i)=>getPhaseDisplayDate(i));
   pg$('pg-brief').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active"><div class="newshero"><div class="eyebrow">THE OMO DAILY<br>${getPhaseDate(pgPhase-1)}<br><br>PAGE 1 · MACRO NEWS</div><h1>${x.hero}</h1><p>${x.dek}</p></div><div class="clippings">${x.cards.map((a,i)=>i<2?`<article class="clipping"><div class="newslabel">${a[0]}</div><div class="headline">${a[1]}</div><p>${a[2]}</p></article>`:`<article class="clipping"><div class="newslabel">${a[0]}</div><div class="newsnumber">${a[1]}</div><div class="newscaption">${a[2]}</div><p>${a[3]}</p></article>`).join('')}</div></article>
-    <article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · INTERBANK MARKET</div><h2>Rate conditions before the OMO session</h2><p>Read the backend-updated rate together with current liquidity demand before selecting the instrument, volume, and auction method.</p></div><div class="chart-sheet"><div class="chart-box">${pgChartSVG(chartValues)}</div><aside class="chart-side"><div class="section-tag">CURRENT INDICATORS</div><div class="big-rate">${rate.toFixed(2)}%</div><p><b>Scenario liquidity demand:</b> ${liq>=0?'+':''}${pgFmt(liq)} bn.</p></aside></div></article>
+    <article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · INTERBANK MARKET</div><h2>Rate conditions before the OMO session</h2><p>Each observation is spaced by one 30-day operating phase. Read the backend-updated rate together with current liquidity demand before selecting the instrument, volume, and auction method.</p></div><div class="chart-sheet"><div class="chart-box">${pgChartSVG(chartValues,false,chartLabels)}</div><aside class="chart-side"><div class="section-tag">CURRENT INDICATORS</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${rate.toFixed(2)}%</div><p><b>Scenario liquidity demand:</b> ${liq>=0?'+':''}${pgFmt(liq)} bn.</p></aside></div></article>
     <article class="paper-page is-hidden">${pgOutstandingHTML(c)}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetNewsPage(pgNewsPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetNewsPage(pgNewsPage+1)">→</button>
     <div class="deck-footer"><button class="pbtn" onclick="paperDecision()">GO TO OMO DECISION FORM →</button></div>
@@ -439,9 +481,9 @@ function pgToggleAuctionFields(){
 // Purpose: get five bids and render ONE identical slip format everywhere.
 // Ends before EXECUTION TRANSITION.
 // ---------------------------------------------------------------------
-function pgBidSlipHTML(b,i){
-  const bank=pgBankName(b.bank)||`Bank ${String.fromCharCode(65+i)}`;
-  return `<div class="bid-slip" draggable="true" data-i="${i}"><div class="bid-slip-head">CENTRAL BANK · OPEN MARKET OPERATIONS</div><div class="bid-slip-title">AUCTION BID FORM</div><div class="bid-slip-grid"><span>Bank</span><b class="bank-value">${bank}</b><span>Bid rate</span><b>${Number(b.bid_rate||0).toFixed(2)}%</b><span>Bid volume</span><b>${pgFmt(b.bid_volume)} bn</b></div></div>`;
+function pgBidSlipHTML(b,backendIndex){
+  const letter=pgBankLetter(b.bank)||String.fromCharCode(65+Math.max(0,Number(backendIndex)||0));
+  return `<div class="bid-slip" draggable="true" data-i="${backendIndex}" data-bank="${letter}"><div class="bid-slip-head">CENTRAL BANK · OPEN MARKET OPERATIONS</div><div class="bid-slip-title">AUCTION BID FORM</div><div class="bid-slip-grid"><span>Bank</span><b class="bank-value">${letter}</b><span>Bid rate</span><b>${Number(b.bid_rate||0).toFixed(2)}%</b><span>Bid volume</span><b>${pgFmt(b.bid_volume)} bn</b></div></div>`;
 }
 async function pgRunEngine(){
   const payload={...pgDecision};
@@ -450,6 +492,11 @@ async function pgRunEngine(){
     const data=await r.json();
     if(!r.ok||data.status==='error')throw new Error(data.message||'Backend rejected the phase decision.');
     pgBackendState=data;pgResult=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate))pgRateHistory.push(rate);
+    const gdp=Number(data.gdp_growth),inflation=Number(data.inflation);
+    if(Number.isFinite(gdp)||Number.isFinite(inflation)){
+      const macroPoint={phase:pgPhase,date:getPhaseDate(pgPhase-1),gdp:Number.isFinite(gdp)?gdp:null,inflation:Number.isFinite(inflation)?inflation:null};
+      const ix=pgMacroHistory.findIndex(x=>Number(x.phase)===pgPhase);if(ix>=0)pgMacroHistory[ix]=macroPoint;else pgMacroHistory.push(macroPoint);
+    }
     return data;
   }catch(e){console.error('OMO backend error:',e);throw e}
 }
@@ -469,8 +516,8 @@ async function paperExecute(){
   pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="document-sheet transition-notice rise"><div class="decision-head"><div class="decision-mast">CENTRAL BANK<br>OMO DESK<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Notice</h1><p>The notice has been signed and is leaving the operations desk.</p></div></div><div class="formgrid"><div class="field"><label>1. OMO instrument</label><input value="${pgDecision.omo_action}" readonly></div><div class="field"><label>2. Auction method</label><input value="${pgDecision.auction_method}" readonly></div><div class="field"><label>3. Offered volume</label><input value="${pgFmt(pgDecision.volume)} bn" readonly></div><div class="field"><label>4. ${method==='Interest-rate auction'?'Pricing method':'OMO offer rate'}</label><input value="${option4}" readonly></div></div></div><div class="transition-caption">NOTICE ISSUED</div></div>`;
   pgShow('pg-send');
   await pgDelay(1050);try{pgResult=await resultPromise}catch(e){alert('The backend could not run this phase: '+e.message);paperDecision();return}if(!pgResult||!Array.isArray(pgResult.bids)||pgResult.bids.length<5){alert('Backend response is missing the five auction bids.');paperDecision();return}pgBackendState=pgResult;
-  const bids=pgResult.bids.slice(0,5);
-  pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="transition-bids">${bids.map((b,i)=>pgBidSlipHTML(b,i).replace('class="bid-slip"',`class="bid-slip" style="--delay:${(i*.12).toFixed(2)}s"`)).join('')}</div><div class="transition-caption">5 BID FORMS RECEIVED AT THE PROCESSING DESK</div></div>`;
+  const bidEntries=pgOrderedBidEntries(pgResult.bids).slice(0,5);
+  pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="transition-bids">${bidEntries.map((entry,i)=>pgBidSlipHTML(entry.bid,entry.backendIndex).replace('class="bid-slip"',`class="bid-slip" style="--delay:${(i*.12).toFixed(2)}s"`)).join('')}</div><div class="transition-caption">5 BID FORMS RECEIVED · BANKS A → E</div></div>`;
   await pgDelay(1450); paperSort();
 }
 
@@ -480,8 +527,8 @@ async function paperExecute(){
 // Ends before AUCTION APPROVAL.
 // ---------------------------------------------------------------------
 function paperSort(){
-  const bids=(pgResult&&pgResult.bids)||[];
-  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><div class="section-tag">OPERATIONS DESK · AUCTION FILES</div><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>The bids have been received. Drag each bid into one of the five white-outlined positions, from highest to lowest priority.</p></div><div class="bid-source" id="pg-source">${bids.slice(0,5).map((b,i)=>pgBidSlipHTML(b,i)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Drag the 5 bids above into the white-outlined slots in priority order.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
+  const bidEntries=pgOrderedBidEntries((pgResult&&pgResult.bids)||[]).slice(0,5);
+  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><div class="section-tag">OPERATIONS DESK · AUCTION FILES</div><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>The five backend bids are filed A → E before processing. Drag them into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Each slip keeps the exact rate and volume returned by the backend for that bank.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
   pgShow('pg-sort'); pgEnableDrag();
 }
 function pgEnableDrag(){
@@ -505,8 +552,8 @@ function paperCheckOrder(){
 // Ends before APPROVED RESULTS DECK.
 // ---------------------------------------------------------------------
 function paperAuctionResult(){
-  const bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0);
-  pg$('pg-result').innerHTML=`<div class="document-sheet approval-sheet"><div class="document-kicker">CENTRAL BANK · OMO DESK</div><h1 class="document-title">OMO Auction Result Record</h1><div class="approval-metrics"><div class="approval-metric"><strong>${pgFmt(totalBid)}</strong><span>Total bid volume · bn</span></div><div class="approval-metric"><strong>${pgFmt(totalWin)}</strong><span>Awarded volume · bn</span></div></div><table class="paper-table"><thead><tr><th>Bank</th><th>Bid rate</th><th>Bid volume</th><th>Awarded volume</th><th>Status</th></tr></thead><tbody>${bids.map(b=>`<tr><td><b>${pgBankName(b.bank)}</b></td><td>${Number(b.bid_rate||0).toFixed(2)}%</td><td>${pgFmt(b.bid_volume)}</td><td>${pgFmt(b.real_volume)}</td><td>${b.won?'Awarded':'Not awarded'}</td></tr>`).join('')}</tbody></table><div class="btnrow"><button id="pg-approve-btn" class="pbtn" onclick="paperApprove()">APPROVE RESULTS</button></div><div id="pg-stamp" class="approval-stamp-slot" aria-live="polite"></div></div>`;
+  const bids=pgResult.bids||[],orderedBids=pgOrderedBidEntries(bids).map(x=>x.bid),totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0);
+  pg$('pg-result').innerHTML=`<div class="document-sheet approval-sheet"><div class="document-kicker">CENTRAL BANK · OMO DESK</div><h1 class="document-title">OMO Auction Result Record</h1><div class="approval-metrics"><div class="approval-metric"><strong>${pgFmt(totalBid)}</strong><span>Total bid volume · bn</span></div><div class="approval-metric"><strong>${pgFmt(totalWin)}</strong><span>Awarded volume · bn</span></div></div><table class="paper-table"><thead><tr><th>Bank</th><th>Bid rate</th><th>Bid volume</th><th>Awarded volume</th><th>Status</th></tr></thead><tbody>${orderedBids.map(b=>`<tr><td><b>${pgBankName(b.bank)}</b></td><td>${Number(b.bid_rate||0).toFixed(2)}%</td><td>${pgFmt(b.bid_volume)}</td><td>${pgFmt(b.real_volume)}</td><td>${b.won?'Awarded':'Not awarded'}</td></tr>`).join('')}</tbody></table><div class="btnrow"><button id="pg-approve-btn" class="pbtn" onclick="paperApprove()">APPROVE RESULTS</button></div><div id="pg-stamp" class="approval-stamp-slot" aria-live="polite"></div></div>`;
   pgShow('pg-result');
 }
 async function paperApprove(){
@@ -538,20 +585,22 @@ function pgMacroOutcomeHTML(result){
   const vals={expected:num(result.expected_inflation),real:num(result.real_interest_rate),gap:num(result.output_gap),gdp:num(result.gdp_growth),inflation:num(result.inflation)};
   if(!Object.values(vals).some(Number.isFinite))return '';
   const fmt=v=>Number.isFinite(v)?`${v.toFixed(2)}%`:'—';
-  const chartItems=[['GDP growth',vals.gdp],['Inflation',vals.inflation],['Real rate',vals.real],['Output gap',vals.gap]];
-  const max=Math.max(1,...chartItems.map(([,v])=>Math.abs(Number.isFinite(v)?v:0)));
-  const bars=chartItems.map(([label,v])=>`<div class="macro-bar-row"><span>${label}</span><div class="macro-bar-track"><div class="macro-bar-fill" style="width:${Number.isFinite(v)?Math.max(2,Math.abs(v)/max*100):0}%"></div></div><b>${fmt(v)}</b></div>`).join('');
-  return `<section class="macro-outcome"><div class="macro-outcome-head"><h3>Macro block published</h3><span>Backend result · Phase ${pgPhase}</span></div><div class="macro-outcome-grid"><div class="macro-card"><strong>${fmt(vals.expected)}</strong><span>Expected inflation</span></div><div class="macro-card"><strong>${fmt(vals.real)}</strong><span>Real interest rate</span></div><div class="macro-card"><strong>${fmt(vals.gdp)}</strong><span>GDP growth</span></div><div class="macro-card"><strong>${fmt(vals.inflation)}</strong><span>Inflation</span></div></div><div class="macro-bars">${bars}</div></section>`;
+  return `<section class="macro-outcome"><div class="macro-outcome-head"><h3>Macro block published</h3><span>Backend result · Phase ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</span></div><div class="macro-outcome-grid"><div class="macro-card"><strong>${fmt(vals.expected)}</strong><span>Expected inflation</span></div><div class="macro-card"><strong>${fmt(vals.real)}</strong><span>Real interest rate</span></div><div class="macro-card"><strong>${fmt(vals.gdp)}</strong><span>GDP growth</span></div><div class="macro-card"><strong>${fmt(vals.inflation)}</strong><span>Inflation</span></div></div><div class="macro-trend-chart"><div class="macro-trend-title"><span>GDP growth & inflation · 30-day phase timeline</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory)}<p class="macro-chart-note">The backend publishes the macro block at the end of Phase 3; earlier phases remain blank rather than using estimated values.</p></div></section>`;
 }
 function pgSetReportPage(n){pgReportPage=pgSetDeck('pg-report',n)}
 function paperReport(){
   const c=phaseConfig[pgPhase],pre={...c.preMetrics,rate:Number(pgResult.previous_interbank_rate??c.preMetrics.rate)},post=Number(pgResult.interbank_rate),delta=post-pre.rate,bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0),demand=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0),maturity=Number(pgResult.maturity_volume||0);
+  const resultChartValues=pgRateHistory.slice(-4);
+  const resultChartLabels=resultChartValues.map((_,i)=>getPhaseDisplayDate(i));
   const liquidityPosition=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0);
-  const resultSummary=`Awarded <b>${pgFmt(totalWin)} bn</b> across <b>${bids.length} banks</b>. Post-OMO liquidity position: <b>${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn</b>. The interbank rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${Number.isFinite(post)?post.toFixed(2):'—'}%</b>.`;
+  const rateHeadline=Number.isFinite(post)?`${post.toFixed(2)}%`:'—';
+  const deltaText=`${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp`;
+  const liquidityText=`${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn`;
+  const actionLabel=`${pgDecision.omo_action} · ${pgDecision.auction_method}`;
   pg$('pg-report').innerHTML=`<div class="paper-deck">
-    <article class="paper-page is-active"><div class="newshero"><div class="eyebrow">THE OMO DAILY<br>${getPhaseDate(pgPhase-1)}<br><br>PAGE 1 · RESULTS</div><h1>OMO decision approved</h1><p>Key auction outcomes and the immediate market response.</p></div><div class="result-grid"><article class="result-story"><h3>${pgDecision.omo_action} · ${pgDecision.auction_method}</h3><p>${resultSummary}</p></article><div class="result-facts"><div class="result-fact"><strong>${pgFmt(totalBid)}</strong><span>Total bid volume · bn</span></div><div class="result-fact"><strong>${pgFmt(totalWin)}</strong><span>Awarded volume · bn</span></div><div class="result-fact"><strong>${bids.length}</strong><span>Banks submitting bids</span></div><div class="result-fact"><strong>${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp</strong><span>Change in interbank rate</span></div></div></div></article>
-    <article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · INTERBANK & MACRO UPDATE</div><h2>Market transmission after the OMO decision</h2><p>The interbank path is updated immediately; the macro block appears when the backend publishes it.</p></div><div class="result-chart-sheet"><div class="result-chart-main">${pgChartSVG([...(c.chartData||[]),post],true)}</div><aside class="result-chart-side"><div class="section-tag">UPDATED INDICATORS</div><div class="big-rate">${Number.isFinite(post)?post.toFixed(2):'—'}%</div><p><b>Before OMO:</b> ${Number(pre.rate||0).toFixed(2)}%<br><b>Change:</b> ${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp</p><div class="result-mini-grid"><div class="result-mini"><strong>${demand>=0?'+':''}${pgFmt(demand)}</strong><span>Liquidity position · bn</span></div><div class="result-mini"><strong>${pgFmt(maturity)}</strong><span>Maturing volume · bn</span></div></div></aside></div>${pgMacroOutcomeHTML(pgResult)}</article>
-    <article class="paper-page is-hidden"><div class="market-page-head"><div class="section-tag">PAGE 3 · POST-OPERATION FILE</div><h2>Outstanding OMO & maturity schedule</h2><p>The post-operation file uses the same maturity-table structure as the operating schedule: IDs, dates, rates, volumes, and cash flows stay visible at a glance.</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${(pgResult.tbill_inventory||[]).length} positions</h3>${pgPositionTableHTML(pgResult.tbill_inventory||[],'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${(pgResult.repo_inventory||[]).length} positions</h3>${pgPositionTableHTML(pgResult.repo_inventory||[],'Repo')}</section><section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(pgResult.maturity_events||[])}</section></div></article>
+    <article class="paper-page is-active"><div class="newshero"><div class="eyebrow">THE OMO DAILY<br>${getPhaseDate(pgPhase-1)}<br><br>PAGE 1 · AUCTION RESULTS</div><h1>The OMO session has been approved</h1><p>Three short result signals summarize the auction and the immediate liquidity response.</p></div><div class="clippings"><article class="clipping"><div class="newslabel">AUCTION DECISION</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">MARKET RESPONSE</div><div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p></article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
+    <article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · INTERBANK & MACRO UPDATE</div><h2>Market conditions after the OMO decision</h2><p>The backend-updated interbank observation extends the same 30-day phase timeline used in OMO Daily. Macro indicators appear only when the engine publishes them.</p></div><div class="chart-sheet"><div class="chart-box">${pgChartSVG(resultChartValues,true,resultChartLabels)}</div><aside class="chart-side"><div class="section-tag">CURRENT RESULTS</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${rateHeadline}</div><p><b>Before OMO:</b> ${Number(pre.rate||0).toFixed(2)}%<br><b>Change:</b> ${deltaText}<br><b>Liquidity position:</b> ${liquidityText}<br><b>Maturing volume:</b> ${pgFmt(maturity)} bn</p></aside></div>${pgMacroOutcomeHTML(pgResult)}</article>
+    <article class="paper-page is-hidden"><div class="market-page-head"><div class="section-tag">PAGE 3 · POST-OPERATION FILE</div><h2>Outstanding positions after the operation</h2><p>The same operating-file format used in OMO Daily is refreshed with backend inventories and maturity events after this phase.</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${(pgResult.tbill_inventory||[]).length} positions</h3>${pgPositionTableHTML(pgResult.tbill_inventory||[],'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${(pgResult.repo_inventory||[]).length} positions</h3>${pgPositionTableHTML(pgResult.repo_inventory||[],'Repo')}</section><section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(pgResult.maturity_events||[])}</section></div></article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
     <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<3?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
   </div>`;
