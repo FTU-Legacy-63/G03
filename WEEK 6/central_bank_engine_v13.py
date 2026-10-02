@@ -99,6 +99,7 @@ class AuctionBid:
     real_volume: float
     price: float
     won: bool
+    cash_bid_volume: float = 0.0
 
 
 @dataclass
@@ -204,6 +205,7 @@ class MarketTBillInventory:
                 self.lots.append(TBillLot(
                     s.security_id, s.issue_date, s.maturity_date, s.tbill_rate, s.face_value
                 ))
+        self.lots.sort(key=lambda x: (x.issue_date, x.security_id))
 
     def _purge_empty(self):
         """Remove T-bill lots whose remaining market quantity is exhausted."""
@@ -458,12 +460,17 @@ class CentralBankGame:
     def _new_cb_security_price(self, fv, auction_rate):
         return price(fv, auction_rate, self.tbill_tenor_days)
 
-    def _cash_bid_to_face_volume(self, cash_bid, action, settlement_rate):
+    def _cash_bid_to_face_volume(self, cash_bid, action, settlement_rate,
+                                 virtual_available=None):
         """Convert a bank's cash bid into whole-unit security face volume.
 
         Sell Securities / Repo: new CB security, 90-day tenor, settlement rate.
         Buy Securities / Reverse Repo: FIFO market SBV bills, each lot's own
         stored rate and remaining maturity (no weighted-average rate).
+
+        virtual_available is used only while constructing bids. It prevents a
+        later bank from reusing the same FIFO SBV Bill quantity already used to
+        convert an earlier bank's Cash Bid Volume, without mutating real inventory.
         """
         cash_bid = max(0.0, float(cash_bid))
         if cash_bid <= 1e-12:
@@ -473,24 +480,48 @@ class CentralBankGame:
             fv = cash_bid * (1 + settlement_rate * self.tbill_tenor_days / 36500)
             return float(max(0, whole(fv)))
 
+        if virtual_available is None:
+            virtual_available = {
+                lot.security_id: lot.face_value for lot in self.market_inventory.lots
+            }
+
         min_days = self.repo_tenor_days if action == "Reverse Repo" else 0
         cutoff = self.current_date + timedelta(days=min_days)
         cash_left = cash_bid
         fv_total = 0.0
+
+        eligible_lots = []
         for lot in sorted(self.market_inventory.lots, key=lambda x: (x.issue_date, x.security_id)):
-            if lot.face_value <= 1e-9 or lot.maturity_date < cutoff:
+            available = max(0.0, virtual_available.get(lot.security_id, 0.0))
+            if available <= 1e-9 or lot.maturity_date < cutoff:
                 continue
+
+            eligible_lots.append(lot)
             days = max((lot.maturity_date - self.current_date).days, 0)
             unit_price = 1 / (1 + lot.rate * days / 36500)
-            max_cash = lot.face_value * unit_price
+            max_cash = available * unit_price
+
             if cash_left >= max_cash - 1e-9:
-                fv_total += lot.face_value
+                fv_total += available
                 cash_left -= max_cash
             else:
                 fv_total += cash_left / unit_price
                 cash_left = 0.0
                 break
-        return float(max(0, whole(fv_total)))
+
+        # Bid Volume is an integer security quantity. Reserve exactly that rounded
+        # quantity in the virtual FIFO balance, rather than the pre-rounding amount.
+        rounded_fv = float(max(0, whole(fv_total)))
+        reserve_left = rounded_fv
+        for lot in eligible_lots:
+            if reserve_left <= 1e-9:
+                break
+            available = max(0.0, virtual_available.get(lot.security_id, 0.0))
+            take = min(available, reserve_left)
+            virtual_available[lot.security_id] = available - take
+            reserve_left -= take
+
+        return rounded_fv
 
     def run_auction(self, decision, rld):
         decision.validate()
@@ -522,8 +553,20 @@ class CentralBankGame:
 
         # NEW FLOW: random formula creates CASH BID first, then cash is grossed up
         # into actual face-value BID VOLUME using the same instrument pricing rule.
-        bid_vols = [self._cash_bid_to_face_volume(c, decision.omo_action, settlement[i])
-                    for i, c in enumerate(cash_bid_vols)]
+        # For Buy / Reverse Repo, a virtual FIFO balance prevents multiple banks
+        # from reusing the same SBV Bill quantity during bid conversion.
+        virtual_available = None
+        if decision.omo_action in ("Buy Securities", "Reverse Repo"):
+            virtual_available = {
+                lot.security_id: lot.face_value for lot in self.market_inventory.lots
+            }
+
+        bid_vols = []
+        for i, cash_bid in enumerate(cash_bid_vols):
+            bid_vols.append(self._cash_bid_to_face_volume(
+                cash_bid, decision.omo_action, settlement[i], virtual_available
+            ))
+
         total_bid_volume = float(whole(sum(bid_vols)))
 
         wanted = whole(min(decision.volume, total_bid_volume))
@@ -572,7 +615,7 @@ class CentralBankGame:
             bid = AuctionBid(i+1, banks[i], excel_round(bid_rates[i], 2),
                              excel_round(settlement[i], 2), float(whole(bid_vols[i])),
                              float(whole(rv)), p, rv > 1e-9)
-            # Test-only extra attribute; does not rename existing AuctionBid fields.
+            # Store Cash Bid Volume as a first-class auction field for API serialization.
             bid.cash_bid_volume = float(whole(cash_bid_vols[i]))
             bids.append(bid)
 
@@ -668,6 +711,29 @@ class CentralBankGame:
                 "cash_flow": flow, "repayment": value,
             })
 
+        # One SBV Bill can be split across market outstanding and several RRP
+        # positions. Present its maturity as ONE row per security ID.
+        merged_sbv = {}
+        other_events = []
+        for event in events:
+            if event.get("type") == "SBV Bill maturity":
+                key = event["id"]
+                if key not in merged_sbv:
+                    merged_sbv[key] = dict(event)
+                    merged_sbv[key]["bank"] = "-"
+                else:
+                    merged_sbv[key]["volume"] = excel_round(
+                        merged_sbv[key].get("volume", 0.0) + event.get("volume", 0.0), 2
+                    )
+                    merged_sbv[key]["cash_flow"] = excel_round(
+                        merged_sbv[key].get("cash_flow", 0.0) + event.get("cash_flow", 0.0), 2
+                    )
+            else:
+                other_events.append(event)
+
+        events = list(merged_sbv.values()) + other_events
+        events.sort(key=lambda e: (e.get("maturity_date", ""), e.get("id", "")))
+
         return excel_round(total, 2), events
 
     def get_scenario_liquidity_demand(self):
@@ -681,16 +747,7 @@ class CentralBankGame:
                 f"Scenario Liquidity Demand is not configured for Phase {self.phase}."
             )
         return liquidity_demand_by_phase[self.phase]
-    def get_next_scenario_liquidity_demand(self):
-        liquidity_demand_by_phase = {
-            1: 5000.0,
-            2: 2000.0,
-            3: 1000.0,
-        }
-        if self.phase not in liquidity_demand_by_phase:
-            return None
-
-        return liquidity_demand_by_phase[self.phase]
+        
     def _calculate_macro_block(self, interbank_rate):
         """Macro result published once every 3 phases."""
         if self.pending_expected_inflation is None:
@@ -749,8 +806,10 @@ class CentralBankGame:
             excel_round(gap / abs(rld), 6) if abs(rld) > 1e-12 else 0.0
         )
 
-        # Interbank now uses signed Liquidity Gap directly.
-        new_rate = excel_round(0.069 * prev_rate + 0.000123 * gap + 3.584, 2)
+        # Interbank uses signed Liquidity Gap directly and is constrained
+        # to the documented valid range of 0%-20%.
+        raw_new_rate = 0.069 * prev_rate + 0.000123 * gap + 3.584
+        new_rate = excel_round(min(20.0, max(0.0, raw_new_rate)), 2)
 
         macro = {
             "expected_inflation": None,
