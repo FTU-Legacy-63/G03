@@ -270,10 +270,11 @@ let currentPhase=1;
 let teamName='Team 1 – Central Bankers';
 let pgResult=null, pgDecision=null, pgPhase=1, pgNewsPage=0, pgReportPage=0, pgDragCard=null;
 let pgBidEntries=[];
+let pgPlayerSortOrder=[];
 let pgBackendState=null;
 let pgInitialState=null;
 let pgRateHistory=[];
-function pgInitialMacroHistory(){return [{phase:1,date:'2025-02-02',gdp:6.00,inflation:4.00,source:'fixed-initial-scenario'}]}
+function pgInitialMacroHistory(){return [{kind:'opening',phase:0,date:'2025-02-02',gdp:6.00,inflation:4.00,source:'fixed-initial-scenario'}]}
 let pgMacroHistory=pgInitialMacroHistory();
 let pgExpectedInflation=null;
 
@@ -330,7 +331,7 @@ function pgLatestMacroValue(field){
   return null;
 }
 function pgMacroText(field){const v=pgLatestMacroValue(field);return Number.isFinite(v)?`${v.toFixed(2)}%`:'—'}
-function pgSyncPhaseFallbacks(){const c=phaseConfig[pgPhase];if(!c)return;c.preMetrics.rate=pgCurrentRate();c.preMetrics.liq=pgCurrentLiquidityNeed();if(pgRateHistory.length)c.chartData=pgRateHistory.slice(-4)}
+function pgSyncPhaseFallbacks(){const c=phaseConfig[pgPhase];if(!c)return;c.preMetrics.rate=pgCurrentRate();c.preMetrics.liq=pgCurrentLiquidityNeed();if(pgRateHistory.length)c.chartData=pgRateHistory.slice(-4).map(x=>Number(typeof x==='object'?x.rate:x)).filter(Number.isFinite)}
 
 const learningCards={
   auction:{title:'Auction method',content:`<p><b>What is it?</b><br>The rule banks use to submit bids in an OMO operation.</p><h4>Interest-rate auction</h4><ul><li>The central bank fixes the offered volume.</li><li>Banks compete on bid rate and volume.</li><li>Accepted bids follow the ranking rule.</li></ul><h4>Volume auction</h4><ul><li>The central bank announces the auction rate.</li><li>Banks submit the volume they want.</li><li>If demand exceeds supply, allocation can be proportional.</li></ul>`},
@@ -422,16 +423,16 @@ function renderTitleScreen(){
 }
 async function paperStart(){
   const input=pg$('pg-team');teamName=input&&input.value.trim()?input.value.trim():'Team 1 – Central Bankers';
-  pgPhase=1;currentPhase=1;pgResult=null;pgDecision=null;pgNewsPage=0;pgReportPage=0;pgBackendState=null;pgInitialState=null;pgRateHistory=[];pgMacroHistory=pgInitialMacroHistory();pgExpectedInflation=null;pgBidEntries=[];
+  pgPhase=1;currentPhase=1;pgResult=null;pgDecision=null;pgNewsPage=0;pgReportPage=0;pgBackendState=null;pgInitialState=null;pgRateHistory=[];pgMacroHistory=pgInitialMacroHistory();pgExpectedInflation=null;pgBidEntries=[];pgPlayerSortOrder=[];
   try{
     const r=await fetch('/api/start-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start_date:'02/02/2025',initial_rate:3.95})});
     const data=await r.json();if(!r.ok||data.status==='error')throw new Error(data.message||'Unable to start backend game.');
-    pgBackendState=data;pgInitialState=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate))pgRateHistory=[rate];
+    pgBackendState=data;pgInitialState=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate))pgRateHistory=[{kind:'opening',phase:0,date:getPhaseDate(0),rate}];
   }catch(e){console.error(e);alert('Unable to start the OMO backend: '+e.message);return}
   pgSyncPhaseFallbacks();paperBrief();
 }
 function paperRestart(){
-  pgPhase=1; currentPhase=1; pgResult=null; pgDecision=null; pgNewsPage=0; pgReportPage=0; pgDragCard=null; pgBackendState=null; pgInitialState=null; pgRateHistory=[]; pgMacroHistory=pgInitialMacroHistory(); pgExpectedInflation=null; pgBidEntries=[];
+  pgPhase=1; currentPhase=1; pgResult=null; pgDecision=null; pgNewsPage=0; pgReportPage=0; pgDragCard=null; pgBackendState=null; pgInitialState=null; pgRateHistory=[]; pgMacroHistory=pgInitialMacroHistory(); pgExpectedInflation=null; pgBidEntries=[]; pgPlayerSortOrder=[];
   ['pg-brief','pg-decision','pg-send','pg-sort','pg-result','pg-report','pg-final'].forEach(id=>{const el=pg$(id);if(el)el.innerHTML=''});
   renderTitleScreen();
 }
@@ -463,57 +464,74 @@ function pgChartSVG(values,highlightLast=false,labels=null){
 }
 function pgDailyRateTimelineSVG(history){
   const raw=Array.isArray(history)?history:[];
-  const pointCount=Math.max(3,Math.min(4,raw.length||1));
-  const labels=Array.from({length:pointCount},(_,i)=>getPhaseDisplayDate(i));
-  const values=Array.from({length:pointCount},(_,i)=>{const v=Number(raw[i]);return Number.isFinite(v)?v:null});
-  const finite=values.filter(Number.isFinite),w=760,h=230,l=58,r=22,t=24,b=58;
-  const x=i=>pointCount===1?l:l+i*(w-l-r)/Math.max(1,pointCount-1);
+  const slots=[
+    {kind:'opening',phase:0,label:'OPENING',date:getPhaseDisplayDate(0)},
+    {kind:'result',phase:1,label:'PHASE 1 RESULT',date:getPhaseDisplayDate(1)},
+    {kind:'result',phase:2,label:'PHASE 2 RESULT',date:getPhaseDisplayDate(2)},
+    {kind:'result',phase:3,label:'PHASE 3 RESULT',date:getPhaseDisplayDate(3)}
+  ];
+  const points=[];
+  raw.forEach((item,i)=>{
+    if(item&&typeof item==='object'){
+      const rate=Number(item.rate);if(!Number.isFinite(rate))return;
+      const kind=item.kind||((Number(item.phase)||0)>0?'result':'opening');
+      const phase=Number(item.phase)||0;
+      const slot=kind==='opening'?0:phase;
+      if(slot>=0&&slot<slots.length)points.push({slot,rate});
+    }else{
+      const rate=Number(item);if(Number.isFinite(rate))points.push({slot:Math.min(i,3),rate});
+    }
+  });
+  const finite=points.map(p=>p.rate),w=760,h=230,l=58,r=22,t=24,b=58;
+  const x=i=>l+i*(w-l-r)/3;
   const min0=finite.length?Math.min(...finite):3.5,max0=finite.length?Math.max(...finite):4.5;
   const pad=Math.max(.20,(max0-min0)*.45||.20),min=min0-pad,max=max0+pad,span=(max-min)||1;
   const y=v=>t+(max-v)/span*(h-t-b);
   const grid=[0,.25,.5,.75,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="7" y="${yy+4}" font-family="Arial" font-size="10" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
-  const xaxis=labels.map((lab,i)=>{const cap=i<3?`PHASE ${i+1}`:'POST PHASE 3';return `<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#52675f">${cap}</text><text x="${x(i)}" y="${h-16}" text-anchor="middle" font-family="Arial" font-size="9" fill="#65736e">${lab}</text>`}).join('');
-  const pts=values.map((v,i)=>Number.isFinite(v)?[x(i),y(v),v,i]:null).filter(Boolean);
-  const path=pts.length>1?`<path d="${pts.map((q,j)=>(j?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' ')}" fill="none" stroke="#087f75" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:'';
-  const dots=pts.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="6" fill="#087f75" stroke="#fff7de" stroke-width="2"><title>${labels[q[3]]} · ${q[2].toFixed(2)}%</title></circle>`).join('');
-  const pending=values.map((v,i)=>Number.isFinite(v)?'':`<circle cx="${x(i)}" cy="${h-b}" r="4" fill="#d0c6b2"><title>${labels[i]} not observed yet</title></circle>`).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Interbank rate on a 30-day operating timeline">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${path}${dots}${pending}</svg>`;
+  const xaxis=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family="Arial" font-size="8.5" font-weight="700" fill="#52675f">${slot.label}</text><text x="${x(i)}" y="${h-16}" text-anchor="middle" font-family="Arial" font-size="9" fill="#65736e">${slot.date}</text>`).join('');
+  const ordered=[...points].sort((a,b)=>a.slot-b.slot);
+  const path=ordered.length>1?`<path d="${ordered.map((q,j)=>(j?'L':'M')+x(q.slot).toFixed(1)+' '+y(q.rate).toFixed(1)).join(' ')}" fill="none" stroke="#087f75" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+  const dots=ordered.map(q=>`<circle cx="${x(q.slot)}" cy="${y(q.rate)}" r="6" fill="#087f75" stroke="#fff7de" stroke-width="2"><title>${slots[q.slot].label} · ${slots[q.slot].date} · ${q.rate.toFixed(2)}%</title></circle>`).join('');
+  const occupied=new Set(ordered.map(q=>q.slot));
+  const pending=slots.map((slot,i)=>occupied.has(i)?'':`<circle cx="${x(i)}" cy="${h-b}" r="4" fill="#d0c6b2"><title>${slot.label} not observed yet</title></circle>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Interbank rate: opening level plus one new point for each completed player phase">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${path}${dots}${pending}</svg>`;
 }
 function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
-  const phases=[1,2,3];
-  const labels=phases.map((_,i)=>getPhaseDisplayDate(i));
-  let lastGdp=null,lastInflation=null;
-  const gdp=[],inflation=[];
-  phases.forEach(p=>{
-    const row=rows.find(x=>Number(x.phase)===p);
+  const slots=[
+    {phase:0,label:'OPENING',date:getPhaseDisplayDate(0)},
+    {phase:1,label:'PHASE 1 RESULT',date:getPhaseDisplayDate(1)},
+    {phase:2,label:'PHASE 2 RESULT',date:getPhaseDisplayDate(2)},
+    {phase:3,label:'PHASE 3 RESULT',date:getPhaseDisplayDate(3)}
+  ];
+  const gdpPoints=[],inflationPoints=[];
+  rows.forEach(row=>{
+    const phase=Number(row?.phase)||0;
+    if(phase>Number(uptoPhase||1))return;
+    const slot=Math.max(0,Math.min(3,phase));
     const gv=(row?.gdp===null||row?.gdp===undefined||row?.gdp==='')?NaN:Number(row.gdp);
     const iv=(row?.inflation===null||row?.inflation===undefined||row?.inflation==='')?NaN:Number(row.inflation);
-    if(Number.isFinite(gv))lastGdp=gv;
-    if(Number.isFinite(iv))lastInflation=iv;
-    if(p<=Number(uptoPhase||1)){
-      gdp.push(Number.isFinite(lastGdp)?lastGdp:null);
-      inflation.push(Number.isFinite(lastInflation)?lastInflation:null);
-    }else{gdp.push(null);inflation.push(null)}
+    if(Number.isFinite(gv))gdpPoints.push({slot,value:gv});
+    if(Number.isFinite(iv))inflationPoints.push({slot,value:iv});
   });
-  const finite=[...gdp,...inflation].filter(Number.isFinite);
+  const finite=[...gdpPoints.map(x=>x.value),...inflationPoints.map(x=>x.value)];
   const w=760,h=220,l=54,r=22,t=22,b=52;
-  const x=i=>l+i*(w-l-r)/2;
+  const x=i=>l+i*(w-l-r)/3;
   if(!finite.length){
-    const ticks=labels.map((lab,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family="Arial" font-size="10" fill="#65736e">${lab}</text>`).join('');
-    return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation by phase"><line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${ticks}<text x="${w/2}" y="${h/2-6}" text-anchor="middle" font-family="Georgia" font-size="15" fill="#746d5e">GDP growth 6.00% · Inflation 4.00% until a new macro result is published</text></svg>`;
+    const ticks=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family="Arial" font-size="9" fill="#65736e">${slot.date}</text>`).join('');
+    return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation"><line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${ticks}</svg>`;
   }
   let min=Math.min(...finite),max=Math.max(...finite);const pad=Math.max(.35,(max-min)*.25);min-=pad;max+=pad;if(Math.abs(max-min)<.01){min-=.5;max+=.5}const span=max-min;
   const y=v=>t+(max-v)/span*(h-t-b);
   const grid=[0,.333,.666,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="6" y="${yy+4}" font-family="Arial" font-size="10" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
-  const xaxis=labels.map((lab,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family="Arial" font-size="10" fill="#65736e">${lab}</text>`).join('');
-  function series(values,color,name){
-    const pts=values.map((v,i)=>Number.isFinite(v)?[x(i),y(v),v,i]:null).filter(Boolean);
-    const path=pts.length>1?`<path d="${pts.map((q,j)=>(j?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:'';
-    const dots=pts.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="6" fill="${color}" stroke="#fff7de" stroke-width="2"><title>${name} · ${labels[q[3]]} · ${q[2].toFixed(2)}%</title></circle>`).join('');
+  const xaxis=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family="Arial" font-size="8.5" font-weight="700" fill="#52675f">${slot.label}</text><text x="${x(i)}" y="${h-16}" text-anchor="middle" font-family="Arial" font-size="9" fill="#65736e">${slot.date}</text>`).join('');
+  function series(points,color,name){
+    const ordered=[...points].sort((a,b)=>a.slot-b.slot);
+    const path=ordered.length>1?`<path d="${ordered.map((q,j)=>(j?'L':'M')+x(q.slot).toFixed(1)+' '+y(q.value).toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+    const dots=ordered.map(q=>`<circle cx="${x(q.slot)}" cy="${y(q.value)}" r="6" fill="${color}" stroke="#fff7de" stroke-width="2"><title>${name} · ${slots[q.slot].label} · ${q.value.toFixed(2)}%</title></circle>`).join('');
     return path+dots;
   }
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation by 30-day phase">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${series(gdp,'#087f75','GDP growth')}${series(inflation,'#b7892f','Inflation')}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation: only newly published observations create new points">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${series(gdpPoints,'#087f75','GDP growth')}${series(inflationPoints,'#b7892f','Inflation')}</svg>`;
 }
 function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const state=stateOverride||pgBackendState||pgInitialState||{};
@@ -521,7 +539,8 @@ function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const repos=Array.isArray(state.repo_inventory)?state.repo_inventory:[];
   const events=Array.isArray(state.maturity_events)?state.maturity_events:[];
   const resultMode=mode==='result';
-  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING & MATURITY FILE'}</div><h2>${resultMode?'Outstanding positions after the operation':'Current OMO positions'}</h2><p>${resultMode?'Backend inventories and maturity events after this phase.':'The exact post-operation file carried forward from the previous completed phase. Before Phase 1, this is the opening backend inventory.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section><section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section></div>`;
+  const maturitySection=resultMode?`<section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section>`:'';
+  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the operation':'Current OMO positions'}</h2><p>${resultMode?'Backend inventories and maturity events after this phase.':'The exact outstanding bill and repo/reverse-repo inventory carried forward from the latest completed phase.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
 }
 function pgSetDeck(rootId,index){
   const root=pg$(rootId); if(!root)return 0; const pages=[...root.querySelectorAll('.paper-page')]; if(!pages.length)return 0;
@@ -641,12 +660,12 @@ async function pgRunEngine(){
     const r=await fetch('/api/run-phase',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data=await r.json();
     if(!r.ok||data.status==='error')throw new Error(data.message||'Backend rejected the phase decision.');
-    pgBackendState=data;pgResult=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate))pgRateHistory.push(rate);
+    pgBackendState=data;pgResult=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate)){const point={kind:'result',phase:pgPhase,date:getPhaseDate(pgPhase),rate};const ix=pgRateHistory.findIndex(x=>x&&typeof x==='object'&&x.kind==='result'&&Number(x.phase)===pgPhase);if(ix>=0)pgRateHistory[ix]=point;else pgRateHistory.push(point);}
     const gdpRaw=data.gdp_growth,inflationRaw=data.inflation;
     const gdp=(gdpRaw===null||gdpRaw===undefined||gdpRaw==='')?null:Number(gdpRaw);
     const inflation=(inflationRaw===null||inflationRaw===undefined||inflationRaw==='')?null:Number(inflationRaw);
     if(Number.isFinite(gdp)||Number.isFinite(inflation)){
-      const macroPoint={phase:pgPhase,date:getPhaseDate(pgPhase-1),gdp:Number.isFinite(gdp)?gdp:null,inflation:Number.isFinite(inflation)?inflation:null,source:'backend'};
+      const macroPoint={kind:'result',phase:pgPhase,date:getPhaseDate(pgPhase),gdp:Number.isFinite(gdp)?gdp:null,inflation:Number.isFinite(inflation)?inflation:null,source:'backend'};
       const ix=pgMacroHistory.findIndex(x=>Number(x.phase)===pgPhase);if(ix>=0)pgMacroHistory[ix]=macroPoint;else pgMacroHistory.push(macroPoint);
     }
     return data;
@@ -701,6 +720,7 @@ function paperCheckOrder(){
   }else expected.sort((a,b)=>Number(b.bid.bid_volume)-Number(a.bid.bid_volume));
   const expectedBanks=expected.map(x=>x.letter);
   if(!actual.every((x,i)=>x===expectedBanks[i])){pg$('pg-sort-msg').innerHTML='<b>The order is not correct.</b> Review the priority rule for the selected auction method and try again.';return}
+  pgPlayerSortOrder=actual.slice();
   pg$('pg-sort-msg').innerHTML='<b>✓ Correct order.</b> The files are ready for the auction result record.'; setTimeout(paperAuctionResult,350);
 }
 
@@ -710,7 +730,7 @@ function paperCheckOrder(){
 // Ends before APPROVED RESULTS DECK.
 // ---------------------------------------------------------------------
 function paperAuctionResult(){
-  const bids=pgResult.bids||[],orderedBids=(pgBidEntries.length?pgBidEntries:pgOrderedBidEntries(bids)).map(x=>x.bid),totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0);
+  const bids=pgResult.bids||[],entries=(pgBidEntries.length?pgBidEntries:pgOrderedBidEntries(bids)),entryByBank=new Map(entries.map(x=>[x.letter,x])),orderedEntries=pgPlayerSortOrder.length===5?pgPlayerSortOrder.map(letter=>entryByBank.get(letter)).filter(Boolean):entries,orderedBids=orderedEntries.map(x=>x.bid),totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0);
   pg$('pg-result').innerHTML=`<div class="document-sheet approval-sheet"><div class="document-kicker">CENTRAL BANK · OMO DESK</div><h1 class="document-title">OMO Auction Result Record</h1><div class="approval-metrics"><div class="approval-metric"><strong>${pgFmt(totalBid)}</strong><span>Total bid volume · bn</span></div><div class="approval-metric"><strong>${pgFmt(totalWin)}</strong><span>Awarded volume · bn</span></div></div><table class="paper-table"><thead><tr><th>Bank</th><th>Bid rate</th><th>Bid volume</th><th>Awarded volume</th><th>Status</th></tr></thead><tbody>${orderedBids.map(b=>`<tr><td><b>${pgBankName(b.bank)}</b></td><td>${Number(b.bid_rate||0).toFixed(2)}%</td><td>${pgFmt(b.bid_volume)}</td><td>${pgFmt(b.real_volume)}</td><td>${b.won?'Awarded':'Not awarded'}</td></tr>`).join('')}</tbody></table><div class="btnrow"><button id="pg-approve-btn" class="pbtn" onclick="paperApprove()">APPROVE RESULTS</button></div><div id="pg-stamp" class="approval-stamp-slot" aria-live="polite"></div></div>`;
   pgShow('pg-result');
 }
@@ -770,7 +790,7 @@ function paperReport(){
 // Ends at END PAPER GAME LOGIC.
 // ---------------------------------------------------------------------
 function paperNext(){
-  if(pgPhase<3){pgPhase++;currentPhase=pgPhase;pgResult=null;pgDecision=null;pgBidEntries=[];pgSyncPhaseFallbacks();paperBrief();return}
+  if(pgPhase<3){pgPhase++;currentPhase=pgPhase;pgResult=null;pgDecision=null;pgBidEntries=[];pgPlayerSortOrder=[];pgSyncPhaseFallbacks();paperBrief();return}
   pg$('pg-final').innerHTML=`<div class="document-sheet ending-sheet"><div class="ending-inner"><div class="end-label">OPERATING FILE CLOSED</div><div class="game-title">WHO RUNS THE W<span class="earth-o">🌍</span>RLD?</div><h1>OMO OPERATING RUN COMPLETE</h1><p><b>${teamName}</b> completed all 3 phases: reading macro signals, making OMO decisions, processing the auction, and tracking the post-intervention effects.</p><div class="end-summary"><span>3</span><small>PHASES COMPLETED</small><span>5</span><small>BANKS PER AUCTION</small></div><button class="pbtn" onclick="paperRestart()">PLAY AGAIN ↻</button></div></div>`;pgShow('pg-final');
 }
 
