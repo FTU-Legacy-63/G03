@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from datetime import datetime
-from dataclasses import asdict
-
+from pathlib import Path
 from central_bank_engine_v13 import CentralBankGame, Decision
+
+BASE_DIR = Path(__file__).resolve().parent
 
 app = Flask(__name__)
 CORS(app)
@@ -11,10 +12,23 @@ CORS(app)
 # Game instance của phiên chơi hiện tại
 game_instance = None
 
+def _get_next_scenario_liquidity_demand():
+    """Return the next phase demand after run_phase() advances the engine.
+
+    The engine increments ``game_instance.phase`` before returning a PhaseResult,
+    so get_scenario_liquidity_demand() now points at the upcoming phase.
+    After Phase 3 there is no configured next phase, so expose JSON null instead
+    of turning an otherwise successful phase into an API error.
+    """
+    try:
+        return game_instance.get_scenario_liquidity_demand()
+    except ValueError:
+        return None
+
 # FRONTEND
 @app.route("/")
 def index():
-    return send_from_directory(".", "omo_refactored_v64.html")
+    return send_from_directory(str(BASE_DIR), "omo_refactored_v64.html")
 
 # START GAME
 
@@ -210,7 +224,7 @@ def run_phase():
             # LIQUIDITY
             "scenario_liquidity_demand": result.scenario_liquidity_demand,
             "next_scenario_liquidity_demand":
-                game_instance.get_next_scenario_liquidity_demand(),
+                _get_next_scenario_liquidity_demand(),
             "unmet_from_previous_phase": result.unmet_from_previous_phase,
             "real_liquidity_demand": result.real_liquidity_demand,
             "supply": result.supply,
