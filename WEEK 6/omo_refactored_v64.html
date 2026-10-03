@@ -171,7 +171,23 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    Purpose: first/last screens use the same document material as the game.
    Ends before RESPONSIVE.
    --------------------------------------------------------------------- */
-.title-sheet,.ending-sheet{display:flex;min-height:760px;align-items:center;justify-content:center;text-align:center}.title-inner,.ending-inner{width:min(100%,1040px);max-width:1040px}.title-kicker,.end-label{font:900 11px/1 Arial;letter-spacing:.22em;color:#55736b}.game-title{font:950 clamp(44px,5.8vw,78px)/.94 Arial,sans-serif;letter-spacing:-.048em;color:#1f3b35;margin:18px 0;white-space:nowrap}.title-rule{width:82px;height:4px;background:#0b8178;margin:0 auto 24px}.title-inner h1,.ending-inner h1{font:800 clamp(24px,3vw,36px)/1.18 Georgia,serif;color:#263f39;margin:0 0 18px}.title-inner p,.ending-inner p{font:16px/1.6 "Segoe UI",Arial;color:#4c615a;max-width:760px;margin:0 auto 24px}.title-team{width:min(520px,100%);margin:20px auto;text-align:left}.title-team label{font:850 11px Arial;color:#566960}.title-team input{width:100%;box-sizing:border-box;margin-top:8px;padding:13px;border:0;border-bottom:1px solid #9a8c73;background:transparent;font:750 18px Arial;color:#233c37;outline:none}.end-summary{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:14px;align-items:center;max-width:620px;margin:28px auto;padding:18px;border-top:1px solid #c3b495;border-bottom:1px solid #c3b495}.end-summary span{font:900 38px Arial;color:#0b8178}.end-summary small{text-align:left;font:850 9px Arial;letter-spacing:.1em;color:#65736c}
+.title-sheet{
+  display:flex;
+  min-height:760px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  transform:scale(.67);
+  transform-origin:center center;
+}
+.ending-sheet{
+  display:flex;
+  min-height:760px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.title-inner,.ending-inner{width:min(100%,1040px);max-width:1040px}.title-kicker,.end-label{font:900 11px/1 Arial;letter-spacing:.22em;color:#55736b}.game-title{font:950 clamp(44px,5.8vw,78px)/.94 Arial,sans-serif;letter-spacing:-.048em;color:#1f3b35;margin:18px 0;white-space:nowrap}.title-rule{width:82px;height:4px;background:#0b8178;margin:0 auto 24px}.title-inner h1,.ending-inner h1{font:800 clamp(24px,3vw,36px)/1.18 Georgia,serif;color:#263f39;margin:0 0 18px}.title-inner p,.ending-inner p{font:16px/1.6 "Segoe UI",Arial;color:#4c615a;max-width:760px;margin:0 auto 24px}.title-team{width:min(520px,100%);margin:20px auto;text-align:left}.title-team label{font:850 11px Arial;color:#566960}.title-team input{width:100%;box-sizing:border-box;margin-top:8px;padding:13px;border:0;border-bottom:1px solid #9a8c73;background:transparent;font:750 18px Arial;color:#233c37;outline:none}.end-summary{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:14px;align-items:center;max-width:620px;margin:28px auto;padding:18px;border-top:1px solid #c3b495;border-bottom:1px solid #c3b495}.end-summary span{font:900 38px Arial;color:#0b8178}.end-summary small{text-align:left;font:850 9px Arial;letter-spacing:.1em;color:#65736c}
 
 /* ---------------------------------------------------------------------
    RESPONSIVE — END OF CANONICAL PAPER GAME STYLES
