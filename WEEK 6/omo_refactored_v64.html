@@ -844,70 +844,63 @@ function paperCheckOrder(){
 // ---------------------------------------------------------------------
 function paperAuctionResult(){
   const bids=pgResult.bids||[],entries=(pgBidEntries.length?pgBidEntries:pgOrderedBidEntries(bids)),entryByBank=new Map(entries.map(x=>[x.letter,x])),orderedEntries=pgPlayerSortOrder.length===5?pgPlayerSortOrder.map(letter=>entryByBank.get(letter)).filter(Boolean):entries,orderedBids=orderedEntries.map(x=>x.bid),totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0);
-  pg$('pg-result').innerHTML=`
-     <div class="document-sheet approval-sheet">
-        <div class="market-page-head">
-          <div class="section-tag">PAGE · OMO AUCTION RESULT</div>
-          <h2>OMO Auction Result Record</h2>
-          <p>Review the submitted bids, awarded volume, and the winning rate before approving the auction result.</p>
-        </div>
-      
-        <hr class="double-rule">
+  pg$('pg-result').innerHTML=`<div class="document-sheet approval-sheet">
+     <div class="document-kicker">CENTRAL BANK · OMO DESK</div>
+     <h1 class="document-title">OMO Auction Result Record</h1>
    
      <section class="result-table-block">
-        <h3>OMO Auction · ${pgDecision.auction_method}</h3>
-      
-        <table class="result-table">
-          <thead>
-            <tr>
-              <th>Bank</th>
-              <th>Bid rate</th>
-              <th>Bid volume</th>
-              <th>Awarded volume</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-      
-          <tbody>
-            ${orderedBids.map(b=>`
-              <tr>
-                <td><b>${pgBankName(b.bank)}</b></td>
-                <td>${Number(b.bid_rate||0).toFixed(2)}%</td>
-                <td>${pgFmt(b.bid_volume)}</td>
-                <td>${pgFmt(b.real_volume)}</td>
-                <td>${b.won?'Awarded':'Not awarded'}</td>
-              </tr>
-            `).join('')}
-      
-            <tr class="total">
-              <td>TOTAL</td>
-              <td>—</td>
-              <td>${pgFmt(totalBid)}</td>
-              <td>${pgFmt(totalWin)}</td>
-              <td>—</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-      
-      <div class="auction-result-note">
-        <b>Winning rate:</b>
-        ${
-          pgDecision.auction_method==='Interest-rate auction'
-            ? pgDecision.pricing_method==='Single-price'
-              ? 'The winning rate is the accepted cut-off bid rate. All awarded bids settle at this single rate.'
-              : 'The winning rate is the accepted rate of each winning bid. Each awarded bid settles at its own accepted bid rate.'
-            : 'The auction rate is announced by the central bank. Bids are allocated by the volume-auction priority rule, and awarded volume settles at the announced auction rate.'
-        }
-      </div>
-      
-      <div class="btnrow">
-        <button id="pg-approve-btn" class="pbtn" onclick="paperApprove()">APPROVE RESULTS</button>
-      </div>
-      
-      <div id="pg-stamp" class="approval-stamp-slot" aria-live="polite"></div>
-      </div>`;
-      pgShow('pg-result');
+       <h3>OMO Auction · ${pgDecision.auction_method}</h3>
+   
+       <table class="result-table">
+         <thead>
+           <tr>
+             <th>Bank</th>
+             <th>Bid rate</th>
+             <th>Bid volume</th>
+             <th>Awarded volume</th>
+             <th>Status</th>
+           </tr>
+         </thead>
+   
+         <tbody>
+           ${orderedBids.map(b=>`
+             <tr>
+               <td><b>${pgBankName(b.bank)}</b></td>
+               <td>${Number(b.bid_rate||0).toFixed(2)}%</td>
+               <td>${pgFmt(b.bid_volume)}</td>
+               <td>${pgFmt(b.real_volume)}</td>
+               <td>${b.won?'Awarded':'Not awarded'}</td>
+             </tr>
+           `).join('')}
+           <tr class="total">
+             <td>TOTAL</td>
+             <td>—</td>
+             <td>${pgFmt(totalBid)}</td>
+             <td>${pgFmt(totalWin)}</td>
+             <td>—</td>
+           </tr>
+         </tbody>
+         </table>
+         </section>
+         
+         <div class="auction-result-note">
+           <b>Winning rate:</b>
+           ${
+             pgDecision.auction_method==='Interest-rate auction'
+               ? pgDecision.pricing_method==='Single-price'
+                 ? 'The winning rate is the accepted cut-off bid rate. All awarded bids settle at this single rate.'
+                 : 'The winning rate is the accepted rate of each winning bid. Each awarded bid settles at its own accepted bid rate.'
+               : 'The auction rate is announced by the central bank. Bids are allocated by the volume-auction priority rule, and awarded volume settles at the announced auction rate.'
+           }
+         </div>
+     </section>
+     <div class="btnrow">
+       <button id="pg-approve-btn" class="pbtn" onclick="paperApprove()">APPROVE RESULTS</button>
+     </div>
+     <div id="pg-stamp" class="approval-stamp-slot" aria-live="polite"></div>
+   </div>`;
+  pgShow('pg-result');
+}
 async function paperApprove(){
   const b=pg$('pg-approve-btn');if(b)b.disabled=true;const st=pg$('pg-stamp');if(st)st.innerHTML='<span class="stamp">APPROVED</span>';await pgDelay(430);paperReport();
 }
