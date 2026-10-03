@@ -204,7 +204,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   margin:22px 4px 36px;
   padding-top:14px;
   border-top:1px solid #c3b495;
-  font:11px/1.55 var(--font-ui);
+  font:13px/1.55 var(--font-ui);
   color:#65736c;
 }
 .maturity-summary{margin-top:10px;padding:10px 12px;border-left:4px solid #9e824a;background:rgba(238,226,201,.64);font:13px/1.45 var(--font-vintage);color:#4a4235}
@@ -863,9 +863,7 @@ function paperAuctionResult(){
        <div class="section-tag">PAGE · OMO AUCTION RESULT</div>
        <h2>OMO Auction Result Record</h2>
      </div>
-   
-     <hr class="double-rule">
-   
+
      <section class="result-table-block">
        <h3>OMO Auction · ${pgDecision.auction_method}</h3>
    
@@ -902,7 +900,7 @@ function paperAuctionResult(){
          </section>
          
          <div class="auction-result-note">
-           <b>Winning rate:</b>
+           <b>Settlement:</b>
            ${
              pgDecision.auction_method==='Interest-rate auction'
                ? pgDecision.pricing_method==='Single-price'
