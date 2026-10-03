@@ -73,7 +73,14 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    Ends before OMO DAILY / RESULT deck.
    --------------------------------------------------------------------- */
 .pbtn,.paper-help-controls button,.chip{appearance:none;border:1px solid #8f8062;background:linear-gradient(180deg,#fffaf0,#eadfc6);color:#31463f;border-radius:4px;font:800 11px/1 var(--font-ui);letter-spacing:.075em;text-transform:uppercase;cursor:pointer;box-shadow:0 5px 0 #9b8965,0 9px 18px rgba(45,28,13,.22);transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
-.pbtn{padding:15px 28px;min-width:190px}.pbtn:hover,.paper-help-controls button:hover,.chip:hover{transform:translateY(-2px);background:linear-gradient(180deg,#fffdf6,#f0e4c8);box-shadow:0 7px 0 #95815c,0 13px 22px rgba(45,28,13,.26)}.pbtn:active,.paper-help-controls button:active,.chip:active{transform:translateY(3px);box-shadow:0 2px 0 #95815c,0 5px 9px rgba(45,28,13,.2)}
+.pbtn{padding:15px 28px;min-width:190px}
+   .title-sheet .pbtn{
+     padding:18px 34px;
+     min-width:250px;
+     font-size:14px;
+     letter-spacing:.08em;
+   }
+   .pbtn:hover,.paper-help-controls button:hover,.chip:hover{transform:translateY(-2px);background:linear-gradient(180deg,#fffdf6,#f0e4c8);box-shadow:0 7px 0 #95815c,0 13px 22px rgba(45,28,13,.26)}.pbtn:active,.paper-help-controls button:active,.chip:active{transform:translateY(3px);box-shadow:0 2px 0 #95815c,0 5px 9px rgba(45,28,13,.2)}
 .pbtn.alt{background:linear-gradient(180deg,#f4ead4,#e0d0ac)}.pbtn:disabled{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:0 3px 0 #a89b80,0 6px 10px rgba(45,28,13,.12)!important;filter:grayscale(.22)}.btnrow{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:24px}
 .paper-help-controls{position:fixed;right:24px;bottom:18px;display:flex;gap:10px;z-index:150}.paper-help-controls button{height:46px;padding:0 18px;white-space:nowrap}
 .paper-help-dot{width:28px;height:28px;border-radius:50%;border:1px solid #46776d;background:#e8f1e8;color:#0d6e64;font:900 14px var(--font-ui);cursor:pointer;vertical-align:middle;margin-left:8px}
@@ -199,7 +206,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   align-items:center;
   justify-content:center;
   text-align:center;
-  transform:scale(.80);
+  transform:translateY(-70px) scale(.80);
   transform-origin:center center;
 }
 .ending-sheet{
@@ -217,7 +224,27 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   margin:18px 0;
   white-space:nowrap
 }
-.title-rule{width:82px;height:4px;background:#0b8178;margin:0 auto 24px}.title-inner h1,.ending-inner h1{font:800 clamp(24px,3vw,36px)/1.18 var(--font-display);color:#263f39;margin:0 0 18px}.title-inner p,.ending-inner p{font:16px/1.6 var(--font-ui);color:#4c615a;max-width:760px;margin:0 auto 24px}.title-team{width:min(520px,100%);margin:20px auto;text-align:left}.title-team label{font:850 11px var(--font-ui);color:#566960}.title-team input{width:100%;box-sizing:border-box;margin-top:8px;padding:13px;border:0;border-bottom:1px solid #9a8c73;background:transparent;font:750 18px var(--font-ui);color:#233c37;outline:none}.end-summary{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:14px;align-items:center;max-width:620px;margin:28px auto;padding:18px;border-top:1px solid #c3b495;border-bottom:1px solid #c3b495}.end-summary span{font:900 38px var(--font-ui);color:#0b8178}.end-summary small{text-align:left;font:850 9px var(--font-ui);letter-spacing:.1em;color:#65736c}
+.title-rule{width:82px;height:4px;background:#0b8178;margin:0 auto 24px}.title-inner h1,.ending-inner h1{font:800 clamp(24px,3vw,36px)/1.18 var(--font-display);color:#263f39;margin:0 0 18px}
+.title-inner p{
+  font:20px/1.6 var(--font-ui);
+  color:#4c615a;
+  max-width:850px;
+  margin:0 auto 28px;
+},
+   .ending-inner p{font:16px/1.6 var(--font-ui);color:#4c615a;max-width:760px;margin:0 auto 24px}.title-team{width:min(520px,100%);margin:20px auto;text-align:left}.title-team label{font:850 16px var(--font-ui);color:#566960}
+   .title-team input{
+     width:100%;
+     box-sizing:border-box;
+     margin-top:8px;
+     padding:13px;
+     border:0;
+     border-bottom:1px solid #9a8c73;
+     background:transparent;
+     font:750 20px var(--font-ui);
+     color:#233c37;
+     outline:none;
+   }
+   .end-summary{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:14px;align-items:center;max-width:620px;margin:28px auto;padding:18px;border-top:1px solid #c3b495;border-bottom:1px solid #c3b495}.end-summary span{font:900 38px var(--font-ui);color:#0b8178}.end-summary small{text-align:left;font:850 9px var(--font-ui);letter-spacing:.1em;color:#65736c}
 
 /* ---------------------------------------------------------------------
    RESPONSIVE — END OF CANONICAL PAPER GAME STYLES
