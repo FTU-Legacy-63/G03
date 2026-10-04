@@ -407,6 +407,31 @@ body{visibility:visible!important}
 
 @media(max-width:800px){.macro-input-strip{grid-template-columns:1fr}.macro-outcome-grid{grid-template-columns:1fr 1fr}.paper-modal-sheet{padding:22px 20px}.paper-modal-head h2{font-size:28px}}
 .result-chart-main svg{height:235px!important}
+
+/* =========================================================
+   PAPER GRAIN — GLOBAL OVERRIDE
+   ========================================================= */
+
+.document-sheet,
+.paper-page,
+.bid-slip,
+.paper-modal-sheet,
+#guide-modal > div,
+#learning-card-modal > div{
+  background-color:#f7f0df !important;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.12),
+      rgba(118,91,54,.035),
+      rgba(255,255,255,.08)
+    ) !important;
+
+  background-size:180px 180px,100% 100% !important;
+  background-blend-mode:multiply,normal !important;
+}
 </style>
 </head>
 <body class="paper-mode">
