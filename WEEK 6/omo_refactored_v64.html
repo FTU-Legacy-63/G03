@@ -141,7 +141,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    Purpose: consistent tactile paper controls; no hidden legacy frames.
    Ends before OMO DAILY / RESULT deck.
    --------------------------------------------------------------------- */
-.pbtn,.paper-help-controls button,.chip{appearance:none;border:1px solid #8f8062;background:linear-gradient(180deg,#fffaf0,#eadfc6);color:#31463f;border-radius:4px;font:800 11px/1 var(--font-ui);letter-spacing:.075em;text-transform:uppercase;cursor:pointer;box-shadow:0 5px 0 #9b8965,0 9px 18px rgba(45,28,13,.22);transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
+.pbtn,.paper-help-controls button,.chip{appearance:none;border:1px solid #8f8062;background:#f2e6cc;color:#31463f;border-radius:4px;font:800 11px/1 var(--font-ui);letter-spacing:.075em;text-transform:uppercase;cursor:pointer;box-shadow:0 5px 0 #9b8965,0 9px 18px rgba(45,28,13,.22);transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
 .pbtn{padding:15px 28px;min-width:190px}
    .title-sheet .pbtn{
      padding:18px 34px;
@@ -149,8 +149,14 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
      font-size:14px;
      letter-spacing:.08em;
    }
-   .pbtn:hover,.paper-help-controls button:hover,.chip:hover{transform:translateY(-2px);background:linear-gradient(180deg,#fffdf6,#f0e4c8);box-shadow:0 7px 0 #95815c,0 13px 22px rgba(45,28,13,.26)}.pbtn:active,.paper-help-controls button:active,.chip:active{transform:translateY(3px);box-shadow:0 2px 0 #95815c,0 5px 9px rgba(45,28,13,.2)}
-.pbtn.alt{background:linear-gradient(180deg,#f4ead4,#e0d0ac)}.pbtn:disabled{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:0 3px 0 #a89b80,0 6px 10px rgba(45,28,13,.12)!important;filter:grayscale(.22)}.btnrow{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:24px}
+.pbtn:hover,
+.paper-help-controls button:hover,
+.chip:hover{
+  transform:translateY(-2px);
+  background:#f7ecd5;
+  box-shadow:0 7px 0 #95815c,0 13px 22px rgba(45,28,13,.26);
+}
+.pbtn.alt{ background:#e6d7b9;}.pbtn:disabled{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:0 3px 0 #a89b80,0 6px 10px rgba(45,28,13,.12)!important;filter:grayscale(.22)}.btnrow{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:24px}
 .paper-help-controls{position:fixed;right:24px;bottom:18px;display:flex;gap:10px;z-index:150}.paper-help-controls button{height:46px;padding:0 18px;white-space:nowrap}
 .paper-help-dot{width:28px;height:28px;border-radius:50%;border:1px solid #46776d;background:#e8f1e8;color:#0d6e64;font:900 14px var(--font-ui);cursor:pointer;vertical-align:middle;margin-left:8px}
 #guide-modal,#learning-card-modal{z-index:500!important;background:rgba(34,21,12,.64)!important;backdrop-filter:blur(3px)}
@@ -165,7 +171,14 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 #guide-modal h3,#guide-modal h4,#learning-card-title,#learning-card-content h4{color:#234c43!important;font-family:var(--font-vintage)!important}
 #guide-modal p,#guide-modal li,#learning-card-content,#learning-card-content p,#learning-card-content li{color:#40534d!important;font-family:var(--font-vintage)!important}
 #guide-modal>div>div:last-child{border-top:1px solid #c3b495!important;padding-top:16px!important}
-#guide-modal>div>div:last-child button,#learning-card-modal button{background:linear-gradient(180deg,#fffaf0,#eadfc6)!important;border:1px solid #8f8062!important;color:#31463f!important;border-radius:3px!important;box-shadow:0 4px 0 #9b8965!important}
+#guide-modal>div>div:last-child button,
+#learning-card-modal button{
+  background:#f2e6cc!important;
+  border:1px solid #8f8062!important;
+  color:#31463f!important;
+  border-radius:3px!important;
+  box-shadow:0 4px 0 #9b8965!important;
+}
 #learning-card-modal>div{max-height:86vh!important;display:flex!important;flex-direction:column!important}
 #learning-card-modal>div>div:first-child{flex:0 0 auto!important}
 #learning-card-content{flex:1 1 auto!important;min-height:0!important;max-height:calc(86vh - 126px)!important;overflow-y:auto!important;overflow-x:hidden!important;padding:26px 30px 32px!important;font-size:15px!important;line-height:1.62!important;overflow-wrap:anywhere!important;word-break:normal!important}
@@ -361,7 +374,16 @@ body{visibility:visible!important}
 .paper-modal-head{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:15px;border-bottom:4px double #214b4a}
 .paper-modal-kicker{font:800 9px/1.2 var(--font-ui);letter-spacing:.18em;color:#7b6d56;text-transform:uppercase}
 .paper-modal-head h2{margin:5px 0 0;font:800 34px/1.05 var(--font-vintage);color:#234c43}
-.paper-modal-close{width:38px;height:38px;border:1px solid #8f8062;background:linear-gradient(180deg,#fffaf0,#eadfc6);color:#31463f;box-shadow:0 4px 0 #9b8965;cursor:pointer;font:900 17px/1 var(--font-ui)}
+.paper-modal-close{
+  width:38px;
+  height:38px;
+  border:1px solid #8f8062;
+  background:#f2e6cc;
+  color:#31463f;
+  box-shadow:0 4px 0 #9b8965;
+  cursor:pointer;
+  font:900 17px/1 var(--font-ui);
+}
 .paper-modal-body{position:relative;overflow:auto;padding:22px 6px 12px 0;font:15px/1.62 var(--font-vintage);color:#40534d}
 .paper-modal-body h3,.paper-modal-body h4{color:#234c43;margin:18px 0 7px}.paper-modal-body p{margin:0 0 12px}.paper-modal-body ul{margin:7px 0 15px;padding-left:22px}.paper-modal-body li{margin:5px 0}
 .paper-modal-body table{width:100%;border-collapse:collapse;table-layout:fixed;margin:12px 0}.paper-modal-body th,.paper-modal-body td{border-bottom:1px solid #c7baa0;padding:9px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}.paper-modal-body th{font:800 10px/1.25 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#4d625a;background:rgba(237,226,203,.6)}
