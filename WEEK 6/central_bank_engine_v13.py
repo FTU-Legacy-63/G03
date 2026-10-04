@@ -383,7 +383,7 @@ class CentralBankGame:
             value = rates[-1] - delta
         value = excel_round(value, 2)
         rates.append(value)
-    return rates
+        return rates
 
     def _interest_total_cash_bid(self, action, rld, volume):
         """
