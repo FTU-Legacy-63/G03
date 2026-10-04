@@ -374,20 +374,15 @@ class CentralBankGame:
     def _interest_rates(self, win, action):
     rates = [excel_round(win, 2)]
     absorption = action in ("Sell Securities", "Repo")
-
     for _ in range(4):
         # Tạo khoảng cách tối thiểu 0.01 điểm %
-        delta = self.rng.randint(1, 10) / 100
-
+        delta = self.rng.randint(1, 10) / 10
         if absorption:
             value = rates[-1] + delta
         else:
             value = rates[-1] - delta
-
         value = excel_round(value, 2)
-
         rates.append(value)
-
     return rates
 
     def _interest_total_cash_bid(self, action, rld, volume):
