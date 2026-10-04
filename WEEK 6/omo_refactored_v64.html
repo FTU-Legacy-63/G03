@@ -559,7 +559,7 @@ function openContextLearningCard(){
 function renderTitleScreen(){
   pg$('pg-start').innerHTML = `<div class="document-sheet title-sheet"><div class="title-inner">
     <div class="title-kicker">OPEN MARKET OPERATIONS SIMULATION</div>
-    <div class="game-title">WHO RUNS THE W<span class="earth-o">🌍</span>RLD?</div>
+    <div class="game-title">WHO RUNS THE W<span class="earth-o">🌐︎</span>RLD?</div>
     <div class="title-rule"></div>
     <h1>OPEN MARKET OPERATIONS (OMO) SIMULATION</h1>
     <p>The OMO Desk analyzes market signals, issues operational notices, processes counterparty bids, and tracks systemic impacts across successive phases.</p>
@@ -1046,7 +1046,7 @@ function paperReport(){
 // ---------------------------------------------------------------------
 function paperNext(){
   if(pgPhase<3){pgPhase++;currentPhase=pgPhase;pgResult=null;pgDecision=null;pgBidEntries=[];pgPlayerSortOrder=[];pgSyncPhaseFallbacks();paperBrief();return}
-  pg$('pg-final').innerHTML=`<div class="document-sheet ending-sheet"><div class="ending-inner"><div class="end-label">OPERATING FILE CLOSED</div><div class="game-title">WHO RUNS THE W<span class="earth-o">🌍</span>RLD?</div><h1>OMO OPERATING RUN COMPLETE</h1><p><b>${teamName}</b> completed all 3 phases: reading macro signals, making OMO decisions, processing the auction, and tracking the post-intervention effects.</p><div class="end-summary"><span>3</span><small>PHASES COMPLETED</small><span>5</span><small>BANKS PER AUCTION</small></div><button class="pbtn" onclick="paperRestart()">PLAY AGAIN ↻</button></div></div>`;pgShow('pg-final');
+  pg$('pg-final').innerHTML=`<div class="document-sheet ending-sheet"><div class="ending-inner"><div class="end-label">OPERATING FILE CLOSED</div><div class="game-title">WHO RUNS THE W<span class="earth-o">🌐︎</span>RLD?</div><h1>OMO OPERATING RUN COMPLETE</h1><p><b>${teamName}</b> completed all 3 phases: reading macro signals, making OMO decisions, processing the auction, and tracking the post-intervention effects.</p><div class="end-summary"><span>3</span><small>PHASES COMPLETED</small><span>5</span><small>BANKS PER AUCTION</small></div><button class="pbtn" onclick="paperRestart()">PLAY AGAIN ↻</button></div></div>`;pgShow('pg-final');
 }
 
 document.addEventListener('DOMContentLoaded',()=>{document.body.classList.add('paper-mode');renderTitleScreen()});
