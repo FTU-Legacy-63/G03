@@ -44,9 +44,58 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    Purpose: title/progress decoration that belongs to the wooden desk.
    Ends before GLOBAL PAPER primitives.
    --------------------------------------------------------------------- */
-.desk-nameplate{width:calc(100% - 58px);height:92px;margin:22px 29px 0;box-sizing:border-box;padding:0 34px;display:flex;align-items:center;justify-content:space-between;color:var(--gold-ink);background:linear-gradient(180deg,#f8e7a6 0%,#e5c86f 18%,#d4ad50 52%,#b98731 100%);border:1px solid #f6df91;border-radius:5px;box-shadow:inset 0 0 0 2px rgba(255,249,219,.62),inset 0 1px 0 rgba(255,255,255,.88),inset 0 -2px 0 rgba(117,80,20,.28),0 9px 20px rgba(26,13,5,.34);text-shadow:0 1px 0 rgba(255,244,197,.58);position:relative;z-index:20;overflow:hidden}
-.desk-nameplate:before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 0 28%,rgba(255,255,255,.22) 39%,transparent 50% 100%);pointer-events:none}
-.desk-nameplate:after{content:"";position:absolute;inset:7px;border:1px solid rgba(119,83,27,.32);box-shadow:inset 0 0 0 1px rgba(255,243,190,.34);pointer-events:none}
+.desk-nameplate{
+  width:calc(100% - 58px);
+  height:92px;
+  margin:22px 29px 0;
+  box-sizing:border-box;
+  padding:0 34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#4b2918;
+  background:
+    linear-gradient(180deg,rgba(196,128,67,.96),rgba(145,82,40,.96)),
+    url("topbar.png") center/cover no-repeat;
+  border:3px solid #8b542f;
+  border-radius:14px;
+  box-shadow:
+    inset 0 0 0 2px rgba(238,178,105,.72),
+    inset 0 0 0 6px rgba(88,47,27,.28),
+    inset 0 2px 0 rgba(255,211,145,.55),
+    inset 0 -3px 0 rgba(63,32,19,.45),
+    0 9px 20px rgba(26,13,5,.34);
+  text-shadow:0 1px 0 rgba(239,188,126,.55);
+  position:relative;
+  z-index:20;
+  overflow:hidden;
+}
+.desk-nameplate:before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(91,48,26,.55);
+  border-radius:7px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(66,34,20,.08) 0px,
+      rgba(66,34,20,.08) 2px,
+      transparent 2px,
+      transparent 8px
+    );
+  pointer-events:none;
+}
+.desk-nameplate:after{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(239,181,111,.55);
+  border-radius:7px;
+  box-shadow:
+    inset 0 0 0 1px rgba(70,37,21,.38);
+  pointer-events:none;
+}
 .nameplate-brand{font:700 27px/1 var(--font-vintage);letter-spacing:.075em;color:#3f331d}
 .nameplate-sub{margin-top:7px;font:700 10px/1 var(--font-vintage);letter-spacing:.16em;color:#6b5428}
 .nameplate-progress{display:flex;align-items:center;gap:8px;font:700 12px/1 var(--font-vintage);letter-spacing:.08em;color:#58431f}
@@ -220,24 +269,8 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   align-items:center;
   justify-content:center;
   text-align:center;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
-  padding:0!important;
-  transform:scale(.67);
+  transform:scale(.8);
   transform-origin:center center;
-}
-.title-sheet:before{
-  display:none!important;
-}
-.title-inner{
-  width:min(1781px,94vw);
-  min-height:121px;
-  box-sizing:border-box;
-  padding:20px 44px 18px;
-  background:url("topbar.png") center center / 100% 100% no-repeat;
-  position:relative;
-  text-align:left;
 }
 .ending-sheet{
   display:flex;
