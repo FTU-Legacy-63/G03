@@ -57,7 +57,10 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   border:0;
   border-radius:0;
   box-shadow:none;
-  text-shadow: 0 2px 3px rgba(255, 224, 170, .85);
+  text-shadow:
+  0 1px 0 rgba(255,210,150,.35),
+  0 2px 2px rgba(45,20,10,.45),
+  0 4px 7px rgba(35,15,7,.22);
   position:relative;
   z-index:20;
   overflow:hidden;
@@ -73,26 +76,28 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   font:900 27px/1 var(--font-vintage);
   letter-spacing:.075em;
   color:#3a2116;
-  text-shadow:0 2px 3px rgba(255,224,170,.85);
+  text-shadow:none;
 }
 
 .nameplate-sub{
   margin-top:7px;
-  font:900 10px/1 var(--font-vintage);
+  font:700 10px/1 var(--font-vintage);
   letter-spacing:.16em;
   color:#4a2919;
-  text-shadow:0 2px 3px rgba(255,224,170,.85);
+  text-shadow:
+    0 1px 0 rgba(255,205,145,.25),
+    0 2px 3px rgba(40,17,8,.40);
 }
 
 .nameplate-progress{
   display:flex;
   align-items:center;
   gap:8px;
-  font:900 12px/1 var(--font-vintage);
+  font:700 12px/1 var(--font-vintage);
   letter-spacing:.08em;
   color:#422417;
-  text-shadow:0 2px 3px rgba(255,224,170,.85);
-  transform:translateX(-35px);
+  text-shadow:none;
+  transform:translateX(-25px);
 }
 .dot{width:9px;height:9px;border-radius:50%;background:rgba(91,66,25,.18);box-shadow:inset 0 0 0 1px rgba(85,60,20,.28)}.dot.on{background:#fff0a9;box-shadow:0 0 0 3px rgba(255,240,169,.34),inset 0 0 0 1px rgba(101,73,21,.3)}
 
@@ -1100,6 +1105,47 @@ function paperReport(){
     <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<3?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
   </div>`;
   pgReportPage=0;pgShow('pg-report');pgSetReportPage(0);
+}
+
+/* =========================================================
+   GLOBAL PAPER GRAIN TEXTURE
+   ========================================================= */
+
+.document-sheet,
+.paper-page,
+.bid-slip,
+.paper-modal-sheet{
+    background-image:
+        radial-gradient(
+            rgba(75,58,38,.10) .45px,
+            transparent .65px
+        ),
+        radial-gradient(
+            rgba(120,100,72,.065) .55px,
+            transparent .8px
+        ),
+        radial-gradient(
+            rgba(255,255,255,.40) .55px,
+            transparent .85px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.18),
+            rgba(118,91,54,.025),
+            rgba(255,255,255,.12)
+        );
+
+    background-size:
+        3px 3px,
+        5px 5px,
+        7px 7px,
+        100% 100%;
+
+    background-blend-mode:
+        multiply,
+        multiply,
+        screen,
+        normal;
 }
 
 // ---------------------------------------------------------------------
