@@ -565,37 +565,10 @@ function paperRestart(){
 // Ends before DECISION FORM.
 // ---------------------------------------------------------------------
 const pgBriefCopy = {
-  const pgBriefCopy = {
-     1:{
-       hero:'Current market position and macroeconomic outlook',
-       dek:'Short signals from the economy and money market arrive at the operations desk before the OMO session.',
-       cards:[
-         ['MACROECONOMY','Short-term spending rises','Retail, tourism, and period-end payments rise quickly. Growth and inflation are not yet putting significant pressure on the policy stance.'],
-         ['MONEY MARKET','Overnight funding demand rises','Cash withdrawals reduce available reserves, so commercial banks borrow more in the interbank market.'],
-         ['QUICK INDICATOR','3.95%','Interbank rate','Liquidity need: +1,900 bn.']
-       ]
-     },
-   
-     2:{
-       hero:'Macroeconomic and liquidity conditions',
-       dek:'The operations desk must balance support for growth against preserving room to contain inflation in later phases.',
-       cards:[
-         ['MACROECONOMY','Growth momentum eases','After the holiday season, consumption returns to normal. Some sectors report weaker new orders while inventories rise.'],
-         ['CREDIT & INVESTMENT','Firms become more cautious','Demand for capacity expansion and new borrowing falls. Inflation remains low, although some input prices begin to edge higher.'],
-         ['QUICK INDICATOR','4.10%','Interbank rate','Liquidity need: +3,500 bn.']
-       ]
-     },
-   
-     3:{
-       hero:'Macroeconomic and liquidity conditions',
-       dek:'Earlier operations begin to roll back onto the balance sheet. The new decision must consider current liquidity and the lagged transmission of previous policy actions.',
-       cards:[
-         ['MACROECONOMY','Real-economy effects remain gradual','Production has not clearly recovered. Earlier decisions are still transmitting through credit, growth, and inflation.'],
-         ['MONEY MARKET','Maturities can reverse cash flows','Term operations from earlier phases may mature, causing liquidity conditions and the overnight rate to change quickly.'],
-         ['QUICK INDICATOR','3.20%','Interbank rate','Liquidity need: +6,000 bn.']
-       ]
-     }
-   };
+  1:{hero:'Liquidity tightens ahead of the holiday season',dek:'Three short signals from the economy and money market arrive at the operations desk before the OMO session.',cards:[['MACROECONOMY','Short-term spending rises','Retail, tourism, and period-end payments rise quickly. Growth and inflation are not yet putting significant pressure on the policy stance.'],['MONEY MARKET','Overnight funding demand rises','Cash withdrawals reduce available reserves, so commercial banks borrow more in the interbank market.'],['QUICK INDICATOR','3.95%','Interbank rate','Liquidity need: +1,900 bn.']]},
+  2:{hero:'Growth slows as credit demand weakens',dek:'The operations desk must balance support for growth against preserving room to contain inflation in later phases.',cards:[['MACROECONOMY','Growth momentum eases','After the holiday season, consumption returns to normal. Some sectors report weaker new orders while inventories rise.'],['CREDIT & INVESTMENT','Firms become more cautious','Demand for capacity expansion and new borrowing falls. Inflation remains low, although some input prices begin to edge higher.'],['QUICK INDICATOR','4.10%','Interbank rate','Liquidity need: +3,500 bn.']]},
+  3:{hero:'Maturing cash flows change the liquidity position',dek:'Earlier operations begin to roll back onto the balance sheet. The new decision must consider current liquidity and the lagged transmission of previous policy actions.',cards:[['MACROECONOMY','Real-economy effects remain gradual','Production has not clearly recovered. Earlier decisions are still transmitting through credit, growth, and inflation.'],['MONEY MARKET','Maturities can reverse cash flows','Term operations from earlier phases may mature, causing liquidity conditions and the overnight rate to change quickly.'],['QUICK INDICATOR','3.20%','Interbank rate','Liquidity need: +6,000 bn.']]}
+};
 function pgChartSVG(values,highlightLast=false,labels=null){
   const vals=(values||[]).map(Number).filter(Number.isFinite);
   const w=760,h=330,l=54,r=22,t=28,b=62;
@@ -648,7 +621,7 @@ function pgDailyRateTimelineSVG(history){
 function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
   const slots=[
-     {phase:1,label:'OPENING',date:getPhaseDisplayDate(0)},
+     {phase:1,label:'PHASE 1',date:getPhaseDisplayDate(0)},
      {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(2)},
      {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(5)}
    ];
@@ -690,7 +663,7 @@ function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const events=Array.isArray(state.maturity_events)?state.maturity_events:[];
   const resultMode=mode==='result';
   const maturitySection=resultMode?`<section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section>`:'';
-  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the operation':'Current OMO positions'}</h2><p>${resultMode?'Updated inventories and maturity events after the decision in this phase.':'The exact outstanding bill and repo/reverse-repo inventory carried forward from the latest completed phase.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
+  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the operation':'Current OMO positions'}</h2><p>${resultMode?'Backend inventories and maturity events after this phase.':'The exact outstanding bill and repo/reverse-repo inventory carried forward from the latest completed phase.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
 }
 function pgSetDeck(rootId,index){
   const root=pg$(rootId); if(!root)return 0; const pages=[...root.querySelectorAll('.paper-page')]; if(!pages.length)return 0;
@@ -735,7 +708,7 @@ function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
   const backendMacroNow=resultMode&&pgResult&&((pgResult.gdp_growth!==null&&pgResult.gdp_growth!==undefined&&pgResult.gdp_growth!=='')||(pgResult.inflation!==null&&pgResult.inflation!==undefined&&pgResult.inflation!==''));
   const macroNote=backendMacroNow?'Updated by the backend this phase':(pgPhase===1?'Initial scenario value':'Unchanged · latest available value');
   const title=resultMode?'Rate and macro conditions after the OMO session':'Rate and macro conditions before the OMO session';
-  const copy=resultMode?'The same 30-day operating timeline is retained. Only values changed by the completed OMO phase are updated; GDP growth and inflation remain at their latest published values until the backend releases a new macro result.':'The operating dates are fixed 30 days apart. Interbank observations update each phase; GDP growth and inflation keep their latest published values until a new macro block is released.';
+  const copy=resultMode?'The same 30-day operating timeline is retained. Only values changed by the completed OMO phase are updated; GDP growth and inflation remain at their latest published values until the backend releases a new macro result.':'The three operating dates are fixed 30 days apart. Interbank observations update each phase; GDP growth and inflation keep their latest published values until a new macro block is released.';
   const liquidityLabel=resultMode?'Post-OMO liquidity position':'Scenario liquidity demand';
   const rateHistory=pgRateHistory;
   return `<article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · MARKET & MACRO INDICATORS</div><h2>${title}</h2><p>${copy}</p></div><div class="chart-sheet daily-market-layout"><div class="daily-chart-stack"><section class="chart-box daily-chart-panel"><div class="daily-chart-heading"><span>Interbank rate</span><span>30-day operating timeline</span></div>${pgDailyRateTimelineSVG(rateHistory)}</section><section class="chart-box daily-chart-panel macro-daily-panel"><div class="daily-chart-heading"><span>GDP growth & inflation</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory,pgPhase)}</section></div><aside class="chart-side"><div class="section-tag">CURRENT INTERBANK RATE</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${Number(rate).toFixed(2)}%</div><p><b>${liquidityLabel}:</b> ${Number(liquidity)>=0?'+':''}${pgFmt(liquidity)} bn.</p><div class="indicator-stat-grid"><div class="indicator-stat"><span>GDP growth</span><strong>${gdpText}</strong><small>${macroNote}</small></div><div class="indicator-stat"><span>Inflation</span><strong>${inflationText}</strong><small>${macroNote}</small></div></div>${pgExpectedBlockHTML(!resultMode)}</aside></div></article>`;
@@ -749,7 +722,7 @@ function paperBrief(){
   pg$('pg-brief').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
      <div class="market-page-head">
-       <div class="section-tag">PAGE 1 · MACROECONOMIC CONDITIONS</div>
+       <div class="section-tag">PAGE 1 · MACRO NEWS</div>
        <h2>${x.hero}</h2>
        <p>${x.dek}</p>
      </div>
@@ -784,13 +757,8 @@ function paperDecision(){
   }
   const c=phaseConfig[pgPhase];
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
-     <div class="market-page-head">
-       <div class="section-tag">PAGE · OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
-       <h2>Open Market Operations Notice</h2>
-       <p>Set the instrument, auction method, and intervention size before signing and issuing the OMO notice.</p>
-     </div>
-   
-     <div class="formgrid">
+    <div class="decision-head"><div class="decision-mast">THE OMO DAILY<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Notice</h1><p>Set the instrument, auction method, and intervention size before signing and issuing the OMO notice.</p></div></div>
+    <div class="formgrid">
       <div class="field"><label>1. OMO instrument <button class="paper-help-dot" type="button" onclick="openLearningCard('omo')">?</button></label><select id="pg-action"><option value="Repo">Repo — term sale</option><option value="Reverse Repo">Reverse repo — term purchase</option><option value="Buy Securities">Outright bill purchase</option><option value="Sell Securities">Outright bill sale</option></select></div>
       <div class="field"><label>2. Auction method <button class="paper-help-dot" type="button" onclick="openLearningCard('auction')">?</button></label><select id="pg-method" onchange="pgToggleAuctionFields()"><option value="Volume auction">Volume auction</option><option value="Interest-rate auction">Interest-rate auction</option></select></div>
       <div class="field"><label>3. Offered volume (bn) <button class="paper-help-dot" type="button" onclick="openLearningCard('volume')">?</button></label><input type="number" id="pg-volume" value="${c.defaultVol}" step="500"><div class="checkline"><button class="chip" type="button" onclick="pg$('pg-volume').value=3000">3,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=5000">5,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=8000">8,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=10000">10,000</button></div></div>
@@ -865,7 +833,7 @@ async function paperExecute(){
 // ---------------------------------------------------------------------
 function paperSort(){
   const bidEntries=(pgBidEntries.length?pgBidEntries:pgOrderedBidEntries((pgResult&&pgResult.bids)||[])).slice(0,5);
-  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><div class="section-tag">OPERATIONS DESK · AUCTION FILES</div><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>The five bids are filed A - E before processing. Drag them into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Each slip keeps the exact rate and volume returned by the backend for that bank.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
+  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><div class="section-tag">OPERATIONS DESK · AUCTION FILES</div><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>The five backend bids are filed A → E before processing. Drag them into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Each slip keeps the exact rate and volume returned by the backend for that bank.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
   pgShow('pg-sort'); pgEnableDrag();
 }
 function pgEnableDrag(){
@@ -1001,12 +969,12 @@ function paperReport(){
     <article class="paper-page is-active">
      <div class="market-page-head">
        <div class="section-tag">PAGE 1 · AUCTION RESULTS</div>
-       <h2>OMO Operation Approval</h2>
+       <h2>The OMO session has been approved</h2>
        <p>Short result signals summarize the auction and the immediate liquidity response.</p>
      </div>
    
      <div class="clippings">
-    <article class="clipping"><div class="newslabel">MACROECONOMY</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">MARKET RESPONSE</div><div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p></article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
+    <article class="clipping"><div class="newslabel">AUCTION DECISION</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">MARKET RESPONSE</div><div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p></article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
     ${page2}
     <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,pgResult,'result')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
