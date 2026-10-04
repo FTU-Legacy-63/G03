@@ -67,7 +67,10 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .desk-nameplate:after{
   display:none;
 }
-.nameplate-brand{font:700 27px/1 var(--font-vintage);letter-spacing:.075em;color:#3f331d}
+.nameplate-left{
+  transform:translateX(25px);
+}
+.nameplate-brand{font:700 27px/1 var(--font-vintage);letter-spacing:.075em;color:#3f331d;}
 .nameplate-sub{margin-top:7px;font:700 10px/1 var(--font-vintage);letter-spacing:.16em;color:#6b5428}
 .nameplate-progress{display:flex;align-items:center;gap:8px;font:700 12px/1 var(--font-vintage);letter-spacing:.08em;color:#58431f}
 .dot{width:9px;height:9px;border-radius:50%;background:rgba(91,66,25,.18);box-shadow:inset 0 0 0 1px rgba(85,60,20,.28)}.dot.on{background:#fff0a9;box-shadow:0 0 0 3px rgba(255,240,169,.34),inset 0 0 0 1px rgba(101,73,21,.3)}
@@ -241,7 +244,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   justify-content:center;
   text-align:center;
   transform:scale(.8);
-  transform-origin:center center;
+  transform-origin:center top;
 }
 .ending-sheet{
   display:flex;
@@ -347,12 +350,16 @@ body{visibility:visible!important}
 
 <div id="paper-game">
   <header class="desk-nameplate" aria-label="OMO operating desk">
-     <div>
-       <div class="nameplate-brand">WHO RUNS THE W<span class="earth-o">🌍</span>RLD?</div>
-       <div class="nameplate-sub">
-         <span id="pg-desk-name">TEAM 1 – CENTRAL BANKERS' OMO DESK</span>
-       </div>
-     </div>
+
+    <div class="nameplate-left">
+      <div class="nameplate-brand">
+        WHO RUNS THE W<span class="earth-o">🌐︎</span>RLD?
+      </div>
+
+      <div class="nameplate-sub">
+        <span id="pg-desk-name">TEAM 1 – CENTRAL BANKERS' OMO DESK</span>
+      </div>
+    </div>
    
      <div class="nameplate-progress">
        <span id="pg-phase">OPERATING DESK · PHASE 1/3</span>
