@@ -535,7 +535,7 @@ class CentralBankGame:
         if decision.auction_method == "Interest-rate auction":
             win = self._win_rate(decision.omo_action, rld)
             bid_rates = self._interest_rates(win, decision.omo_action)
-            weights = [self.rng.random() for _ in range(5)]
+            weights = [self.rng.randint(1, 100) / 100 for _ in range(5)]
             total_cash_bid = self._interest_total_cash_bid(decision.omo_action, rld, decision.volume)
             cash_bid_vols = whole_distribution(weights, total_cash_bid)
 
