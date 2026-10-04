@@ -557,7 +557,7 @@ function renderTitleScreen(){
     <div class="game-title">WHO RUNS THE W<span class="earth-o">🌍</span>RLD?</div>
     <div class="title-rule"></div>
     <h1>OPEN MARKET OPERATIONS (OMO) SIMULATION</h1>
-    <p>You are part of the OMO Desk. Read market signals, issue an OMO notice, process bids, and track the effects of each decision across phases.</p>
+    <p>The OMO Desk analyzes market signals, issues operational notices, processes counterparty bids, and tracks systemic impacts across successive phases.</p>
     <div class="title-team"><label>TEAM NAME</label><input id="pg-team" value="${teamName || 'Team 1 – Central Bankers'}"></div>
     <button class="pbtn" onclick="paperStart()">START OPERATIONS →</button>
   </div></div>`;
@@ -587,7 +587,7 @@ function paperRestart(){
 const pgBriefCopy = {
   1:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Short signals from the economy and money market arrive at the operations desk before the OMO session.',
+    dek:'Prior to the OMO session, the operations desk receives high-frequency macroeconomic and money market data.',
     cards:[
       ['MACROECONOMY','Short-term spending rises','Retail, tourism, and period-end payments rise quickly. Growth and inflation are not yet putting significant pressure on the policy stance.'],
       ['MONEY MARKET','Overnight funding demand rises','Cash withdrawals reduce available reserves, so commercial banks borrow more in the interbank market.'],
@@ -597,7 +597,7 @@ const pgBriefCopy = {
 
   2:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Short signals from the economy and money market arrive at the operations desk before the OMO session.',
+    dek:'Prior to the OMO session, the operations desk receives high-frequency macroeconomic and money market data.',
     cards:[
       ['MACROECONOMY','Growth momentum eases','After the holiday season, consumption returns to normal. Some sectors report weaker new orders while inventories rise.'],
       ['CREDIT & INVESTMENT','Firms become more cautious','Demand for capacity expansion and new borrowing falls. Inflation remains low, although some input prices begin to edge higher.'],
@@ -607,7 +607,7 @@ const pgBriefCopy = {
 
   3:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Short signals from the economy and money market arrive at the operations desk before the OMO session.',
+    dek:'Prior to the OMO session, the operations desk receives high-frequency macroeconomic and money market data.',
     cards:[
       ['MACROECONOMY','Real-economy effects remain gradual','Production has not clearly recovered. Earlier decisions are still transmitting through credit, growth, and inflation.'],
       ['MONEY MARKET','Maturities can reverse cash flows','Term operations from earlier phases may mature, causing liquidity conditions and the overnight rate to change quickly.'],
