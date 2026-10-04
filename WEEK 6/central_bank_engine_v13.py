@@ -376,7 +376,7 @@ class CentralBankGame:
         absorption = action in ("Sell Securities", "Repo")
         for _ in range(4):
             # Tạo khoảng cách tối thiểu 0.01 điểm %
-            delta = self.rng.randint(1, 10) / 10
+            delta = self.rng.randint(1, 10) / 100
             if absorption:
                 value = rates[-1] + delta
             else:
