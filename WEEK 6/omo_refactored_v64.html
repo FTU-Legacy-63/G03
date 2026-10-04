@@ -413,32 +413,39 @@ body{visibility:visible!important}
    ========================================================= */
 
 .document-sheet,
-.paper-page,
-.bid-slip,
-.paper-modal-sheet,
-#guide-modal > div,
-#learning-card-modal > div{
-  background-color:#f7f0df !important;
+.paper-page{
+  box-sizing:border-box;
+
+  background-color:var(--paper);
 
   background-image:
-    /* PAPER GRAIN */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='.42'/%3E%3C/svg%3E"),
+    /* CHẤM GIẤY ĐẬM HƠN */
+    radial-gradient(
+      rgba(93,72,43,.11) 0.75px,
+      transparent 1px
+    ),
 
-    /* PAPER FIBER / LIGHT VARIATION */
+    /* Vân màu giấy */
     linear-gradient(
       90deg,
-      rgba(255,255,255,.10),
-      rgba(118,91,54,.06),
-      rgba(255,255,255,.08)
-    ) !important;
+      rgba(255,255,255,.19),
+      rgba(118,91,54,.025),
+      rgba(255,255,255,.12)
+    );
 
   background-size:
-    140px 140px,
-    100% 100% !important;
+    7px 7px,
+    100% 100%;
 
-  background-blend-mode:
-    multiply,
-    normal !important;
+  border:1px solid #9d8966;
+
+  box-shadow:
+    0 5px 0 rgba(86,58,32,.28),
+    0 11px 18px rgba(35,17,7,.28),
+    0 30px 55px rgba(35,17,7,.22),
+    inset 0 0 0 8px rgba(255,255,255,.14);
+
+  position:relative;
 }
 </style>
 </head>
