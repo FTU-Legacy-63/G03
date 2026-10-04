@@ -290,7 +290,7 @@ body{visibility:visible!important}
 .paper-modal-body h3,.paper-modal-body h4{color:#234c43;margin:18px 0 7px}.paper-modal-body p{margin:0 0 12px}.paper-modal-body ul{margin:7px 0 15px;padding-left:22px}.paper-modal-body li{margin:5px 0}
 .paper-modal-body table{width:100%;border-collapse:collapse;table-layout:fixed;margin:12px 0}.paper-modal-body th,.paper-modal-body td{border-bottom:1px solid #c7baa0;padding:9px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}.paper-modal-body th{font:800 10px/1.25 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#4d625a;background:rgba(237,226,203,.6)}
 .learning-note{border-left:4px solid #b58b3b;background:rgba(238,226,201,.62);padding:12px 14px;margin:14px 0}
-.guide-step{border-top:1px solid #c7baa0;padding:12px 0}.guide-step b{color:#234c43}
+.guide-step{border-top:1px solid #c7baa0;padding:12px 10px}.guide-step b{color:#234c43}
 
 /* Expected-inflation input belongs to the macro block, not the four auction options. */
 .macro-input-strip{grid-column:1/-1;margin-top:2px;padding:15px 17px;border:1px solid #c2b494;background:linear-gradient(90deg,rgba(243,232,204,.72),rgba(255,251,240,.48));display:grid;grid-template-columns:1fr minmax(180px,230px);align-items:center;gap:18px}
@@ -315,10 +315,10 @@ body{visibility:visible!important}
 
 <div id="guide-modal" class="paper-modal" onclick="if(event.target===this)closeGuideModal()" aria-hidden="true">
   <div class="paper-modal-sheet"><div class="paper-modal-head"><div><div class="paper-modal-kicker">OPERATING MANUAL · OMO</div><h2>Guide</h2></div><button class="paper-modal-close" onclick="closeGuideModal()">×</button></div><div class="paper-modal-body">
-    <div class="guide-step"><b>1 · Observe.</b> Read the three-page OMO Daily: macro context, the interbank rate, and the live outstanding/maturity file.</div>
-    <div class="guide-step"><b>2 · Decide.</b> Choose the OMO instrument, auction method, offered volume, and the applicable rate/pricing method. Phase 1 also asks for expected inflation for the three-phase macro block.</div>
+    <div class="guide-step"><b>1 · Observe.</b> Read the three-page OMO Report: macro context, the interbank rate and the live outstanding/maturity file.</div>
+    <div class="guide-step"><b>2 · Decide.</b> Choose the OMO instrument, auction method, offered volume and the applicable rate/pricing method. Phase 1 also asks for expected inflation for the three-phase macro block.</div>
     <div class="guide-step"><b>3 · Process bids.</b> Five bank bids arrive from the engine. Sort them by the rule for the selected auction method, then approve the auction record.</div>
-    <div class="guide-step"><b>4 · Review transmission.</b> Results show awarded volume, liquidity, the updated interbank rate, outstanding positions, maturity cash flows, and—when available—the macro block.</div>
+    <div class="guide-step"><b>4 · Review transmission.</b> Results show awarded volume, liquidity, the updated interbank rate, outstanding positions, maturity cash flows, and - when available - the macro block.</div>
   </div></div>
 </div>
 <div id="learning-card-modal" class="paper-modal" onclick="if(event.target===this)closeLearningCard()" aria-hidden="true">
@@ -785,8 +785,8 @@ function paperDecision(){
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
      <div class="market-page-head">
        <div class="section-tag">PAGE · OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
-       <h2>Open Market Operations Notice</h2>
-       <p>Set the instrument, auction method, and intervention size before signing and issuing the OMO notice.</p>
+       <h2>Open Market Operations Announcement</h2>
+       <p>Set the instrument, auction method and intervention size before signing and issuing the OMO notice.</p>
      </div>
    
      <div class="formgrid">
