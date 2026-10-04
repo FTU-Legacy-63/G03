@@ -654,7 +654,7 @@ function paperRestart(){
 const pgBriefCopy = {
   1:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Prior to the OMO session, the operations desk receives high-frequency macroeconomic and money market data.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       ['MACROECONOMY','Short-term spending rises','Retail, tourism, and period-end payments rise quickly. Growth and inflation are not yet putting significant pressure on the policy stance.'],
       ['MONEY MARKET','Overnight funding demand rises','Cash withdrawals reduce available reserves, so commercial banks borrow more in the interbank market.'],
@@ -664,7 +664,7 @@ const pgBriefCopy = {
 
   2:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Prior to the OMO session, the operations desk receives high-frequency macroeconomic and money market data.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       ['MACROECONOMY','Growth momentum eases','After the holiday season, consumption returns to normal. Some sectors report weaker new orders while inventories rise.'],
       ['CREDIT & INVESTMENT','Firms become more cautious','Demand for capacity expansion and new borrowing falls. Inflation remains low, although some input prices begin to edge higher.'],
@@ -674,7 +674,7 @@ const pgBriefCopy = {
 
   3:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Prior to the OMO session, the operations desk receives high-frequency macroeconomic and money market data.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       ['MACROECONOMY','Real-economy effects remain gradual','Production has not clearly recovered. Earlier decisions are still transmitting through credit, growth, and inflation.'],
       ['MONEY MARKET','Maturities can reverse cash flows','Term operations from earlier phases may mature, causing liquidity conditions and the overnight rate to change quickly.'],
@@ -776,7 +776,7 @@ function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const events=Array.isArray(state.maturity_events)?state.maturity_events:[];
   const resultMode=mode==='result';
   const maturitySection=resultMode?`<section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section>`:'';
-  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the operation':'Current OMO positions'}</h2><p>${resultMode?'Backend inventories and maturity events after this phase.':'The exact outstanding bill and repo/reverse-repo inventory carried forward from the latest completed phase.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
+  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the session':'Current OMO positions'}</h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
 }
 function pgSetDeck(rootId,index){
   const root=pg$(rootId); if(!root)return 0; const pages=[...root.querySelectorAll('.paper-page')]; if(!pages.length)return 0;
@@ -808,7 +808,7 @@ function pgSetNewsPage(n){pgNewsPage=pgSetDeck('pg-brief',n)}
 function pgExpectedBlockHTML(editable){
   const expectedValue=pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2):'';
   if(editable&&pgPhase===1){
-    return `<div class="expected-daily"><label>Expected inflation (% p.a.) <span class="required-mark">REQUIRED</span> <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><input type="number" id="pg-expected-inflation-daily" value="${expectedValue}" placeholder="Enter expected inflation" min="0" max="20" step="0.05" oninput="pgExpectedInputChanged(this)"><small>REQUIRED. The game will not proceed until this assumption is entered.</small></div>`;
+    return `<div class="expected-daily"><label>Expected inflation (% p.a.) <span class="required-mark">REQUIRED</span> <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><input type="number" id="pg-expected-inflation-daily" value="${expectedValue}" placeholder="Enter expected inflation" min="0" max="20" step="0.05" oninput="pgExpectedInputChanged(this)"></div>`;
   }
   return `<div class="expected-daily"><label>Expected inflation assumption <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><strong class="saved">${pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2)+'%':'Stored by backend'}</strong><small>Entered in Phase 1 and carried through the three-phase macro block.</small></div>`;
 }
@@ -819,9 +819,9 @@ function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
   const gdpText=Number.isFinite(gdp)?`${gdp.toFixed(2)}%`:'—';
   const inflationText=Number.isFinite(inflation)?`${inflation.toFixed(2)}%`:'—';
   const backendMacroNow=resultMode&&pgResult&&((pgResult.gdp_growth!==null&&pgResult.gdp_growth!==undefined&&pgResult.gdp_growth!=='')||(pgResult.inflation!==null&&pgResult.inflation!==undefined&&pgResult.inflation!==''));
-  const macroNote=backendMacroNow?'Updated by the backend this phase':(pgPhase===1?'Initial scenario value':'Unchanged · latest available value');
-  const title=resultMode?'Rate and macro conditions after the OMO session':'Rate and macro conditions before the OMO session';
-  const copy=resultMode?'The same 30-day operating timeline is retained. Only values changed by the completed OMO phase are updated; GDP growth and inflation remain at their latest published values until the backend releases a new macro result.':'The operating dates are fixed 30 days apart. Interbank observations update each phase; GDP growth and inflation keep their latest published values until a new macro block is released.';
+  const macroNote = '';
+  const title=resultMode?'Rate and macro conditions after the OMO session':'Interbank rate and macroeconomics indicators data';
+  const copy=resultMode?'Updated interbank rate and macroeconomic indicators data for each 30-day and 90-day operating cycle, respectively.':'Updated interbank rate and macroeconomic indicators data for each 30-day and 90-day operating cycle, respectively.';
   const liquidityLabel=resultMode?'Post-OMO liquidity position':'Scenario liquidity demand';
   const rateHistory=pgRateHistory;
   return `<article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · MARKET & MACRO INDICATORS</div><h2>${title}</h2><p>${copy}</p></div><div class="chart-sheet daily-market-layout"><div class="daily-chart-stack"><section class="chart-box daily-chart-panel"><div class="daily-chart-heading"><span>Interbank rate</span><span>30-day operating timeline</span></div>${pgDailyRateTimelineSVG(rateHistory)}</section><section class="chart-box daily-chart-panel macro-daily-panel"><div class="daily-chart-heading"><span>GDP growth & inflation</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory,pgPhase)}</section></div><aside class="chart-side"><div class="section-tag">CURRENT INTERBANK RATE</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${Number(rate).toFixed(2)}%</div><p><b>${liquidityLabel}:</b> ${Number(liquidity)>=0?'+':''}${pgFmt(liquidity)} bn.</p><div class="indicator-stat-grid"><div class="indicator-stat"><span>GDP growth</span><strong>${gdpText}</strong><small>${macroNote}</small></div><div class="indicator-stat"><span>Inflation</span><strong>${inflationText}</strong><small>${macroNote}</small></div></div>${pgExpectedBlockHTML(!resultMode)}</aside></div></article>`;
@@ -873,7 +873,7 @@ function paperDecision(){
      <div class="market-page-head">
        <div class="section-tag">OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
        <h2>Open Market Operations Announcement</h2>
-       <p>Set the instrument, auction method and intervention size before signing and issuing the OMO notice.</p>
+       <p>Set the instrument, auction method and intervention size before issuing the OMO announcement.</p>
      </div>
    
      <div class="formgrid">
@@ -901,7 +901,7 @@ function pgToggleAuctionFields(){
 function pgBidSlipHTML(b,backendIndex){
   const letter=pgBankLetter(b.bank);
   const bankLabel=letter||pgBankName(b.bank)||'—';
-  return `<div class="bid-slip" draggable="true" data-i="${backendIndex}" data-bank="${letter}"><div class="bid-slip-head">CENTRAL BANK · OPEN MARKET OPERATIONS</div><div class="bid-slip-title">AUCTION BID FORM</div><div class="bid-slip-grid"><span>Bank</span><b class="bank-value">${bankLabel}</b><span>Bid rate</span><b>${Number(b.bid_rate||0).toFixed(2)}%</b><span>Bid volume</span><b>${pgFmt(b.bid_volume)} bn</b></div></div>`;
+  return `<div class="bid-slip" draggable="true" data-i="${backendIndex}" data-bank="${letter}"><div class="bid-slip-head">CENTRAL BANK · OPEN MARKET OPERATIONS</div><div class="bid-slip-title">AUCTION BID SUBMISSION</div><div class="bid-slip-grid"><span>Bank</span><b class="bank-value">${bankLabel}</b><span>Bid rate</span><b>${Number(b.bid_rate||0).toFixed(2)}%</b><span>Bid volume</span><b>${pgFmt(b.bid_volume)} bn</b></div></div>`;
 }
 async function pgRunEngine(){
   const payload={...pgDecision};
@@ -951,7 +951,7 @@ async function paperExecute(){
 // ---------------------------------------------------------------------
 function paperSort(){
   const bidEntries=(pgBidEntries.length?pgBidEntries:pgOrderedBidEntries((pgResult&&pgResult.bids)||[])).slice(0,5);
-  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>Drag the bids into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Each slip keeps the exact rate and volume returned by the backend for that bank.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
+  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>Drag the bids into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
   pgShow('pg-sort'); pgEnableDrag();
 }
 function pgEnableDrag(){
@@ -1088,7 +1088,7 @@ function paperReport(){
      <div class="market-page-head">
        <div class="section-tag">PAGE 1 · AUCTION RESULTS</div>
        <h2>The OMO session has been approved</h2>
-       <p>Short result signals summarize the auction and the immediate liquidity response.</p>
+       <p>Updated macroeconomic conditions, money market developments, credit activities and key indicators.</p>
      </div>
    
      <div class="clippings">
