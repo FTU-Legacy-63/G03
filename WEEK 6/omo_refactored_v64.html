@@ -776,7 +776,7 @@ function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const events=Array.isArray(state.maturity_events)?state.maturity_events:[];
   const resultMode=mode==='result';
   const maturitySection=resultMode?`<section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section>`:'';
-  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the session':'Current OMO positions'}</h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
+  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the OMO session':'Current OMO positions'}</h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
 }
 function pgSetDeck(rootId,index){
   const root=pg$(rootId); if(!root)return 0; const pages=[...root.querySelectorAll('.paper-page')]; if(!pages.length)return 0;
@@ -810,7 +810,7 @@ function pgExpectedBlockHTML(editable){
   if(editable&&pgPhase===1){
     return `<div class="expected-daily"><label>Expected inflation (% p.a.) <span class="required-mark">REQUIRED</span> <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><input type="number" id="pg-expected-inflation-daily" value="${expectedValue}" placeholder="Enter expected inflation" min="0" max="20" step="0.05" oninput="pgExpectedInputChanged(this)"></div>`;
   }
-  return `<div class="expected-daily"><label>Expected inflation assumption <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><strong class="saved">${pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2)+'%':'Stored by backend'}</strong><small>Entered in Phase 1 and carried through the three-phase macro block.</small></div>`;
+  return `<div class="expected-daily"><label>Expected inflation assumption <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><strong class="saved">${pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2)+'%':'Stored by backend'}</strong></div>`;
 }
 function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
   const resultMode=mode==='result';
@@ -872,8 +872,8 @@ function paperDecision(){
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
      <div class="market-page-head">
        <div class="section-tag">OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
-       <h2>Open Market Operations Announcement</h2>
-       <p>Set the instrument, auction method and intervention size before issuing the OMO announcement.</p>
+       <h2>Open Market Operations Notice</h2>
+       <p>Set the instrument, auction method and intervention size before signing and issuing the OMO notice.</p>
      </div>
    
      <div class="formgrid">
