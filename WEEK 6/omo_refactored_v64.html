@@ -81,7 +81,10 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    --------------------------------------------------------------------- */
 .desk{width:min(1580px,98vw);margin:18px auto 64px;position:relative;z-index:2}
 .screen{display:none;position:relative}.screen.active{display:block;animation:screenIn .24s ease both}@keyframes screenIn{from{opacity:0}to{opacity:1}}
-.document-sheet,.paper-page{box-sizing:border-box;background-color:var(--paper);background-image:radial-gradient(rgba(93,72,43,.06) .65px,transparent .8px),linear-gradient(90deg,rgba(255,255,255,.19),rgba(118,91,54,.025),rgba(255,255,255,.12));background-size:7px 7px,100% 100%;border:1px solid #9d8966;box-shadow:0 27px 55px var(--wood-shadow),inset 0 0 0 8px rgba(255,255,255,.14);position:relative}
+.document-sheet,.paper-page{box-sizing:border-box;background-color:var(--paper);background-image:radial-gradient(rgba(93,72,43,.06) .65px,transparent .8px),linear-gradient(90deg,rgba(255,255,255,.19),rgba(118,91,54,.025),rgba(255,255,255,.12));background-size:7px 7px,100% 100%;border:1px solid #9d8966;box-shadow:
+    0 5px 0 rgba(60,40,20,.18),
+    0 18px 32px rgba(37,22,10,.25),
+    inset 0 0 0 8px rgba(255,255,255,.14);position:relative}
 .document-sheet:before,.paper-page:before{content:"";position:absolute;inset:10px;border:1px solid rgba(130,110,77,.22);pointer-events:none}
 .document-sheet{width:min(1480px,94vw);min-height:780px;margin:16px auto 0;padding:52px 72px 58px}
 .document-kicker,.section-tag{font:700 10px/1.4 var(--font-ui);letter-spacing:.16em;text-transform:uppercase;color:#58726a}
@@ -199,7 +202,10 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    Purpose: one canonical bid-slip format reused everywhere.
    Ends before AUCTION APPROVAL + RESULTS.
    --------------------------------------------------------------------- */
-.bid-slip{height:320px;box-sizing:border-box;padding:27px 28px 24px;background-color:var(--paper);background-image:radial-gradient(rgba(93,72,43,.06) .65px,transparent .8px),linear-gradient(90deg,rgba(255,255,255,.16),rgba(118,91,54,.02),rgba(255,255,255,.10));background-size:7px 7px,100% 100%;border:1px solid #9d8966;box-shadow:0 11px 22px rgba(37,22,10,.22),inset 0 0 0 6px rgba(255,255,255,.10);color:#36453f;user-select:none}
+.bid-slip{height:320px;box-sizing:border-box;padding:27px 28px 24px;background-color:var(--paper);background-image:radial-gradient(rgba(93,72,43,.06) .65px,transparent .8px),linear-gradient(90deg,rgba(255,255,255,.16),rgba(118,91,54,.02),rgba(255,255,255,.10));background-size:7px 7px,100% 100%;border:1px solid #9d8966;box-shadow:
+    0 5px 0 rgba(60,40,20,.18),
+    0 12px 24px rgba(37,22,10,.22),
+    inset 0 0 0 6px rgba(255,255,255,.10);color:#36453f;user-select:none}
 .bid-slip-head{text-align:center;font:850 8px/1.25 var(--font-ui);letter-spacing:.12em;color:#74664f;border-bottom:3px double #8d7958;padding-bottom:9px}.bid-slip-title{text-align:center;font:900 17px/1.15 var(--font-ui);color:#394b45;padding:14px 0 12px;border-bottom:2px solid #46897e}
 .bid-slip-grid{display:grid;grid-template-columns:1fr;gap:4px;text-align:center;padding-top:13px}.bid-slip-grid span{font:700 10px/1.2 var(--font-ui);color:#746c5b}.bid-slip-grid b{font:900 20px/1.15 var(--font-ui);color:#0b837a;margin-bottom:5px;white-space:nowrap}.bid-slip-grid b.bank-value{font-size:22px;color:#173e49}
 .sort-screen{padding:18px 0 36px}.sort-header{text-align:center;color:#f5edda;text-shadow:0 2px 5px #2b170c;margin-bottom:24px}.sort-header .section-tag{color:#b8d2c8}.sort-header h1{font:900 clamp(32px,3.5vw,54px)/1.04 var(--font-ui);letter-spacing:.02em;margin:9px 0 12px;color:#fff}.sort-header p{max-width:1050px;margin:0 auto;font:16px/1.5 var(--font-ui);color:#f0eadc}
