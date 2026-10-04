@@ -12,6 +12,15 @@ CORS(app)
 # Game instance của phiên chơi hiện tại
 game_instance = None
 
+# STATIC IMAGE FILES
+@app.route("/background.png")
+def background():
+    return send_from_directory(".", "background.png")
+
+
+@app.route("/topbar.png")
+def topbar():
+    return send_from_directory(".", "topbar.png")
 def _get_next_scenario_liquidity_demand():
     """Return the next phase demand after run_phase() advances the engine.
 
@@ -31,7 +40,6 @@ def index():
     return send_from_directory(str(BASE_DIR), "omo_refactored_v64.html")
 
 # START GAME
-
 @app.route("/api/start-game", methods=["POST"])
 def start_game():
     global game_instance
