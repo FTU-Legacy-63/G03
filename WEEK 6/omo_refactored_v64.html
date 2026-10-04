@@ -220,8 +220,24 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   align-items:center;
   justify-content:center;
   text-align:center;
-  transform:translateY(-70px) scale(.80);
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  transform:scale(.67);
   transform-origin:center center;
+}
+.title-sheet:before{
+  display:none!important;
+}
+.title-inner{
+  width:min(1781px,94vw);
+  min-height:121px;
+  box-sizing:border-box;
+  padding:20px 44px 18px;
+  background:url("topbar.png") center center / 100% 100% no-repeat;
+  position:relative;
+  text-align:left;
 }
 .ending-sheet{
   display:flex;
