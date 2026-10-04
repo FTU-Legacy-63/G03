@@ -647,7 +647,7 @@ function pgDailyRateTimelineSVG(history){
 function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
   const slots=[
-     {phase:1,label:'PHASE 1',date:getPhaseDisplayDate(0)},
+     {phase:1,label:'OPENING',date:getPhaseDisplayDate(0)},
      {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(2)},
      {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(5)}
    ];
@@ -783,8 +783,13 @@ function paperDecision(){
   }
   const c=phaseConfig[pgPhase];
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
-    <div class="decision-head"><div class="decision-mast">THE OMO DAILY<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Notice</h1><p>Set the instrument, auction method, and intervention size before signing and issuing the OMO notice.</p></div></div>
-    <div class="formgrid">
+     <div class="market-page-head">
+       <div class="section-tag">PAGE · OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
+       <h2>Open Market Operations Notice</h2>
+       <p>Set the instrument, auction method, and intervention size before signing and issuing the OMO notice.</p>
+     </div>
+   
+     <div class="formgrid">
       <div class="field"><label>1. OMO instrument <button class="paper-help-dot" type="button" onclick="openLearningCard('omo')">?</button></label><select id="pg-action"><option value="Repo">Repo — term sale</option><option value="Reverse Repo">Reverse repo — term purchase</option><option value="Buy Securities">Outright bill purchase</option><option value="Sell Securities">Outright bill sale</option></select></div>
       <div class="field"><label>2. Auction method <button class="paper-help-dot" type="button" onclick="openLearningCard('auction')">?</button></label><select id="pg-method" onchange="pgToggleAuctionFields()"><option value="Volume auction">Volume auction</option><option value="Interest-rate auction">Interest-rate auction</option></select></div>
       <div class="field"><label>3. Offered volume (bn) <button class="paper-help-dot" type="button" onclick="openLearningCard('volume')">?</button></label><input type="number" id="pg-volume" value="${c.defaultVol}" step="500"><div class="checkline"><button class="chip" type="button" onclick="pg$('pg-volume').value=3000">3,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=5000">5,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=8000">8,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=10000">10,000</button></div></div>
