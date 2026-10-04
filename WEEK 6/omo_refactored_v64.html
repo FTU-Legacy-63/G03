@@ -720,7 +720,7 @@ function pgSetNewsPage(n){pgNewsPage=pgSetDeck('pg-brief',n)}
 function pgExpectedBlockHTML(editable){
   const expectedValue=pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2):'';
   if(editable&&pgPhase===1){
-    return `<div class="expected-daily"><label>Expected inflation (% p.a.) <span class="required-mark">REQUIRED</span> <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><input type="number" id="pg-expected-inflation-daily" value="${expectedValue}" placeholder="Enter expected inflation" min="0" max="20" step="0.05" oninput="pgExpectedInputChanged(this)"><small>Required in Phase 1. The game cannot continue to the OMO decision until this assumption is entered.</small></div>`;
+    return `<div class="expected-daily"><label>Expected inflation (% p.a.) <span class="required-mark">REQUIRED</span> <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><input type="number" id="pg-expected-inflation-daily" value="${expectedValue}" placeholder="Enter expected inflation" min="0" max="20" step="0.05" oninput="pgExpectedInputChanged(this)"><small>REQUIRED. The game will not proceed until this assumption is entered.</small></div>`;
   }
   return `<div class="expected-daily"><label>Expected inflation assumption <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><strong class="saved">${pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2)+'%':'Stored by backend'}</strong><small>Entered in Phase 1 and carried through the three-phase macro block.</small></div>`;
 }
@@ -783,7 +783,7 @@ function paperDecision(){
   const c=phaseConfig[pgPhase];
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
      <div class="market-page-head">
-       <div class="section-tag">PAGE · OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
+       <div class="section-tag">OPERATING FORM · NO. 0${pgPhase}/OMO-2025</div>
        <h2>Open Market Operations Announcement</h2>
        <p>Set the instrument, auction method and intervention size before signing and issuing the OMO notice.</p>
      </div>
@@ -863,7 +863,7 @@ async function paperExecute(){
 // ---------------------------------------------------------------------
 function paperSort(){
   const bidEntries=(pgBidEntries.length?pgBidEntries:pgOrderedBidEntries((pgResult&&pgResult.bids)||[])).slice(0,5);
-  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><div class="section-tag">OPERATIONS DESK · AUCTION FILES</div><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>The five backend bids are filed A → E before processing. Drag them into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Each slip keeps the exact rate and volume returned by the backend for that bank.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
+  pg$('pg-sort').innerHTML=`<div class="sort-screen"><div class="sort-header"><h1>RANK THE 5 BIDS BY PRIORITY</h1><p>Drag the bids into the white-outlined positions from highest to lowest auction priority.</p></div><div class="bid-source" id="pg-source">${bidEntries.map(entry=>pgBidSlipHTML(entry.bid,entry.backendIndex)).join('')}</div><div class="sort-label">PROCESSING DESK · HIGHEST → LOWEST PRIORITY</div><div class="sortzone" id="pg-zone">${[1,2,3,4,5].map((n,i)=>`<div class="sortslot" data-rank="${n}" data-label="${i===0?'HIGHEST':i===4?'LOWEST':'POSITION '+n}"></div>`).join('')}</div><p class="sort-hint" id="pg-sort-msg">Each slip keeps the exact rate and volume returned by the backend for that bank.</p><div class="sort-actions"><button class="pbtn" onclick="paperCheckOrder()">CHECK ORDER & ALLOCATE</button></div></div>`;
   pgShow('pg-sort'); pgEnableDrag();
 }
 function pgEnableDrag(){
@@ -898,7 +898,7 @@ function paperAuctionResult(){
   pg$('pg-result').innerHTML=`
      <div class="document-sheet approval-sheet">
      <div class="market-page-head">
-       <div class="section-tag">PAGE · OMO AUCTION RESULT</div>
+       <div class="section-tag">OMO AUCTION RESULT · NO.1/OMO-2025</div>
        <h2>OMO Auction Result Record</h2>
      </div>
 
