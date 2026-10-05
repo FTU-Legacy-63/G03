@@ -608,7 +608,66 @@ function pgSyncPhaseFallbacks(){const c=phaseConfig[pgPhase];if(!c)return;c.preM
 const learningCards={
   auction:{title:'Auction method',content:`<p><b>What is it?</b><br>The rule banks use to submit bids in an OMO operation.</p><h4>Interest-rate auction</h4><ul><li>The central bank fixes the offered volume.</li><li>Banks compete on bid rate and volume.</li><li>Accepted bids follow the ranking rule.</li></ul><h4>Volume auction</h4><ul><li>The central bank announces the auction rate.</li><li>Banks submit the volume they want.</li><li>If demand exceeds supply, allocation can be proportional.</li></ul>`},
   pricing:{title:'Pricing method',content:`<p><b>Single-price:</b> all successful bids settle at one winning rate.</p><p><b>Multi-price:</b> each successful bid settles at its accepted bid rate.</p><div class="learning-note"><b>Applies only to interest-rate auctions.</b></div>`},
-  omo:{title:'OMO instruments',content:`<p>Operations are named from the <b>central bank perspective</b>.</p><table><thead><tr><th>Operation</th><th>Initial liquidity effect</th><th>Time profile</th></tr></thead><tbody><tr><td>Buy Securities</td><td>Inject</td><td>Outright</td></tr><tr><td>Sell Securities</td><td>Absorb</td><td>Outright</td></tr><tr><td>Repo</td><td>Absorb</td><td>Reverses at maturity</td></tr><tr><td>Reverse Repo</td><td>Inject</td><td>Reverses at maturity</td></tr></tbody></table>`},
+  omoInstrument:{
+     title:'OMO Instruments',
+     content:`
+       <div class="overflow-x-auto">
+         <table>
+           <thead>
+             <tr>
+               <th>Instrument</th>
+               <th>Nature of the transaction</th>
+               <th>Initial impact on liquidity</th>
+             </tr>
+           </thead>
+   
+           <tbody>
+             <tr>
+               <td><b>Outright Purchase of Central Bank Bills</b></td>
+               <td>
+                 The SBV purchases bills from banks and holds the bills.
+               </td>
+               <td>
+                 ↑ <b>Liquidity injection</b>
+               </td>
+             </tr>
+   
+             <tr>
+               <td><b>Outright Sale of Central Bank Bills</b></td>
+               <td>
+                 The SBV sells bills to banks.
+               </td>
+               <td>
+                 ↓ <b>Liquidity absorption</b>
+               </td>
+             </tr>
+   
+             <tr>
+               <td><b>REPO (Sale with an agreement to repurchase)</b></td>
+               <td>
+                 The SBV sells bills with an agreement to repurchase them at a specified date.
+                 When the transaction matures, the liquidity absorbed is returned to the system.
+               </td>
+               <td>
+                 ↓ <b>Temporary liquidity absorption</b>
+               </td>
+             </tr>
+   
+             <tr>
+               <td><b>Reverse REPO (Purchase with an agreement to resell)</b></td>
+               <td>
+                 The SBV purchases bills with an agreement to resell them at a specified date.
+                 When the transaction matures, the liquidity injected is returned to the SBV.
+               </td>
+               <td>
+                 ↑ <b>Temporary liquidity injection</b>
+               </td>
+             </tr>
+           </tbody>
+         </table>
+       </div>
+     `
+   },
   volume:{title:'Offered volume',content:`<p>The scale of securities or funds offered in the OMO operation.</p><ul><li>Larger offered volume can create a larger liquidity effect.</li><li>The realized effect still depends on awarded volume and maturity cash flows.</li></ul>`},
   auctionRate:{title:'OMO offer rate',content:`<p>The rate announced for a <b>volume auction</b>. It affects how attractive the operation is to banks and therefore their bidding response.</p><div class="learning-note">The OMO offer rate is not the same thing as the interbank rate.</div>`},
   liquidity:{
