@@ -1285,7 +1285,7 @@ function paperBrief(){
   currentPhase=pgPhase;pgSyncPhaseFallbacks();pgUpdateHead();pgNewsPage=0;
   const c=phaseConfig[pgPhase],base=pgBriefCopy[pgPhase],rate=pgCurrentRate(),liq=pgCurrentLiquidityNeed();
   const x={...base,cards:base.cards.map(a=>[...a])};
-  x.cards[2]=['QUICK INDICATOR',`${rate.toFixed(2)}%`,'Interbank rate',${liq>=0?'+':''}${pgFmt(liq)} bn.`] `Scenario liquidity demand:;
+  x.cards[2]=['QUICK INDICATOR',`${rate.toFixed(2)}%`,'Interbank rate',`Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`];
   const page2=pgMarketMacroPageHTML({mode:'daily',rate,liquidity:liq});
   pg$('pg-brief').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
