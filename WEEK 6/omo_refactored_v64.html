@@ -974,7 +974,7 @@ function paperRestart(){
 const pgBriefCopy = {
   1:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
@@ -988,7 +988,7 @@ const pgBriefCopy = {
   },
   2:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
@@ -1003,7 +1003,7 @@ const pgBriefCopy = {
 
   3:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
@@ -1018,14 +1018,14 @@ const pgBriefCopy = {
 
   4:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
         'This is the first point at which the macroeconomic impact of the 02/02/2025 decision is assumed to become visible. GDP may improve, remain flat, or stay weak depending on the actual decision path; recovery is not assumed.'
       ],
       [
-        'MONEY MARKET',
+        'CREDIT CONDITIONS & MONEY MARKET',
         'Credit conditions gradually reflect the 02/02/2025 decision. If the earlier support was strong enough, credit may improve; if funding conditions were tightened, credit may remain weak. If a 60-day Reverse Repo was conducted on 04/03/2025, it matures today and withdraws the liquidity previously injected. This cash flow is captured through Maturity Volume before the new OMO decision is calculated.'
       ]
     ]
@@ -1033,28 +1033,28 @@ const pgBriefCopy = {
 
   5:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
         'Raw-material prices and input costs begin to rise because of supply-side factors. The cost shock is assumed to last around 2–3 months. Current GDP may be strong, flat, or weak depending on the earlier decision path.'
       ],
       [
-        'MONEY MARKET',
+        'CREDIT CONDITIONS & MONEY MARKET',
         'Firms need more working capital to cover higher input costs, while new investment may become more cautious. Base liquidity is slightly in surplus, but the pre-OMO state still depends on the Maturity Volume of any term operation opened on 03/04/2025.'
       ]
     ]
   },
   6:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
         'Cost pressures spread across production, transport, and distribution. The government announces targeted support to reduce firms’ cost burden; this is not broad-based demand stimulus. Cost pressure is assumed to persist for another 1–2 months.'
       ],
       [
-        'MONEY MARKET',
+        'CREDIT CONDITIONS & MONEY MARKET',
         'Working-capital demand remains high. The investment outlook depends on both actual GDP and financial conditions. Short-term funding demand may rise slightly. Before the new OMO decision, the liquidity state must include the Maturity Volume of any term operation opened on 03/05/2025.'
       ]
     ]
@@ -1062,14 +1062,14 @@ const pgBriefCopy = {
 
   7:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
         'Targeted fiscal support begins to be disbursed to ease firms’ cost pressure. This support does not by itself imply that GDP is rising or falling; the GDP/inflation outcome still depends on the full sequence of earlier decisions.'
       ],
       [
-        'MONEY MARKET',
+        'CREDIT CONDITIONS & MONEY MARKET',
         'The support flow eases working-capital pressure for some firms. Part of the fiscal support flows back into the banking system and creates a short-term liquidity surplus. Before the new OMO decision, the state must still include the Maturity Volume of any term operation opened on 02/06/2025.'
       ]
     ]
@@ -1077,14 +1077,14 @@ const pgBriefCopy = {
 
   8:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
     cards:[
       [
         'MACROECONOMY',
         'Final-period GDP and inflation reflect the external shocks and the earlier decisions that have had time to transmit. The 02/06/2025 decision begins to be reflected in the current outcome.'
       ],
       [
-        'MONEY MARKET',
+        'CREDIT CONDITIONS & MONEY MARKET',
         'Final credit conditions reflect the accumulated path of liquidity, interbank rate and policy direction. The final session still includes an OMO decision. Before the new decision, the engine calculates the liquidity state from LQ Base, the previous period’s Unmet, and the Maturity Volume of any 60-day operation opened on 02/07/2025.'
       ]
     ]
@@ -1324,83 +1324,16 @@ function paperBrief(){
 function paperDecision(){
   const c=phaseConfig[pgPhase];
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
-    <div class="market-page-head">
-      <div class="section-tag">PAGE · OMO OPERATING FORM</div>
-      <h2>OMO Operating Form</h2>
-    </div>
-
-    <div>
-      <h1>Open Market Operations Announcement</h1>
-      <p>Set the instrument, auction method, and intervention size before issuing the OMO announcement.</p>
-    </div>
-
+    <div class="decision-head"><div class="decision-mast">THE OMO<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Announcement</h1><p>Set the instrument, auction method, and intervention size before issuing the OMO announcement.</p></div></div>
     <div class="formgrid">
-      <div class="field">
-        <label>
-          1. OMO instrument
-          <button class="paper-help-dot" type="button" onclick="openLearningCard('omoInstrument')">?</button>
-        </label>
-        <select id="pg-action">
-          <option value="Repo">Repo — term sale</option>
-          <option value="Reverse Repo">Reverse repo — term purchase</option>
-          <option value="Buy Securities">Outright bill purchase</option>
-          <option value="Sell Securities">Outright bill sale</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>
-          2. Auction method
-          <button class="paper-help-dot" type="button" onclick="openLearningCard('auction')">?</button>
-        </label>
-        <select id="pg-method" onchange="pgToggleAuctionFields()">
-          <option value="Volume auction">Volume auction</option>
-          <option value="Interest-rate auction">Interest-rate auction</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>
-          3. Offered volume (bn)
-          <button class="paper-help-dot" type="button" onclick="openLearningCard('volume')">?</button>
-        </label>
-        <input type="number" id="pg-volume" value="${c.defaultVol}" step="500">
-        <div class="checkline">
-          <button class="chip" type="button" onclick="pg$('pg-volume').value=3000">3,000</button>
-          <button class="chip" type="button" onclick="pg$('pg-volume').value=5000">5,000</button>
-          <button class="chip" type="button" onclick="pg$('pg-volume').value=8000">8,000</button>
-          <button class="chip" type="button" onclick="pg$('pg-volume').value=10000">10,000</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label id="pg-option4-label">
-          4. OMO offer rate (%)
-          <button class="paper-help-dot" type="button" onclick="openLearningCard('auctionRate')">?</button>
-        </label>
-
-        <div id="pg-rate-wrap">
-          <input type="number" id="pg-rate" value="${c.defaultRate.toFixed(2)}" step="0.05">
-        </div>
-
-        <div id="pg-pricing-wrap" style="display:none">
-          <select id="pg-pricing">
-            <option value="Single-price">Single-price</option>
-            <option value="Multi-price">Multi-price</option>
-          </select>
-        </div>
-      </div>
+      <div class="field"><label>1. OMO instrument <button class="paper-help-dot" type="button" onclick="openLearningCard('omo')">?</button></label><select id="pg-action"><option value="Repo">Repo — term sale</option><option value="Reverse Repo">Reverse repo — term purchase</option><option value="Buy Securities">Outright bill purchase</option><option value="Sell Securities">Outright bill sale</option></select></div>
+      <div class="field"><label>2. Auction method <button class="paper-help-dot" type="button" onclick="openLearningCard('auction')">?</button></label><select id="pg-method" onchange="pgToggleAuctionFields()"><option value="Volume auction">Volume auction</option><option value="Interest-rate auction">Interest-rate auction</option></select></div>
+      <div class="field"><label>3. Offered volume (bn) <button class="paper-help-dot" type="button" onclick="openLearningCard('volume')">?</button></label><input type="number" id="pg-volume" value="${c.defaultVol}" step="500"><div class="checkline"><button class="chip" type="button" onclick="pg$('pg-volume').value=3000">3,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=5000">5,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=8000">8,000</button><button class="chip" type="button" onclick="pg$('pg-volume').value=10000">10,000</button></div></div>
+      <div class="field"><label id="pg-option4-label">4. OMO offer rate (% p.a.) <button class="paper-help-dot" type="button" onclick="openLearningCard('auctionRate')">?</button></label><div id="pg-rate-wrap"><input type="number" id="pg-rate" value="${c.defaultRate.toFixed(2)}" step="0.05"></div><div id="pg-pricing-wrap" style="display:none"><select id="pg-pricing"><option value="Single-price">Single-price</option><option value="Multi-price">Multi-price</option></select></div></div>
     </div>
-
-    <div class="decision-actions">
-      <button class="pbtn alt" onclick="paperBrief()">REVIEW REPORT</button>
-      <button class="pbtn" onclick="paperExecute()">ISSUE</button>
-    </div>
+    <div class="decision-actions"><button class="pbtn alt" onclick="paperBrief()">← REVIEW REPORT</button><button class="pbtn" onclick="paperExecute()">ISSUE</button></div>
   </div>`;
-  pg$('pg-action').value=c.action;
-  pg$('pg-method').value=c.method;
-  pgToggleAuctionFields();
-  pgShow('pg-decision');
+  pg$('pg-action').value=c.action; pg$('pg-method').value=c.method; pgToggleAuctionFields(); pgShow('pg-decision');
 }
 function pgToggleAuctionFields(){
   const interest=pg$('pg-method')?.value==='Interest-rate auction';
@@ -1451,7 +1384,7 @@ async function paperExecute(){
   pgDecision={auction_method:method,pricing_method:method==='Interest-rate auction'?pg$('pg-pricing').value:null,omo_action:pg$('pg-action').value,volume,repo_rate:method==='Volume auction'?Number(pg$('pg-rate').value):null,expected_inflation:pgPhase===1&&pgHasExpectedInflation()?Number(pgExpectedInflation):null};
   const resultPromise=pgRunEngine();
   const option4=method==='Interest-rate auction'?(pgDecision.pricing_method||'Single-price'):`${Number(pgDecision.repo_rate||0).toFixed(2)}%`;
-  pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="document-sheet transition-notice rise"><div class="decision-head"><div class="decision-mast">THE OMO<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Announcenment</h1><p>The notice has been issued and is sending to commercial banks for auction.</p></div></div><div class="formgrid"><div class="field"><label>1. OMO instrument</label><input value="${pgDecision.omo_action}" readonly></div><div class="field"><label>2. Auction method</label><input value="${pgDecision.auction_method}" readonly></div><div class="field"><label>3. Offered volume</label><input value="${pgFmt(pgDecision.volume)} bn" readonly></div><div class="field"><label>4. ${method==='Interest-rate auction'?'Pricing method':'OMO offer rate'}</label><input value="${option4}" readonly></div></div></div><div class="transition-caption">NOTICE ISSUED</div></div>`;
+  pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="document-sheet transition-notice rise"><div class="decision-head"><div class="decision-mast">THE OMO<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Announcenment</h1><p>The announcement has been issued and is sending to commercial banks for auction.</p></div></div><div class="formgrid"><div class="field"><label>1. OMO instrument</label><input value="${pgDecision.omo_action}" readonly></div><div class="field"><label>2. Auction method</label><input value="${pgDecision.auction_method}" readonly></div><div class="field"><label>3. Offered volume</label><input value="${pgFmt(pgDecision.volume)} bn" readonly></div><div class="field"><label>4. ${method==='Interest-rate auction'?'Pricing method':'OMO offer rate'}</label><input value="${option4}" readonly></div></div></div><div class="transition-caption">NOTICE ISSUED</div></div>`;
   pgShow('pg-send');
   await pgDelay(1050);try{pgResult=await resultPromise}catch(e){alert('The backend could not run this phase: '+e.message);paperDecision();return}if(!pgResult||!Array.isArray(pgResult.bids)||!pgHasCompleteABCDEBids(pgResult.bids)){alert('Backend response must contain exactly one bid for each Bank A, B, C, D and E.');paperDecision();return}pgBackendState=pgResult;
   pgBidEntries=pgOrderedBidEntries(pgResult.bids);
