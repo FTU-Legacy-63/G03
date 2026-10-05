@@ -226,7 +226,22 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 /* Daily page 2: two aligned backend charts + macro input on the same operating sheet. */
 .daily-market-layout{grid-template-columns:minmax(0,1.48fr) minmax(300px,.52fr);gap:24px;margin-top:16px;align-items:start}
 .daily-chart-stack{display:grid;grid-template-rows:auto auto;gap:12px;min-width:0}.daily-chart-panel{padding:10px 14px 7px}.daily-chart-panel svg{height:190px}.daily-chart-panel.macro-daily-panel svg{height:190px}.daily-chart-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 2px;font:850 9px/1.2 var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:#607069}.daily-chart-heading span:last-child{font-size:8px;color:#8a806c;letter-spacing:.06em}.daily-chart-heading .legend{display:flex;gap:10px;align-items:center}.daily-chart-heading i{display:inline-block;width:14px;height:3px;margin-right:4px;vertical-align:middle}.daily-chart-heading i.gdp{background:#087f75}.daily-chart-heading i.inf{background:#b7892f}
-.indicator-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:13px 0 12px}.indicator-stat{border-top:1px solid #c3b495;padding-top:9px;min-width:0}.indicator-stat span{display:block;font:800 8px/1.25 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#6b756e}.indicator-stat strong{display:block;margin-top:5px;font:900 21px/1 var(--font-ui);color:#0b8178}.indicator-stat small{display:block;margin-top:4px;font:11px/1.25 var(--font-vintage);color:#7a7262}.expected-daily{margin-top:13px;padding:12px 13px;border:1px solid #b7a887;background:linear-gradient(135deg,rgba(242,226,191,.64),rgba(255,252,244,.46));box-shadow:inset 0 1px rgba(255,255,255,.55)}.expected-daily label{display:flex;align-items:center;gap:7px;font:850 9px/1.25 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#4f655d}.expected-daily .required-mark{color:#8f3e31}.expected-daily input{width:100%;height:39px;margin-top:7px;padding:0 7px;border:0;border-bottom:2px solid #7d745f;background:rgba(255,255,255,.28);font:900 20px/1 var(--font-ui);color:#29483f;outline:none}.expected-daily input:focus{border-bottom-color:#087f75;background:rgba(255,255,255,.52)}.expected-daily input.invalid{border-bottom-color:#9b3c30;background:rgba(153,60,48,.06)}.expected-daily small{display:block;margin-top:6px;font:11px/1.35 var(--font-vintage);color:#776d5c}.expected-daily .saved{color:#087f75;font-weight:700}
+.indicator-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:13px 0 12px}
+.macro-indicator-stack{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+}
+.macro-indicator-stack .indicator-stat-grid{
+  width:100%;
+  margin:13px 0 0;
+}
+.macro-indicator-stack .expected-daily{
+  width:100%;
+  box-sizing:border-box;
+  margin-top:14px;
+}
+.indicator-stat{border-top:1px solid #c3b495;padding-top:9px;min-width:0}.indicator-stat span{display:block;font:800 8px/1.25 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#6b756e}.indicator-stat strong{display:block;margin-top:5px;font:900 21px/1 var(--font-ui);color:#0b8178}.indicator-stat small{display:block;margin-top:4px;font:11px/1.25 var(--font-vintage);color:#7a7262}.expected-daily{margin-top:13px;padding:12px 13px;border:1px solid #b7a887;background:linear-gradient(135deg,rgba(242,226,191,.64),rgba(255,252,244,.46));box-shadow:inset 0 1px rgba(255,255,255,.55)}.expected-daily label{display:flex;align-items:center;gap:7px;font:850 9px/1.25 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#4f655d}.expected-daily .required-mark{color:#8f3e31}.expected-daily input{width:100%;height:39px;margin-top:7px;padding:0 7px;border:0;border-bottom:2px solid #7d745f;background:rgba(255,255,255,.28);font:900 20px/1 var(--font-ui);color:#29483f;outline:none}.expected-daily input:focus{border-bottom-color:#087f75;background:rgba(255,255,255,.52)}.expected-daily input.invalid{border-bottom-color:#9b3c30;background:rgba(153,60,48,.06)}.expected-daily small{display:block;margin-top:6px;font:11px/1.35 var(--font-vintage);color:#776d5c}.expected-daily .saved{color:#087f75;font-weight:700}
 
 .out-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}.out-card{padding:20px 18px;border-top:5px solid #1a6d61;border-bottom:1px solid #c3b495;background:rgba(255,252,244,.48)}.out-card h3{font:900 18px/1.2 var(--font-ui);color:#24453e;margin:0 0 18px}.out-row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-top:1px dotted #c6b89c;font:13px/1.3 var(--font-ui)}.out-row b{color:#116e64}.out-note{margin-top:22px;padding:14px 17px;border-left:4px solid #9e824a;background:#eee2c9;font:14px/1.6 var(--font-vintage);color:#4a4235}
 
@@ -1200,12 +1215,38 @@ function pgSetDeck(rootId,index){
   return n;
 }
 function pgSetNewsPage(n){pgNewsPage=pgSetDeck('pg-brief',n)}
-function pgExpectedBlockHTML(editable){
+function pgExpectedBlockHTML(editable,showHelp=true){
   const expectedValue=pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2):'';
+
   if(editable&&pgPhase===1){
-    return `<div class="expected-daily"><label>Expected inflation (%)<span class="required-mark">REQUIRED</span> <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><input type="number" id="pg-expected-inflation-daily" value="${expectedValue}" placeholder="Enter expected inflation" min="0" max="20" step="0.05" oninput="pgExpectedInputChanged(this)"></div>`;
+    return `<div class="expected-daily">
+      <label>
+        Expected inflation (%)
+        <span class="required-mark">REQUIRED</span>
+        ${showHelp?`<button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button>`:''}
+      </label>
+      <input
+        type="number"
+        id="pg-expected-inflation-daily"
+        value="${expectedValue}"
+        placeholder="Enter expected inflation"
+        min="0"
+        max="20"
+        step="0.05"
+        oninput="pgExpectedInputChanged(this)"
+      >
+    </div>`;
   }
-  return `<div class="expected-daily"><label>Expected inflation assumption <button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button></label><strong class="saved">${pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2)+'%':'Stored by backend'}</strong></div>`;
+
+  return `<div class="expected-daily">
+    <label>
+      Expected inflation assumption
+      ${showHelp?`<button class="paper-help-dot" type="button" onclick="openLearningCard('expectedInflation')">?</button>`:''}
+    </label>
+    <strong class="saved">
+      ${pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2)+'%':'Stored by backend'}
+    </strong>
+  </div>`;
 }
 function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
   const resultMode=mode==='result';
@@ -1219,8 +1260,27 @@ function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
   const copy=resultMode?'Updated interbank rate and macroeconomic indicators data for each 30-day and 90-day operating cycle, respectively.':'Updated interbank rate and macroeconomic indicators data for each 30-day and 90-day operating cycle, respectively.';
   const liquidityLabel=resultMode?'Post-OMO liquidity position':'Scenario liquidity demand';
   const rateHistory=pgRateHistory;
-  return `<article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · MARKET & MACRO INDICATORS</div><h2>${title}</h2><p>${copy}</p></div><div class="chart-sheet daily-market-layout"><div class="daily-chart-stack"><section class="chart-box daily-chart-panel"><div class="daily-chart-heading"><span>Interbank rate</span><span>30-day operating timeline</span></div>${pgDailyRateTimelineSVG(rateHistory)}</section><section class="chart-box daily-chart-panel macro-daily-panel"><div class="daily-chart-heading"><span>GDP growth & inflation</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory,pgPhase)}</section></div><aside class="chart-side"><<div class="section-tag">CURRENT INTERBANK RATE${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('interbank')">?</button>`}</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${Number(rate).toFixed(2)}%</div><p><b>${liquidityLabel}:</b>${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('liquidity')">?</button>`}${Number(liquidity)>=0?'+':''}${pgFmt(liquidity)} bn.</p><div class="indicator-stat-grid"><div class="indicator-stat"><span>Real GDP growth${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('gdp')">?</button>`}</span><strong>${gdpText}</strong><small>${macroNote}</small><div class="indicator-stat"><span>Inflation${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('inflation')">?</button>`}</span><strong>${inflationText}</strong><small>${macroNote}</small></div></div>${pgExpectedBlockHTML(!resultMode)}</aside></div></article>`;
-}
+  return `<article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · MARKET & MACRO INDICATORS</div><h2>${title}</h2><p>${copy}</p></div><div class="chart-sheet daily-market-layout"><div class="daily-chart-stack"><section class="chart-box daily-chart-panel"><div class="daily-chart-heading"><span>Interbank rate</span><span>30-day operating timeline</span></div>${pgDailyRateTimelineSVG(rateHistory)}</section><section class="chart-box daily-chart-panel macro-daily-panel"><div class="daily-chart-heading"><span>GDP growth & inflation</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory,pgPhase)}</section></div><aside class="chart-side"><div class="section-tag">CURRENT INTERBANK RATE${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('interbank')">?</button>`}</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${Number(rate).toFixed(2)}%</div><p><b>${liquidityLabel}:</b>${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('liquidity')">?</button>`}${Number(liquidity)>=0?'+':''}${pgFmt(liquidity)} bn.</p>
+     <div class="macro-indicator-stack">
+        <div class="indicator-stat-grid">
+          <div class="indicator-stat">
+            <span>
+              Real GDP growth${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('gdp')">?</button>`}
+            </span>
+            <strong>${gdpText}</strong>
+            <small>${macroNote}</small>
+          </div>
+      
+          <div class="indicator-stat">
+            <span>
+              Inflation${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('inflation')">?</button>`}
+            </span>
+            <strong>${inflationText}</strong>
+            <small>${macroNote}</small>
+          </div>
+        </div>
+        ${pgExpectedBlockHTML(!resultMode,!resultMode)}
+      </div>
 function paperBrief(){
   currentPhase=pgPhase;pgSyncPhaseFallbacks();pgUpdateHead();pgNewsPage=0;
   const c=phaseConfig[pgPhase],base=pgBriefCopy[pgPhase],rate=pgCurrentRate(),liq=pgCurrentLiquidityNeed();
