@@ -1579,104 +1579,6 @@ function pgMacroOutcomeHTML(result){
   return `<section class="macro-outcome"><div class="macro-outcome-head"><h3>Macro block published</h3><span>Backend result · Phase ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</span></div><div class="macro-outcome-grid"><div class="macro-card"><strong>${fmt(vals.expected)}</strong><span>Expected inflation</span></div><div class="macro-card"><strong>${fmt(vals.real)}</strong><span>Real interest rate</span></div><div class="macro-card"><strong>${fmt(vals.gdp)}</strong><span>GDP growth</span></div><div class="macro-card"><strong>${fmt(vals.inflation)}</strong><span>Inflation</span></div></div><div class="macro-trend-chart"><div class="macro-trend-title"><span>GDP growth & inflation · 30-day phase timeline</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory)}<p class="macro-chart-note">The backend publishes the macro block at the end of Phase 3; earlier phases remain blank rather than using estimated values.</p></div></section>`;
 }
 function pgSetReportPage(n){pgReportPage=pgSetDeck('pg-report',n)}
-// ---------------------------------------------------------------------
-// SECTION: REPORT RULES (Page 1 · MACROECONOMY / CREDIT & MONEY MARKET)
-// Rule đầu tiên có when(c)=true sẽ được chọn. Thêm phase 2, 3 vào pgReportRules[2], [3].
-// ---------------------------------------------------------------------
-const PG_GAP_TOL=1; // |Liquidity Gap| < 1 bn được coi là ≈ 0
-const pgF2=v=>Number(v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-
-function pgReportCtx(){
-  const r=pgResult||{},d=pgDecision||{},bids=Array.isArray(r.bids)?r.bids:[];
-  const n=v=>Number.isFinite(Number(v))?Number(v):0;
-  const sumBid=bids.reduce((s,b)=>s+n(b.bid_volume),0);
-  const sumReal=bids.reduce((s,b)=>s+n(b.real_volume),0);
-  return{
-    phase:pgPhase, action:d.omo_action,
-    lqDemand:n(r.scenario_liquidity_demand),
-    offered:n(d.volume),
-    totalBid:r.total_bid_volume!=null?n(r.total_bid_volume):sumBid,
-    totalReal:r.total_real_volume!=null?n(r.total_real_volume):sumReal,
-    totalSupply:r.total_supply!=null?n(r.total_supply):n(r.supply)+n(r.maturity_volume),
-    gap:n(r.liquidity_gap), rld:n(r.real_liquidity_demand),
-    prevON:n(r.previous_interbank_rate), newON:n(r.interbank_rate)
-  };
-}
-function pgGapState(c){return Math.abs(c.gap)<PG_GAP_TOL?'zero':(c.gap<0?'neg':'pos')}
-function pgSupplyVsDemand(c){
-  const d=Math.abs(c.totalSupply)-Math.abs(c.rld);
-  return Math.abs(d)<PG_GAP_TOL?'approximately equal to':(d>0?'greater than':'smaller than');
-}
-function pgBidAssessment(c){
-  const ratio=c.offered>0?c.totalBid/c.offered:0;
-  const t=ratio>1.05?`bids exceed the offered volume (oversubscribed, ${ratio.toFixed(2)}x)`
-    :ratio>=0.95?'bids broadly match the offered volume'
-    :`bids fall short of the offered volume (undersubscribed, ${ratio.toFixed(2)}x)`;
-  const limited=(c.action==='Buy Securities'||c.action==='Reverse Repo')&&c.totalReal<Math.min(c.offered,c.totalBid)-0.5;
-  return limited?`${t}, and awards are capped by the T-bills available in the market`:t;
-}
-const PG_ACTION_VERB={'Buy Securities':'purchases T-bills outright','Reverse Repo':'conducts a Reverse Repo','Repo':'conducts a Repo','Sell Securities':'issues T-bills'};
-function pgMoneyText(c){
-  return `In the current session, the Central Bank ${PG_ACTION_VERB[c.action]||'conducts an OMO'}. The offered volume is <b>${pgFmt(c.offered)} bn</b> versus Total Bid Volume of <b>${pgFmt(c.totalBid)} bn</b>; ${pgBidAssessment(c)}. Including maturities, net OMO cash flow is <b>${pgF2(c.totalSupply)} bn</b>. After the operation, Liquidity Gap is <b>${pgF2(c.gap)} bn</b> and the overnight rate moves from <b>${c.prevON.toFixed(2)}%</b> to <b>${c.newON.toFixed(2)}%</b>.`;
-}
-function pgFallbackMacro(c){
-  const s=pgGapState(c);
-  return `After the operation, the system is ${s==='zero'?'close to balance':s==='neg'?'in liquidity surplus':'still short of liquidity'} (Liquidity Gap ${pgF2(c.gap)} bn). Credit conditions and growth will depend on how this position evolves in the coming phases.`;
-}
-
-const pgReportRules={
-  1:[
-    {id:'P1-BUY-NEG',
-     when:c=>c.action==='Buy Securities'&&c.lqDemand>0&&pgGapState(c)==='neg',
-     macro:c=>`The actual liquidity injected is ${pgSupplyVsDemand(c)} the liquidity shortage, moving the system into surplus. With weak aggregate demand potentially lasting 3–4 months, this proactive easing supports credit, investment, and growth with a lag. The main risk is that a prolonged liquidity surplus could add to price pressure once demand recovers.`},
-    {id:'P1-BUY-ZERO',
-     when:c=>c.action==='Buy Securities'&&c.lqDemand>0&&pgGapState(c)==='zero',
-     macro:()=>`The operation brings the market close to balance without creating a meaningful liquidity surplus. Short-term funding pressure is relieved, but support for aggregate demand remains cautious; if weakness persists, credit and investment may recover more slowly than under a more proactive easing stance.`},
-    {id:'P1-BUY-POS',
-     when:c=>c.action==='Buy Securities'&&c.lqDemand>0&&pgGapState(c)==='pos',
-     macro:()=>`OMO reduces the liquidity shortage but does not eliminate it. Funding costs and credit conditions may therefore remain under pressure while aggregate demand is weak. The smaller intervention reduces future inflation risk, but provides less support to growth.`},
-    {id:'P1-RRP-ZERO',
-     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='zero',
-     macro:()=>`The market is stabilized in the short term without permanently adding liquidity. However, the economy may need support for 3–4 months while the operation reverses after 60 days, so support to growth may fade at maturity. In return, the risk of maintaining excess liquidity for too long is lower.`},
-    {id:'P1-REPO',
-     when:c=>c.action==='Repo'&&c.lqDemand>0,
-     macro:()=>`Absorbing liquidity while the market is already short tightens funding conditions further and adds pressure on credit and investment when aggregate demand is already weak. It may reduce demand-side inflation pressure, but the cost to market stability and growth is high.`},
-    {id:'P1-SELL',
-     when:c=>c.action==='Sell Securities'&&c.lqDemand>0,
-     macro:()=>`Issuing T-bills while the market is already short withdraws additional liquidity and pushes funding costs higher. T-bill issuance is useful when excess liquidity needs to be absorbed, but in the current state it further weakens credit and aggregate demand.`}
-  ],
-    2:[
-    {id:'P2-RRP-ZERO',
-     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='zero',
-     macro:()=>`The liquidity shock is seasonal and is expected to last only 1–2 months. Injecting enough to bring the market close to balance eases pressure on the overnight rate and helps avoid disruptions to credit without creating a large surplus; the risk of persistent inflation is relatively low.`},
-    {id:'P2-RRP-POS',
-     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='pos',
-     macro:()=>`Liquidity pressure is reduced but not fully resolved. Short-term rates may remain above normal during the seasonal peak, while the smaller intervention lowers the risk of excessive easing.`},
-    {id:'P2-RRP-NEG',
-     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='neg',
-     macro:()=>`Based on actual cash flow measured by Price rather than offered volume, the operation moves the system from shortage into surplus. Easier funding conditions support credit, but because the shock is expected to last only 1–2 months, the surplus raises the risk of over-easing.`},
-    {id:'P2-BUY-ZERO',
-     when:c=>c.action==='Buy Securities'&&c.lqDemand>0&&pgGapState(c)==='zero',
-     macro:()=>`The liquidity shortage is resolved, but the effect of an outright purchase lasts longer than the seasonal nature of the shock. This may provide stronger support to credit and growth, while also increasing the risk of excess liquidity once seasonal demand fades.`},
-    {id:'P2-REPO',
-     when:c=>c.action==='Repo'&&c.lqDemand>0,
-     macro:()=>`Repo deepens the liquidity shortage during a temporary shock, pushing the overnight rate and funding costs higher than necessary. This is unfavorable for both market stability and credit activity.`},
-    {id:'P2-SELL',
-     when:c=>c.action==='Sell Securities'&&c.lqDemand>0,
-     macro:()=>`T-bill issuance withdraws even more liquidity while the market is already short. It is the right direction when excess liquidity needs to be absorbed, but in the current state it intensifies the seasonal funding strain.`}
-  ],
-  3:[]
-};
-
-function pgBuildReportText(){
-  const c=pgReportCtx();
-  const rule=(pgReportRules[c.phase]||[]).find(r=>r.when(c));
-  if(!rule){
-    console.warn('No report rule matched:',c.phase,c.action,'gap',c.gap);
-    return{macro:pgFallbackMacro(c),money:pgMoneyText(c)};
-  }
-  return{macro:rule.macro(c),money:rule.money?rule.money(c):pgMoneyText(c)};
-}
 function paperReport(){
   const c=phaseConfig[pgPhase],pre={...c.preMetrics,rate:Number(pgResult.previous_interbank_rate??c.preMetrics.rate)},post=Number(pgResult.interbank_rate),delta=post-pre.rate,bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0),maturity=Number(pgResult.maturity_volume||0);
   const liquidityPosition=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0);
@@ -1685,7 +1587,6 @@ function paperReport(){
   const liquidityText=`${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn`;
   const actionLabel=`${pgDecision.omo_action} · ${pgDecision.auction_method}`;
   const page2=pgMarketMacroPageHTML({mode:'result',rate:post,liquidity:liquidityPosition});
-  const rep=pgBuildReportText();
   pg$('pg-report').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
      <div class="market-page-head">
@@ -1695,7 +1596,7 @@ function paperReport(){
      </div>
    
      <div class="clippings">
-    <article class="clipping"><div class="newslabel">MACROECONOMY</div><div class="headline">${actionLabel}</div><p>${rep.macro}</p></article><article class="clipping"><div class="newslabel">CREDIT CONDITIONS & MONEY MARKET</div><div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>${rep.money}</p></article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
+    <article class="clipping"><div class="newslabel">MACROECONOMY</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">CREDIT CONDITIONS & MONEY MARKET</div><div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p></article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
     ${page2}
     <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,pgResult,'result')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
