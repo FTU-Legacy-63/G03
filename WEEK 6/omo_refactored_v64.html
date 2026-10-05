@@ -413,74 +413,118 @@ body{visibility:visible!important}
 <body class="paper-mode">
 
 <div id="guide-modal" class="paper-modal" onclick="if(event.target===this)closeGuideModal()" aria-hidden="true">
-  <div class="paper-modal-sheet"><div class="paper-modal-head"><div><div class="paper-modal-kicker">OPERATING MANUAL · OMO</div><h2>Guide</h2></div><button class="paper-modal-close" onclick="closeGuideModal()">×</button></div><div class="paper-modal-body">
-    <div class="guide-step"><b>1 · Observe.</b> Read the three-page OMO Report: macro context, the interbank rate and the live outstanding/maturity file.</div>
-    <div class="guide-step"><b>2 · Decide.</b> Choose the OMO instrument, auction method, offered volume and the applicable rate/pricing method. Phase 1 also asks for expected inflation for the three-phase macro block.</div>
-    <div class="guide-step"><b>3 · Process bids.</b> Five bank bids arrive from the engine. Sort them by the rule for the selected auction method, then approve the auction record.</div>
-    <div class="guide-step"><b>4 · Review transmission.</b> Results show awarded volume, liquidity, the updated interbank rate, outstanding positions, maturity cash flows, and - when available - the macro block.</div>
-    <div class="guide-step">
-     <h3>Dynamic OMO and Defensive OMO</h3>
-   
-     <p>
-       OMO can be used for different purposes. Two important types are
-       <b>Dynamic OMO</b> and <b>Defensive OMO</b>.
-     </p>
-   
-     <h4>Key difference</h4>
-   
-     <div class="overflow-x-auto">
-       <table>
-         <thead>
-           <tr>
-             <th></th>
-             <th>Dynamic OMO</th>
-             <th>Defensive OMO</th>
-           </tr>
-         </thead>
-   
-         <tbody>
-           <tr>
-             <td><b>Main purpose</b></td>
-             <td>
-               Actively change monetary conditions to support the central bank's policy goals.
-             </td>
-             <td>
-               Offset unexpected changes in liquidity and keep money-market conditions more stable.
-             </td>
-           </tr>
-   
-           <tr>
-             <td><b>Main focus</b></td>
-             <td>Policy direction</td>
-             <td>Unexpected liquidity changes</td>
-           </tr>
-   
-           <tr>
-             <td><b>Key question</b></td>
-             <td>
-               “Where does the central bank want liquidity conditions to move?”
-             </td>
-             <td>
-               “Is there a liquidity shock that should be offset?”
-             </td>
-           </tr>
-   
-           <tr>
-             <td><b>Can it inject liquidity?</b></td>
-             <td>Yes</td>
-             <td>Yes</td>
-           </tr>
-   
-           <tr>
-             <td><b>Can it absorb liquidity?</b></td>
-             <td>Yes</td>
-             <td>Yes</td>
-           </tr>
-         </tbody>
-       </table>
-     </div>
-   </div> 
-  </div></div>
+  <div class="paper-modal-sheet">
+    <div class="paper-modal-head">
+      <div>
+        <div class="paper-modal-kicker">OPERATING MANUAL · OMO</div>
+        <h2>Guide</h2>
+      </div>
+      <button class="paper-modal-close" onclick="closeGuideModal()">×</button>
+    </div>
+    <div class="paper-modal-body">
+      <div class="guide-step">
+        <h3>Who are you?</h3>
+        <p>
+          You are a member of the <b>Open Market Operations Committee of the State Bank of Vietnam</b>.
+        </p>
+        <p>
+          The banking system is facing new changes: liquidity may become excessive or scarce,
+          interbank interest rates may change, and the economy is also under pressure from multiple factors.
+        </p>
+        <p>
+          Your task is to monitor the situation, make appropriate OMO decisions and observe the
+          consequences of those decisions. Each decision can affect not only banks' liquidity,
+          but also interest rates, credit, economic growth, inflation, and unemployment.
+        </p>
+      </div>
+      <div class="guide-step">
+        <h3>What do you need to do?</h3>
+        <div class="guide-step">
+          <b>1 · Observe.</b>
+          Read the three-page OMO Report: macro context, the interbank rate and the live outstanding/maturity file.
+        </div>
+        <div class="guide-step">
+          <b>2 · Decide.</b>
+          Choose the OMO instrument, auction method, offered volume and the applicable rate/pricing method.
+          Phase 1 also asks for expected inflation for the three-phase macro block.
+        </div>
+        <div class="guide-step">
+          <b>3 · Process bids.</b>
+          Five bank bids arrive from the engine. Sort them by the rule for the selected auction method,
+          then approve the auction record.
+        </div>
+        <div class="guide-step">
+          <b>4 · Execute and monitor.</b>
+          Issue the OMO announcement, complete the auction process, and track how the operation affects
+          liquidity and market conditions.
+        </div>
+        <div class="guide-step">
+          <b>5 · Review transmission.</b>
+          Results show awarded volume, liquidity, the updated interbank rate, outstanding positions,
+          maturity cash flows, and - when available - the macro block.
+        </div>
+      </div>
+      <div class="guide-step">
+        <h3>Dynamic OMO and Defensive OMO</h3>
+        <p>
+          OMO can be used for different purposes. Two important types are
+          <b>Dynamic OMO</b> and <b>Defensive OMO</b>.
+        </p>
+        <h4>Key difference</h4>
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Dynamic OMO</th>
+                <th>Defensive OMO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Main purpose</b></td>
+                <td>
+                  Actively change monetary conditions to support the central bank's policy goals.
+                </td>
+                <td>
+                  Offset unexpected changes in liquidity and keep money-market conditions more stable.
+                </td>
+              </tr>
+
+              <tr>
+                <td><b>Main focus</b></td>
+                <td>Policy direction</td>
+                <td>Unexpected liquidity changes</td>
+              </tr>
+
+              <tr>
+                <td><b>Key question</b></td>
+                <td>
+                  “Where does the central bank want liquidity conditions to move?”
+                </td>
+                <td>
+                  “Is there a liquidity shock that should be offset?”
+                </td>
+              </tr>
+
+              <tr>
+                <td><b>Can it inject liquidity?</b></td>
+                <td>Yes</td>
+                <td>Yes</td>
+              </tr>
+
+              <tr>
+                <td><b>Can it absorb liquidity?</b></td>
+                <td>Yes</td>
+                <td>Yes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 <div id="learning-card-modal" class="paper-modal" onclick="if(event.target===this)closeLearningCard()" aria-hidden="true">
   <div class="paper-modal-sheet"><div class="paper-modal-head"><div><div class="paper-modal-kicker">LEARNING FILE · OMO</div><h2 id="learning-card-title">Concept</h2></div><button class="paper-modal-close" onclick="closeLearningCard()">×</button></div><div id="learning-card-content" class="paper-modal-body"></div></div>
