@@ -101,7 +101,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   transform:translateX(-45px);
 }
 .dot{width:9px;height:9px;border-radius:50%;background:rgba(91,66,25,.18);box-shadow:inset 0 0 0 1px rgba(85,60,20,.28)}.dot.on{background:#fff0a9;box-shadow:0 0 0 3px rgba(255,240,169,.34),inset 0 0 0 1px rgba(101,73,21,.3)}
-
 /* ---------------------------------------------------------------------
    COMPONENT: GLOBAL PAPER PRIMITIVES
    Purpose: one shared material/geometry for title, Daily, decision, results.
@@ -122,16 +121,13 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
             rgba(255,255,255,.12)
         );
     background-size:7px 7px,100% 100%;
-
     border:1px solid #9d8966;
-
     /* Paper lifted above the wooden desk */
     box-shadow:
     0 18px 32px rgba(0,0,0,.65), 
     0 10px 22px rgba(0,0,0,.40), 
     0 3px 7px rgba(0,0,0,.25),
-    inset 0 0 0 8px rgba(255,255,255,.14);
-   
+    inset 0 0 0 8px rgba(255,255,255,.14); 
     position:relative;
 }
 .document-sheet:before,.paper-page:before{content:"";position:absolute;inset:10px;border:1px solid rgba(130,110,77,.22);pointer-events:none}
@@ -140,7 +136,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .document-title{font:700 clamp(36px,4vw,60px)/1.04 var(--font-vintage);color:#203a35;letter-spacing:-.025em;margin:10px 0 14px}
 .document-dek{font:16px/1.6 var(--font-vintage);color:#52675f;max-width:950px;margin:0}
 .double-rule{border:0;border-top:4px double #214b4a;margin:26px 0 20px}
-
 /* ---------------------------------------------------------------------
    COMPONENT: BUTTONS + HELP
    Purpose: consistent tactile paper controls; no hidden legacy frames.
@@ -188,7 +183,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 #learning-card-content th,#learning-card-content td{white-space:normal!important;overflow-wrap:anywhere!important;vertical-align:top!important}
 #learning-card-content .bg-amber-50,#learning-card-content .dark\:bg-slate-800{background:rgba(238,226,201,.64)!important;border:1px solid #c3b495!important;border-radius:0!important;color:#40534d!important}
 #learning-card-content::-webkit-scrollbar{width:7px}#learning-card-content::-webkit-scrollbar-thumb{background:#9f8b68;border-radius:4px}
-
 /* ---------------------------------------------------------------------
    COMPONENT: THREE-PAGE PAPER DECK
    Purpose: shared by OMO Daily and the 3-page approved Results screen.
@@ -207,7 +201,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .deck-arrow{position:absolute;top:390px;z-index:60;width:66px;height:66px;border-radius:50%;border:1px solid #8f8062;background:linear-gradient(180deg,#fffaf0,#eadfc6);color:#26483f;font:900 30px/1 var(--font-ui);cursor:pointer;box-shadow:0 8px 0 #9b8965,0 14px 26px rgba(45,28,13,.32);transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
 .deck-arrow.left{left:6px}.deck-arrow.right{right:6px}.deck-arrow:hover:not(:disabled){transform:translateY(-2px);background:#fffaf0;box-shadow:0 10px 0 #95815c,0 18px 30px rgba(45,28,13,.33)}.deck-arrow:active:not(:disabled){transform:translateY(4px);box-shadow:0 3px 0 #95815c,0 7px 12px rgba(45,28,13,.22)}.deck-arrow:disabled{opacity:.26;cursor:default;box-shadow:0 4px 0 #9b8965,0 7px 12px rgba(45,28,13,.15)}
 .deck-footer{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);z-index:65;white-space:nowrap}
-
 /* ---------------------------------------------------------------------
    COMPONENT: OMO DAILY PAGE CONTENT
    Purpose: three pre-intervention information pages.
@@ -242,9 +235,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   margin-top:14px;
 }
 .indicator-stat{border-top:1px solid #c3b495;padding-top:9px;min-width:0}.indicator-stat span{display:block;font:800 8px/1.25 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#6b756e}.indicator-stat strong{display:block;margin-top:5px;font:900 21px/1 var(--font-ui);color:#0b8178}.indicator-stat small{display:block;margin-top:4px;font:11px/1.25 var(--font-vintage);color:#7a7262}.expected-daily{margin-top:13px;padding:12px 13px;border:1px solid #b7a887;background:linear-gradient(135deg,rgba(242,226,191,.64),rgba(255,252,244,.46));box-shadow:inset 0 1px rgba(255,255,255,.55)}.expected-daily label{display:flex;align-items:center;gap:7px;font:850 9px/1.25 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:#4f655d}.expected-daily .required-mark{color:#8f3e31}.expected-daily input{width:100%;height:39px;margin-top:7px;padding:0 7px;border:0;border-bottom:2px solid #7d745f;background:rgba(255,255,255,.28);font:900 20px/1 var(--font-ui);color:#29483f;outline:none}.expected-daily input:focus{border-bottom-color:#087f75;background:rgba(255,255,255,.52)}.expected-daily input.invalid{border-bottom-color:#9b3c30;background:rgba(153,60,48,.06)}.expected-daily small{display:block;margin-top:6px;font:11px/1.35 var(--font-vintage);color:#776d5c}.expected-daily .saved{color:#087f75;font-weight:700}
-
 .out-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}.out-card{padding:20px 18px;border-top:5px solid #1a6d61;border-bottom:1px solid #c3b495;background:rgba(255,252,244,.48)}.out-card h3{font:900 18px/1.2 var(--font-ui);color:#24453e;margin:0 0 18px}.out-row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-top:1px dotted #c6b89c;font:13px/1.3 var(--font-ui)}.out-row b{color:#116e64}.out-note{margin-top:22px;padding:14px 17px;border-left:4px solid #9e824a;background:#eee2c9;font:14px/1.6 var(--font-vintage);color:#4a4235}
-
 /* ---------------------------------------------------------------------
    COMPONENT: DECISION FORM
    Purpose: notice/decision sheet based on the same Daily paper geometry.
@@ -254,7 +245,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .decision-mast{padding:9px 24px 9px 0;border-right:1px solid #b9aa8d;font:900 11px/1.65 var(--font-ui);letter-spacing:.15em;color:#55736b;text-transform:uppercase}
 .decision-head h1{margin:0;font:800 clamp(44px,4.5vw,66px)/1.02 var(--font-display);color:#203a35;letter-spacing:-.025em}.decision-head p{margin:11px 0 0;font:15px/1.5 var(--font-ui);color:#536760}
 .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;margin-top:22px}.field{min-height:170px;padding:20px 22px 18px;border:1px solid #c4b596;background:rgba(255,252,244,.48);box-sizing:border-box}.field label{display:flex;align-items:center;font:850 12px/1.35 var(--font-ui);color:#485c55;margin-bottom:24px}.field select,.field input{width:100%;box-sizing:border-box;border:0;border-bottom:1px dashed #8d826e;background:transparent;padding:10px 8px;font:750 23px/1.2 var(--font-ui);color:#223b36;outline:none}.field select:focus,.field input:focus{border-bottom-color:#137b70;background:rgba(232,241,230,.38)}.checkline{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.chip{padding:11px 18px;min-width:104px}.decision-actions{display:flex;justify-content:center;gap:16px;margin-top:28px}
-
 /* ---------------------------------------------------------------------
    COMPONENT: NOTICE → FIVE BIDS TRANSITION
    Purpose: exactly two frames; no envelopes.
@@ -267,7 +257,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .transition-bids{width:min(1500px,94vw);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;align-items:start}
 .transition-bids .bid-slip{opacity:0;transform:translateY(-650px);animation:bidFall .7s var(--delay,0s) cubic-bezier(.18,.82,.24,1.06) forwards}@keyframes bidFall{0%{opacity:0;transform:translateY(-650px)}75%{opacity:1;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
 .transition-caption{position:absolute;left:0;right:0;bottom:36px;text-align:center;color:#efe4cc;font:850 11px/1.4 var(--font-ui);letter-spacing:.12em;text-shadow:0 2px 6px #2a160b}
-
 /* ---------------------------------------------------------------------
    COMPONENT: MASTER BID SLIP + SORTING BOARD
    Purpose: one canonical bid-slip format reused everywhere.
@@ -283,7 +272,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .sort-screen{padding:18px 0 36px}.sort-header{text-align:center;color:#f5edda;text-shadow:0 2px 5px #2b170c;margin-bottom:24px}.sort-header .section-tag{color:#b8d2c8}.sort-header h1{font:900 clamp(32px,3.5vw,54px)/1.04 var(--font-ui);letter-spacing:.02em;margin:9px 0 12px;color:#fff}.sort-header p{max-width:1050px;margin:0 auto;font:16px/1.5 var(--font-ui);color:#f0eadc}
 .bid-source,.sortzone{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;width:min(1500px,94vw);margin:0 auto}.bid-source{margin-bottom:28px}.bid-source .bid-slip{cursor:grab}.bid-source .bid-slip.dragging,.sortslot .bid-slip.dragging{opacity:.35}
 .sort-label{text-align:center;margin:0 0 18px;font:900 12px/1 var(--font-ui);letter-spacing:.14em;color:#f3ebd8;text-shadow:0 2px 4px #2b170c}.sortslot{height:320px;border:2px dashed #eee6d7;border-radius:5px;position:relative;background:rgba(13,54,49,.1);box-sizing:border-box}.sortslot:before{content:attr(data-rank);position:absolute;left:0;right:0;top:0;height:34px;display:grid;place-items:center;background:#183a39;color:#fff;font:900 18px var(--font-ui);z-index:0}.sortslot:after{content:attr(data-label);position:absolute;left:0;right:0;bottom:12px;text-align:center;font:850 10px var(--font-ui);letter-spacing:.08em;color:#9bb0a7;z-index:0}.sortslot .bid-slip{position:absolute;inset:0;width:100%;height:100%;z-index:2;cursor:grab}.sort-hint{text-align:center;color:#f3ebd8;font:italic 13px var(--font-display);margin:18px 0 0}.sort-actions{display:flex;justify-content:center;margin-top:22px}
-
 /* ---------------------------------------------------------------------
    COMPONENT: AUCTION APPROVAL SHEET + APPROVED RESULTS PAGES
    Purpose: approval is one document; after approval, results reuse Daily deck.
@@ -308,7 +296,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   color:#65736c;
 }
 .maturity-summary{margin-top:10px;padding:10px 12px;border-left:4px solid #9e824a;background:rgba(238,226,201,.64);font:13px/1.45 var(--font-vintage);color:#4a4235}
-
 /* ---------------------------------------------------------------------
    COMPONENT: TITLE + ENDING
    Purpose: first/last screens use the same document material as the game.
@@ -359,7 +346,6 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
      outline:none;
    }
    .end-summary{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:14px;align-items:center;max-width:620px;margin:28px auto;padding:18px;border-top:1px solid #c3b495;border-bottom:1px solid #c3b495}.end-summary span{font:900 38px var(--font-ui);color:#0b8178}.end-summary small{text-align:left;font:850 9px var(--font-ui);letter-spacing:.1em;color:#65736c}
-
 /* ---------------------------------------------------------------------
    RESPONSIVE — END OF CANONICAL PAPER GAME STYLES
    --------------------------------------------------------------------- */
@@ -367,16 +353,12 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 @media(max-width:800px){.nameplate-progress span:first-child{display:none}.document-sheet{width:94vw;padding:34px 24px}.paper-deck{height:auto;min-height:760px}.paper-page{width:90vw;min-height:700px;height:auto;padding:32px 28px}.deck-arrow.left{left:-2px}.deck-arrow.right{right:-2px}.newshero,.decision-head{grid-template-columns:1fr}.newshero .eyebrow,.decision-mast{border-right:0;border-bottom:1px solid #b9aa8d;padding:0 0 10px}.newshero h1,.newshero p{grid-column:1}.clippings{grid-template-columns:1fr}.clipping{min-height:auto;border-right:0;border-bottom:1px solid #c9bca2}.chart-sheet,.formgrid,.result-grid,.inventory-grid,.daily-market-layout{grid-template-columns:1fr}
                         .daily-chart-panel svg{height:190px}
                         .daily-chart-panel.macro-daily-panel svg{height:190px}.indicator-stat-grid{grid-template-columns:1fr 1fr}.bid-source,.sortzone,.transition-bids{grid-template-columns:repeat(5,210px);width:max-content;transform:scale(.65);transform-origin:top center}.sort-screen{overflow-x:hidden}.paper-help-controls{right:8px;bottom:8px}.paper-help-controls button{padding:0 10px;font-size:9px}}
-
-
 /* Long backend tables stay fully visible at responsive widths too. */
 @media(max-width:1100px){.paper-page.long-page{height:auto!important;min-height:700px;overflow:visible}}
 @media(max-width:800px){.paper-page.long-page{height:auto!important;min-height:700px;overflow:visible}}
-
 /* CLEAN RUNTIME: the legacy interface has been removed from this build entirely. */
 html,body{background:#54392d url("background.png") center center / cover no-repeat fixed !important}
 body{visibility:visible!important}
-
 /* Guide / learning files are native paper overlays; no Tailwind/legacy UI required. */
 .paper-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(31,17,8,.66);backdrop-filter:blur(4px);z-index:600}
 .paper-modal.open{display:flex}
@@ -404,14 +386,11 @@ body{visibility:visible!important}
 .paper-modal-body table{width:100%;border-collapse:collapse;table-layout:fixed;margin:12px 0}.paper-modal-body th,.paper-modal-body td{border-bottom:1px solid #c7baa0;padding:9px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}.paper-modal-body th{font:800 10px/1.25 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#4d625a;background:rgba(237,226,203,.6)}
 .learning-note{border-left:4px solid #b58b3b;background:rgba(238,226,201,.62);padding:12px 14px;margin:14px 0}
 .guide-step{border-top:1px solid #c7baa0;padding:12px 10px}.guide-step b{color:#234c43}
-
 /* Expected-inflation input belongs to the macro block, not the four auction options. */
 .macro-input-strip{grid-column:1/-1;margin-top:2px;padding:15px 17px;border:1px solid #c2b494;background:linear-gradient(90deg,rgba(243,232,204,.72),rgba(255,251,240,.48));display:grid;grid-template-columns:1fr minmax(180px,230px);align-items:center;gap:18px}
 .macro-input-strip .macro-copy b{display:block;font:800 12px/1.25 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#3c574e;margin-bottom:4px}.macro-input-strip .macro-copy span{font:13px/1.45 var(--font-vintage);color:#65736c}.macro-input-strip label{display:flex;align-items:center;gap:7px;font:800 10px/1.2 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:#52665f;margin-bottom:5px}.macro-input-strip input{width:100%;height:42px;border:0;border-bottom:2px solid #8c7c5d;background:rgba(255,255,255,.22);font:800 18px/1 var(--font-ui);color:#29473e;padding:0 6px;outline:none}
-
 /* Backend-driven outstanding/maturity tables used by Daily page 3. */
 .daily-inventory-stack{display:grid;gap:14px;margin-top:18px}.daily-inventory-block{border:1px solid #c3b495;background:rgba(255,252,244,.36);padding:12px 14px}.daily-inventory-block h3{margin:0 0 8px;font:800 13px/1.2 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#31554c}.daily-inventory-note{font:13px/1.5 var(--font-vintage);color:#65736c;margin-top:12px}
-
 /* Macro result: compact cards + one small comparison chart, only when backend publishes the block. */
 .macro-outcome{margin-top:16px;padding-top:14px;border-top:4px double #b7a98d}.macro-outcome-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:10px}.macro-outcome-head h3{margin:0;font:800 20px/1.05 var(--font-vintage);color:#25483f}.macro-outcome-head span{font:800 9px/1.2 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:#7a6c55}.macro-outcome-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.macro-card{border:1px solid #c3b495;background:rgba(255,252,244,.44);padding:10px 12px;min-height:70px}.macro-card strong{display:block;font:900 22px/1 var(--font-ui);color:#0b8178}.macro-card span{display:block;margin-top:7px;font:800 8px/1.35 var(--font-ui);letter-spacing:.07em;text-transform:uppercase;color:#69766e}.macro-trend-chart{margin-top:10px;border:1px solid #c3b495;background:rgba(255,252,244,.40);padding:8px 12px 6px}.macro-trend-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 3px;font:850 9px/1.2 var(--font-ui);letter-spacing:.08em;color:#627068;text-transform:uppercase}.macro-trend-title .legend{display:flex;gap:13px;align-items:center;font-size:8px;letter-spacing:.05em}.macro-trend-title i{display:inline-block;width:16px;height:3px;margin-right:5px;vertical-align:middle}.macro-trend-title i.gdp{background:#087f75}.macro-trend-title i.inf{background:#b7892f}
    .macro-trend-chart svg{
@@ -419,7 +398,6 @@ body{visibility:visible!important}
      height:190px;
      display:block;
    }.macro-chart-note{margin:3px 0 0;font:11px/1.35 var(--font-vintage);color:#746d5e;text-align:center}
-
 @media(max-width:800px){.macro-input-strip{grid-template-columns:1fr}.macro-outcome-grid{grid-template-columns:1fr 1fr}.paper-modal-sheet{padding:22px 20px}.paper-modal-head h2{font-size:28px}}
 .result-chart-main svg{height:235px!important}
 /* QUICK INDICATOR */
@@ -461,7 +439,6 @@ body{visibility:visible!important}
 </style>
 </head>
 <body class="paper-mode">
-
 <div id="guide-modal" class="paper-modal" onclick="if(event.target===this)closeGuideModal()" aria-hidden="true">
   <div class="paper-modal-sheet">
     <div class="paper-modal-head">
@@ -540,13 +517,11 @@ body{visibility:visible!important}
                   Offset unexpected changes in liquidity and keep money-market conditions more stable.
                 </td>
               </tr>
-
               <tr>
                 <td><b>Main focus</b></td>
                 <td>Policy direction</td>
                 <td>Unexpected liquidity changes</td>
               </tr>
-
               <tr>
                 <td><b>Key question</b></td>
                 <td>
@@ -556,13 +531,11 @@ body{visibility:visible!important}
                   “Is there a liquidity shock that should be offset?”
                 </td>
               </tr>
-
               <tr>
                 <td><b>Can it inject liquidity?</b></td>
                 <td>Yes</td>
                 <td>Yes</td>
               </tr>
-
               <tr>
                 <td><b>Can it absorb liquidity?</b></td>
                 <td>Yes</td>
@@ -572,27 +545,22 @@ body{visibility:visible!important}
           </table>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 <div id="learning-card-modal" class="paper-modal" onclick="if(event.target===this)closeLearningCard()" aria-hidden="true">
   <div class="paper-modal-sheet"><div class="paper-modal-head"><div><div class="paper-modal-kicker">LEARNING FILE · OMO</div><h2 id="learning-card-title">Concept</h2></div><button class="paper-modal-close" onclick="closeLearningCard()">×</button></div><div id="learning-card-content" class="paper-modal-body"></div></div>
 </div>
-
 <div id="paper-game">
   <header class="desk-nameplate" aria-label="OMO operating desk">
-
     <div class="nameplate-left">
       <div class="nameplate-brand">
         WHO RUNS THE W<span class="earth-o">🌐︎</span>RLD?
       </div>
-
       <div class="nameplate-sub">
         <span id="pg-desk-name">TEAM 1 – CENTRAL BANKERS' OMO DESK</span>
       </div>
     </div>
-   
      <div class="nameplate-progress">
        <span id="pg-phase">OPERATING DESK · PHASE 1/3</span>
        <span class="dot on"></span>
@@ -600,7 +568,6 @@ body{visibility:visible!important}
        <span class="dot"></span>
      </div>
    </header>
-
   <main class="desk" id="paper-desk">
     <section id="pg-start" class="screen active"></section>
     <section id="pg-brief" class="screen"></section>
@@ -611,14 +578,12 @@ body{visibility:visible!important}
     <section id="pg-report" class="screen"></section>
     <section id="pg-final" class="screen"></section>
   </main>
-
   <div class="paper-help-controls" aria-label="Help">
     <button type="button" onclick="openGuideModal()">ⓘ GUIDE</button>
   </div>
 </div>
 <!-- ======================= END PAPER GAME SHELL ======================= -->
 <script>
-
 /* =====================================================================
    DATA + BACKEND CONTRACT
    Purpose: only state/data required by the paper game and Python API contract.
@@ -643,7 +608,6 @@ function pgInitialMacroHistory(){
 }
 let pgMacroHistory=pgInitialMacroHistory();
 let pgExpectedInflation=null;
-
 function pgHasExpectedInflation(){
   if(pgExpectedInflation===null||pgExpectedInflation===undefined||String(pgExpectedInflation).trim()==='')return false;
   const n=Number(pgExpectedInflation);
@@ -663,13 +627,11 @@ function pgSyncExpectedGate(){
   btn.setAttribute('aria-disabled',locked?'true':'false');
   btn.title=locked?'Enter expected inflation on Page 2 before continuing.':'';
 }
-
 const phaseConfig={
   1:{method:'Volume auction',action:'Reverse Repo',defaultVol:5000,defaultRate:4.00,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:5000},matTable:{billVol:'10,000',billRate:'—',repoVol:'0',repoRate:'—',revVol:'0',revRate:'—'}},
   2:{method:'Interest-rate auction',action:'Reverse Repo',defaultVol:6000,defaultRate:4.15,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:2000},matTable:{}},
   3:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:1000},matTable:{}}
 };
-
 function getPhaseDate(pointIndex){const start=new Date(Date.UTC(2025,1,2));start.setUTCDate(start.getUTCDate()+Number(pointIndex||0)*30);return start.toISOString().slice(0,10)}
 function getPhaseDisplayDate(pointIndex){return pgDisplayDate(getPhaseDate(pointIndex))}
 function pgDisplayDate(value){if(!value)return '—';const s=String(value);if(/^\d{4}-\d{2}-\d{2}$/.test(s)){const [y,m,d]=s.split('-');return `${d}/${m}/${y}`}return s}
@@ -698,7 +660,6 @@ function pgLatestMacroValue(field){
 }
 function pgMacroText(field){const v=pgLatestMacroValue(field);return Number.isFinite(v)?`${v.toFixed(2)}%`:'—'}
 function pgSyncPhaseFallbacks(){const c=phaseConfig[pgPhase];if(!c)return;c.preMetrics.rate=pgCurrentRate();c.preMetrics.liq=pgCurrentLiquidityNeed();if(pgRateHistory.length)c.chartData=pgRateHistory.slice(-4).map(x=>Number(typeof x==='object'?x.rate:x)).filter(Number.isFinite)}
-
 const learningCards={
   auction:{title:'Auction method',content:`<p><b>What is it?</b><br>The rule banks use to submit bids in an OMO operation.</p><h4>Interest-rate auction</h4><ul><li>The central bank fixes the offered volume.</li><li>Banks compete on bid rate and volume.</li><li>Accepted bids follow the ranking rule.</li></ul><h4>Volume auction</h4><ul><li>The central bank announces the auction rate.</li><li>Banks submit the volume they want.</li><li>If demand exceeds supply, allocation can be proportional.</li></ul>`},
   pricing:{title:'Pricing method',content:`<p><b>Single-price:</b> all successful bids settle at one winning rate.</p><p><b>Multi-price:</b> each successful bid settles at its accepted bid rate.</p><div class="learning-note"><b>Applies only to interest-rate auctions.</b></div>`},
@@ -714,7 +675,6 @@ const learningCards={
                <th>Initial impact on liquidity</th>
              </tr>
            </thead>
-   
            <tbody>
              <tr>
                <td><b>Outright Purchase of Central Bank Bills</b></td>
@@ -725,7 +685,6 @@ const learningCards={
                  ↑ <b>Liquidity injection</b>
                </td>
              </tr>
-   
              <tr>
                <td><b>Outright Sale of Central Bank Bills</b></td>
                <td>
@@ -735,7 +694,6 @@ const learningCards={
                  ↓ <b>Liquidity absorption</b>
                </td>
              </tr>
-   
              <tr>
                <td><b>REPO (Sale with an agreement to repurchase)</b></td>
                <td>
@@ -746,7 +704,6 @@ const learningCards={
                  ↓ <b>Temporary liquidity absorption</b>
                </td>
              </tr>
-   
              <tr>
                <td><b>Reverse REPO (Purchase with an agreement to resell)</b></td>
                <td>
@@ -771,9 +728,7 @@ const learningCards={
          <b>What is it?</b><br>
          The level of liquidity demand in the banking system arising in the current phase.
        </p>
-   
        <h4>How to read</h4>
-   
        <table>
          <thead>
            <tr>
@@ -796,15 +751,12 @@ const learningCards={
            </tr>
          </tbody>
        </table>
-   
        <p>
          <b>When it increases:</b> The system needs additional liquidity → liquidity pressure increases.
        </p>
-   
        <p>
          <b>When it decreases:</b> The need for additional liquidity falls → liquidity pressure decreases.
        </p>
-   
        <p>
          <b>Why does it matter?</b><br>
          Liquidity demand helps players assess the liquidity position of the system before making an OMO decision.
@@ -949,15 +901,12 @@ function pgUpdateHead(){
   if(phaseEl) {
     phaseEl.textContent = `OPERATING DESK · PHASE ${pgPhase}/3`;
   }
-
   const deskNameEl = pg$('pg-desk-name');
   if(deskNameEl) {
     const name = String(teamName || 'Team 1 – Central Bankers').trim();
-
     deskNameEl.textContent =
       `${name} – OMO DESK`;
   }
-
   document
     .querySelectorAll('#paper-game .dot')
     .forEach((d,i)=>d.classList.toggle('on', i < pgPhase));
@@ -968,7 +917,6 @@ function openContextLearningCard(){
   const key = active==='pg-brief' ? 'interbank' : active==='pg-decision' ? 'omo' : active==='pg-sort' ? 'auction' : active==='pg-report' ? 'liquidity' : 'omo';
   if(typeof openLearningCard==='function') openLearningCard(key);
 }
-
 // ---------------------------------------------------------------------
 // SECTION: TITLE SCREEN
 // Purpose: render/start/restart the paper game without reloading the page.
@@ -1000,7 +948,6 @@ function paperRestart(){
   ['pg-brief','pg-decision','pg-send','pg-sort','pg-result','pg-report','pg-final'].forEach(id=>{const el=pg$(id);if(el)el.innerHTML=''});
   renderTitleScreen();
 }
-
 // ---------------------------------------------------------------------
 // SECTION: OMO DAILY — THREE PAGE DECK
 // Purpose: pre-intervention news, interbank chart and outstanding OMO.
@@ -1252,7 +1199,6 @@ function pgSetDeck(rootId,index){
 function pgSetNewsPage(n){pgNewsPage=pgSetDeck('pg-brief',n)}
 function pgExpectedBlockHTML(editable,showHelp=true){
   const expectedValue=pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2):'';
-
   if(editable&&pgPhase===1){
     return `<div class="expected-daily">
       <label>
@@ -1272,7 +1218,6 @@ function pgExpectedBlockHTML(editable,showHelp=true){
       >
     </div>`;
   }
-
   return `<div class="expected-daily">
     <label>
       Expected inflation assumption
@@ -1305,7 +1250,6 @@ function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
             <strong>${gdpText}</strong>
             <small>${macroNote}</small>
           </div>
-      
           <div class="indicator-stat">
             <span>
               Inflation${resultMode?'':`<button class="paper-help-dot" type="button" onclick="openLearningCard('inflation')">?</button>`}
@@ -1337,25 +1281,21 @@ function paperBrief(){
        <p>${x.dek}</p>
      </div>
      <div class="clippings">
-     
     ${x.cards.map((a,i)=>i<2
        ? `<article class="clipping">
             <div class="newslabel">${a[0]}</div>
             <p>${a[1]}</p>
           </article>`
        : `<article class="clipping quick-indicator-card">
-            <div class="newslabel">${a[0]}</div>
-      
+            <div class="newslabel">${a[0]}</div>    
             <div class="newsnumber">${a[1]}</div>
             <div class="newscaption">${a[2]}</div>
-      
             <p>${a[3]}</p>
            <div class="rate-band">
               <div class="rate-band-item">
                 <b>${a[4]}</b>
                 <span>SBV overnight lending rate</span>
               </div>
-            
               <div class="rate-band-item">
                 <b>${a[5]}</b>
                 <span>Required reserve deposit rate</span>
@@ -1370,7 +1310,6 @@ function paperBrief(){
   </div>`;
   pgShow('pg-brief');pgSetNewsPage(0);pgSyncExpectedGate();
 }
-
 // ---------------------------------------------------------------------
 // SECTION: DECISION FORM
 // Purpose: one stable four-option form; offered volume is ALWAYS option 3.
@@ -1396,7 +1335,6 @@ function pgToggleAuctionFields(){
   if(pg$('pg-pricing-wrap'))pg$('pg-pricing-wrap').style.display=interest?'block':'none';
   if(pg$('pg-option4-label'))pg$('pg-option4-label').innerHTML=interest?`4. Pricing method <button class="paper-help-dot" type="button" onclick="openLearningCard('pricing')">?</button>`:`4. OMO offer rate (%) <button class="paper-help-dot" type="button" onclick="openLearningCard('auctionRate')">?</button>`;
 }
-
 // ---------------------------------------------------------------------
 // SECTION: ENGINE FALLBACK + MASTER BID SLIP
 // Purpose: get five bids and render ONE identical slip format everywhere.
@@ -1427,7 +1365,6 @@ async function pgRunEngine(){
     return data;
   }catch(e){console.error('OMO backend error:',e);throw e}
 }
-
 // ---------------------------------------------------------------------
 // SECTION: EXECUTION TRANSITION
 // Purpose: NO envelopes. Notice rises; next frame five slips fall from top.
@@ -1447,7 +1384,6 @@ async function paperExecute(){
   pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="transition-bids">${bidEntries.map((entry,i)=>pgBidSlipHTML(entry.bid,entry.backendIndex).replace('class="bid-slip"',`class="bid-slip" style="--delay:${(i*.12).toFixed(2)}s"`)).join('')}</div><div class="transition-caption">5 BID SUBMISSIONS RECEIVED · BANKS A → E</div></div>`;
   await pgDelay(1450); paperSort();
 }
-
 // ---------------------------------------------------------------------
 // SECTION: SORTING BOARD
 // Purpose: drag the exact five slips into five ranked slots and validate.
@@ -1479,7 +1415,6 @@ function paperCheckOrder(){
   pgPlayerSortOrder=actual.slice();
   pg$('pg-sort-msg').innerHTML='<b>✓ Correct order.</b> The files are ready for the auction result record.'; setTimeout(paperAuctionResult,350);
 }
-
 // ---------------------------------------------------------------------
 // SECTION: AUCTION APPROVAL
 // Purpose: summarize winning allocations and approve before 3-page Results.
@@ -1550,7 +1485,6 @@ function paperAuctionResult(){
 async function paperApprove(){
   const b=pg$('pg-approve-btn');if(b)b.disabled=true;const st=pg$('pg-stamp');if(st)st.innerHTML='<span class="stamp">APPROVED</span>';await pgDelay(430);paperReport();
 }
-
 // ---------------------------------------------------------------------
 // SECTION: APPROVED RESULTS — THREE PAGE DECK
 // Purpose: exact same paper deck + arrow controls as OMO Daily.
@@ -1579,6 +1513,13 @@ function pgMacroOutcomeHTML(result){
   return `<section class="macro-outcome"><div class="macro-outcome-head"><h3>Macro block published</h3><span>Backend result · Phase ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</span></div><div class="macro-outcome-grid"><div class="macro-card"><strong>${fmt(vals.expected)}</strong><span>Expected inflation</span></div><div class="macro-card"><strong>${fmt(vals.real)}</strong><span>Real interest rate</span></div><div class="macro-card"><strong>${fmt(vals.gdp)}</strong><span>GDP growth</span></div><div class="macro-card"><strong>${fmt(vals.inflation)}</strong><span>Inflation</span></div></div><div class="macro-trend-chart"><div class="macro-trend-title"><span>GDP growth & inflation · 30-day phase timeline</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory)}<p class="macro-chart-note">The backend publishes the macro block at the end of Phase 3; earlier phases remain blank rather than using estimated values.</p></div></section>`;
 }
 function pgSetReportPage(n){pgReportPage=pgSetDeck('pg-report',n)}
+/* PHASE 1 · CREDIT CONDITIONS & MONEY MARKET */
+function pgP1Num(...v){for(const x of v){if(x!==null&&x!==undefined&&x!==''&&Number.isFinite(Number(x)))return Number(x)}return 0}
+function pgP1ActionType(action){const a=String(action||'').trim().toLowerCase();if(a.includes('reverse repo'))return'reverse_repo';if(a.includes('buy securities')||a.includes('outright purchase')||a.includes('purchase securities'))return'outright_purchase';if(a.includes('t-bill')||a.includes('bill issuance'))return't_bill_issuance';if(a==='repo'||a.includes(' repo'))return'repo';return'other'}
+function pgP1BidVolumeAssessment(offered,totalBid){offered=pgP1Num(offered);totalBid=pgP1Num(totalBid);if(totalBid<=0)return'No valid bid-volume comparison is available for this session.';const r=offered/totalBid;if(r<.95)return'The offered volume was below banks’ bidding demand, suggesting that the Central Bank underestimated demand for the operation.';if(r<=1.05)return'The offered volume was broadly aligned with banks’ bidding demand, suggesting that the Central Bank estimated demand reasonably well.';return'The offered volume exceeded banks’ bidding demand, suggesting that the Central Bank overestimated demand for the operation.'}
+function pgP1LiquidityOutcomeAssessment(demand,totalSupply){demand=pgP1Num(demand);totalSupply=pgP1Num(totalSupply);if(demand>0){if(totalSupply<0)return'The operation withdraws liquidity while the system is already facing a liquidity shortage, further increasing the unmet funding need.';if(totalSupply<.95*demand)return'Total liquidity supply was insufficient to meet the system’s liquidity demand, leaving part of the funding need unmet.';if(totalSupply<=1.05*demand)return'Total liquidity supply was broadly sufficient to meet the system’s liquidity demand, bringing liquidity conditions broadly into balance.';return'Total liquidity supply exceeded the system’s liquidity demand, providing more liquidity than needed and moving the system toward surplus.'}if(demand<0){const d=Math.abs(demand),s=Math.abs(totalSupply);if(totalSupply>0)return'The operation adds liquidity while the system is already in surplus, further increasing excess liquidity.';if(s<.95*d)return'Total liquidity absorption was insufficient to remove the system’s excess liquidity, leaving part of the surplus unabsorbed.';if(s<=1.05*d)return'Total liquidity absorption was broadly sufficient to remove the system’s excess liquidity, bringing liquidity conditions broadly into balance.';return'Total liquidity absorption exceeded the system’s excess liquidity, withdrawing more liquidity than needed and moving the system toward shortage.'}return'The system entered the session broadly balanced.'}
+function pgP1DecisionAssessment(demand,totalSupply,gap,action){demand=pgP1Num(demand);totalSupply=pgP1Num(totalSupply);gap=pgP1Num(gap);const type=pgP1ActionType(action),balanced=demand>0&&totalSupply>=.95*demand&&totalSupply<=1.05*demand;if(demand<=0)return null;if(type==='outright_purchase'){if(gap<0&&!balanced)return{score:4,fit:'Very appropriate',label:'Growth priority'};if(balanced)return{score:3,fit:'Reasonable',label:'Cautious'};if(gap>0)return{score:2,fit:'Less appropriate',label:'Insufficient support'}}if(type==='reverse_repo'&&balanced)return{score:3,fit:'Reasonable',label:'Maturity trade-off'};if(type==='repo')return{score:1,fit:'Not appropriate',label:''};if(type==='t_bill_issuance')return{score:1,fit:'Not appropriate',label:''};return null}
+function pgP1InstrumentText(action){const type=pgP1ActionType(action);if(type==='outright_purchase')return'the Central Bank purchases T-bills outright';if(type==='reverse_repo')return'the Central Bank conducts a Reverse Repo';if(type==='repo')return'the Central Bank conducts a Repo';if(type==='t_bill_issuance')return'the Central Bank issues T-bills';return`the Central Bank conducts ${action}`}
 function paperReport(){
   const c=phaseConfig[pgPhase],pre={...c.preMetrics,rate:Number(pgResult.previous_interbank_rate??c.preMetrics.rate)},post=Number(pgResult.interbank_rate),delta=post-pre.rate,bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0),maturity=Number(pgResult.maturity_volume||0);
   const liquidityPosition=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0);
@@ -1586,6 +1527,12 @@ function paperReport(){
   const deltaText=`${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp`;
   const liquidityText=`${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn`;
   const actionLabel=`${pgDecision.omo_action} · ${pgDecision.auction_method}`;
+  const offeredVolume=pgP1Num(pgDecision?.volume);
+  const realLiquidityDemand=pgP1Num(pgResult?.real_liquidity_demand,pgBackendState?.real_liquidity_demand);
+  const totalSupply=pgP1Num(pgResult?.total_supply,pgResult?.omo_supply,pgResult?.net_omo_cash_flow);
+  const p1Decision=pgPhase===1?pgP1DecisionAssessment(realLiquidityDemand,totalSupply,liquidityPosition,pgDecision?.omo_action):null;
+  const p1BidAssessment=pgPhase===1?pgP1BidVolumeAssessment(offeredVolume,totalBid):'';
+  const p1LiquidityAssessment=pgPhase===1?pgP1LiquidityOutcomeAssessment(realLiquidityDemand,totalSupply):''; 
   const page2=pgMarketMacroPageHTML({mode:'result',rate:post,liquidity:liquidityPosition});
   pg$('pg-report').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
@@ -1594,9 +1541,8 @@ function paperReport(){
        <h2>Current market position and macroeconomic outlook after the OMO session</h2>
        <p>Updated macroeconomic conditions, money market developments, credit activities and key indicators.</p>
      </div>
-   
      <div class="clippings">
-    <article class="clipping"><div class="newslabel">MACROECONOMY</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">CREDIT CONDITIONS & MONEY MARKET</div><div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p></article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
+    <article class="clipping"><div class="newslabel">MACROECONOMY</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">CREDIT GROWTH & MONEY MARKET</div>${pgPhase===1&&p1Decision?`<div class="headline">${p1Decision.score} – ${p1Decision.fit}${p1Decision.label?` · ${p1Decision.label}`:''}</div><p><b>Auction decision:</b> In the current session, ${pgP1InstrumentText(pgDecision.omo_action)}. The offered volume is <b>${pgFmt(offeredVolume)} bn</b> versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>. ${p1BidAssessment}</p><p><b>Market response:</b> Including maturities, net OMO cash flow is <b>${pgFmt(totalSupply)} bn</b>. After the operation, Liquidity Gap is <b>${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn</b> and the overnight rate moves from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>. ${p1LiquidityAssessment}</p>`:`<div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p>`}</article><article class="clipping"><div class="newslabel">QUICK RESULT</div><div class="newsnumber">${pgFmt(totalWin)}</div><div class="newscaption">Awarded volume · bn</div><p>${bids.length} banks submitted bids. Maturing volume this phase: ${pgFmt(maturity)} bn.</p></article></div></article>
     ${page2}
     <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,pgResult,'result')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
@@ -1604,7 +1550,6 @@ function paperReport(){
   </div>`;
   pgReportPage=0;pgShow('pg-report');pgSetReportPage(0);
 }
-
 // ---------------------------------------------------------------------
 // SECTION: PHASE ADVANCE + ENDING
 // Purpose: move to the next Daily or finish; restart never reloads old HTML.
@@ -1614,7 +1559,6 @@ function paperNext(){
   if(pgPhase<3){pgPhase++;currentPhase=pgPhase;pgResult=null;pgDecision=null;pgBidEntries=[];pgPlayerSortOrder=[];pgSyncPhaseFallbacks();paperBrief();return}
   pg$('pg-final').innerHTML=`<div class="document-sheet ending-sheet"><div class="ending-inner"><div class="end-label">OPERATING FILE CLOSED</div><div class="game-title">WHO RUNS THE W<span class="earth-o">🌐︎</span>RLD?</div><h1>OMO OPERATING RUN COMPLETE</h1><p><b>${teamName}</b> completed all 3 phases: reading macro signals, making OMO decisions, processing the auction, and tracking the post-intervention effects.</p><div class="end-summary"><span>3</span><small>PHASES COMPLETED</small><span>5</span><small>BANKS PER AUCTION</small></div><button class="pbtn" onclick="paperRestart()">PLAY AGAIN ↻</button></div></div>`;pgShow('pg-final');
 }
-
 document.addEventListener('DOMContentLoaded',()=>{document.body.classList.add('paper-mode');renderTitleScreen()});
 /* ========================== END PAPER GAME LOGIC ========================== */
 
