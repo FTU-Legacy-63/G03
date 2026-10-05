@@ -57,7 +57,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   border:0;
   border-radius:0;
   box-shadow:none;
-  text-shadow:0.5px 0.5px 0.5 #d8bd8c
+  text-shadow:0.5px 0.5px 0.5 #d8bd8c;
   position:relative;
   z-index:20;
   overflow:hidden;
@@ -141,7 +141,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
    Purpose: consistent tactile paper controls; no hidden legacy frames.
    Ends before OMO DAILY / RESULT deck.
    --------------------------------------------------------------------- */
-.pbtn,.paper-help-controls button,.chip{appearance:none;border:1px solid #8f8062;background:#f2e6cc;color:#31463f;border-radius:4px;font:800 11px/1 var(--font-ui);letter-spacing:.075em;text-transform:uppercase;cursor:pointer;box-shadow:0 5px 0 #9b8965,0 9px 18px rgba(45,28,13,.22);transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
+.pbtn,.paper-help-controls button,.chip{appearance:none;border:1px solid #8f8062;background:linear-gradient(180deg,#fffaf0,#eadfc6);color:#31463f;border-radius:4px;font:800 11px/1 var(--font-ui);letter-spacing:.075em;text-transform:uppercase;cursor:pointer;box-shadow:0 5px 0 #9b8965,0 9px 18px rgba(45,28,13,.22);transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
 .pbtn{padding:15px 28px;min-width:190px}
    .title-sheet .pbtn{
      padding:18px 34px;
@@ -149,14 +149,8 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
      font-size:14px;
      letter-spacing:.08em;
    }
-.pbtn:hover,
-.paper-help-controls button:hover,
-.chip:hover{
-  transform:translateY(-2px);
-  background:#f7ecd5;
-  box-shadow:0 7px 0 #95815c,0 13px 22px rgba(45,28,13,.26);
-}
-.pbtn.alt{ background:#e6d7b9;}.pbtn:disabled{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:0 3px 0 #a89b80,0 6px 10px rgba(45,28,13,.12)!important;filter:grayscale(.22)}.btnrow{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:24px}
+   .pbtn:hover,.paper-help-controls button:hover,.chip:hover{transform:translateY(-2px);background:linear-gradient(180deg,#fffdf6,#f0e4c8);box-shadow:0 7px 0 #95815c,0 13px 22px rgba(45,28,13,.26)}.pbtn:active,.paper-help-controls button:active,.chip:active{transform:translateY(3px);box-shadow:0 2px 0 #95815c,0 5px 9px rgba(45,28,13,.2)}
+.pbtn.alt{background:linear-gradient(180deg,#f4ead4,#e0d0ac)}.pbtn:disabled{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:0 3px 0 #a89b80,0 6px 10px rgba(45,28,13,.12)!important;filter:grayscale(.22)}.btnrow{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:24px}
 .paper-help-controls{position:fixed;right:24px;bottom:18px;display:flex;gap:10px;z-index:150}.paper-help-controls button{height:46px;padding:0 18px;white-space:nowrap}
 .paper-help-dot{width:28px;height:28px;border-radius:50%;border:1px solid #46776d;background:#e8f1e8;color:#0d6e64;font:900 14px var(--font-ui);cursor:pointer;vertical-align:middle;margin-left:8px}
 #guide-modal,#learning-card-modal{z-index:500!important;background:rgba(34,21,12,.64)!important;backdrop-filter:blur(3px)}
@@ -329,7 +323,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   color:#4c615a;
   max-width:850px;
   margin:0 auto 28px;
-},
+}
    .ending-inner p{font:16px/1.6 var(--font-ui);color:#4c615a;max-width:760px;margin:0 auto 24px}.title-team{width:min(520px,100%);margin:20px auto;text-align:left}.title-team label{font:850 16px var(--font-ui);color:#566960}
    .title-team input{
      width:100%;
