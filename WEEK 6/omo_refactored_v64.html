@@ -548,11 +548,127 @@ const learningCards={
   omo:{title:'OMO instruments',content:`<p>Operations are named from the <b>central bank perspective</b>.</p><table><thead><tr><th>Operation</th><th>Initial liquidity effect</th><th>Time profile</th></tr></thead><tbody><tr><td>Buy Securities</td><td>Inject</td><td>Outright</td></tr><tr><td>Sell Securities</td><td>Absorb</td><td>Outright</td></tr><tr><td>Repo</td><td>Absorb</td><td>Reverses at maturity</td></tr><tr><td>Reverse Repo</td><td>Inject</td><td>Reverses at maturity</td></tr></tbody></table>`},
   volume:{title:'Offered volume',content:`<p>The scale of securities or funds offered in the OMO operation.</p><ul><li>Larger offered volume can create a larger liquidity effect.</li><li>The realized effect still depends on awarded volume and maturity cash flows.</li></ul>`},
   auctionRate:{title:'OMO offer rate',content:`<p>The rate announced for a <b>volume auction</b>. It affects how attractive the operation is to banks and therefore their bidding response.</p><div class="learning-note">The OMO offer rate is not the same thing as the interbank rate.</div>`},
-  maturity:{title:'Maturity schedule',content:`<p>Outstanding bills and term OMO positions can generate cash flows when they mature.</p><p>From Phase 2 onward, the Daily maturity file is populated from the <b>latest backend inventory</b>, so previous OMO decisions carry into the next operating month.</p>`},
-  liquidity:{title:'Liquidity need',content:`<p><b>Positive:</b> the system has a liquidity shortage.<br><b>Negative:</b> the system has excess liquidity.</p><p>The engine carries the previous phase liquidity gap into real liquidity demand for the next phase.</p>`},
-  interbank:{title:'Interbank rate',content:`<p>The rate banks pay when lending to and borrowing from one another in the interbank market.</p><ul><li>Rising rate → funding pressure is increasing.</li><li>Falling rate → liquidity pressure is easing.</li></ul>`},
-  expectedInflation:{title:'Expected inflation',content:`<p><b>What is it?</b><br>Your expectation of inflation for the macro block that ends in Phase 3.</p><p>In this 3-phase game it is entered <b>once in Phase 1</b>. The backend stores it and uses it when the Phase 3 macro result is calculated.</p><h4>How it enters the model</h4><ul><li>Real interest rate = interbank rate − expected inflation.</li><li>The real rate feeds the output gap and GDP growth.</li><li>Expected inflation and the output gap feed the final inflation result.</li></ul><div class="learning-note">This is a player assumption, not a forecast supplied by the game.</div>`}
-};
+  maturity:{
+     title:'Current OMO positions',
+     content:`
+       <p>
+         <b>What is it?</b><br>
+         The schedule shows the OMO transactions that will mature and the amount of liquidity that will be returned or withdrawn in each phase.
+       </p>
+   
+       <p>
+         The Schedule of Maturity helps players keep track of OMO transactions from previous phases.
+         Therefore, players should consider both new OMO decisions and maturing positions before determining the scale of intervention.
+       </p>
+     `
+   },
+  liquidity:{
+     title:'Scenario liquidity demand',
+     content:`
+       <p>
+         <b>What is it?</b><br>
+         The level of liquidity demand in the banking system arising in the current phase.
+       </p>
+   
+       <h4>How to read</h4>
+   
+       <table>
+         <thead>
+           <tr>
+             <th>Value</th>
+             <th>Meaning</th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr>
+             <td>Positive (+)</td>
+             <td>The system has a liquidity shortage.</td>
+           </tr>
+           <tr>
+             <td>Zero</td>
+             <td>Liquidity demand is broadly balanced.</td>
+           </tr>
+           <tr>
+             <td>Negative (−)</td>
+             <td>The system has excess liquidity.</td>
+           </tr>
+         </tbody>
+       </table>
+   
+       <p>
+         <b>When it increases:</b> The system needs additional liquidity → liquidity pressure increases.
+       </p>
+   
+       <p>
+         <b>When it decreases:</b> The need for additional liquidity falls → liquidity pressure decreases.
+       </p>
+   
+       <p>
+         <b>Why does it matter?</b><br>
+         Liquidity demand helps players assess the liquidity position of the system before making an OMO decision.
+       </p>
+     `
+   },
+  interbank:{
+     title:'Interbank Rate',
+     content:`
+       <p>
+         <b>What is it?</b><br>
+         The interest rate applied when banks borrow from and lend to one another in the interbank market.
+       </p>
+   
+       <h4>How to read</h4>
+   
+       <p>
+         <b>Rate increases:</b> Funding pressure in the interbank market is increasing.
+       </p>
+   
+       <p>
+         <b>Rate decreases:</b> Liquidity pressure in the interbank market is easing.
+       </p>
+   
+       <p>
+         <b>Why does it matter?</b><br>
+         The interbank rate reflects liquidity conditions in the interbank market and is one of the key outcomes for players to observe after conducting OMO.
+       </p>
+   
+       <div class="learning-note">
+         <b>Note:</b>
+         The interbank rate in the game is a simulated result generated by the Economic Engine,
+         not an accurate forecast of the actual interbank rate.
+       </div>
+     `
+   },
+  expectedInflation:{title:'Expected inflation',content:`<p><b>What is it?</b><br>Your expectation of inflation for the macro block that ends in Phase 3.</p><p>In this 3-phase game it is entered <b>once in Phase 1</b>. The backend stores it and uses it when the Phase 3 macro result is calculated.</p><h4>How it enters the model</h4><ul><li>Real interest rate = interbank rate − expected inflation.</li><li>The real rate feeds the output gap and GDP growth.</li><li>Expected inflation and the output gap feed the final inflation result.</li></ul><div class="learning-note">This is a player assumption, not a forecast supplied by the game.</div>`},
+  inflation:{
+     title:'Inflation',
+     content:`
+       <p>
+         <b>What is it?</b><br>
+         The rate at which the overall price level of goods and services in the economy increases.
+       </p>
+   
+       <p>
+         <b>Why does it matter?</b><br>
+         Easing liquidity conditions can support economic activity, but if maintained for too long or applied excessively, it can create additional inflationary pressure.
+       </p>
+     `
+   },
+  gdp:{
+     title:'Real GDP Growth',
+     content:`
+       <p>
+         <b>What is it?</b><br>
+         The growth rate of economic output after removing the effect of changes in the price level.
+       </p>
+   
+       <p>
+         <b>Why does it matter?</b><br>
+         Easing liquidity conditions can support credit growth and economic activity,
+         while tightening liquidity can put downward pressure on economic growth.
+       </p>
+     `
+   },
 function openLearningCard(key){const c=learningCards[key];if(!c)return;document.getElementById('learning-card-title').textContent=c.title;document.getElementById('learning-card-content').innerHTML=c.content;document.getElementById('learning-card-modal').classList.add('open')}
 function closeLearningCard(){document.getElementById('learning-card-modal')?.classList.remove('open')}
 function openGuideModal(){document.getElementById('guide-modal')?.classList.add('open')}
@@ -789,7 +905,9 @@ function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const events=Array.isArray(state.maturity_events)?state.maturity_events:[];
   const resultMode=mode==='result';
   const maturitySection=resultMode?`<section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section>`:'';
-  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>${resultMode?'Outstanding positions after the OMO session':'Current OMO positions'}</h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
+  return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>
+  ${resultMode?'Outstanding positions after the operation':'Current OMO positions'}
+  <button class="paper-help-dot" type="button" onclick="openLearningCard('maturity')">?</button></h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
 }
 function pgSetDeck(rootId,index){
   const root=pg$(rootId); if(!root)return 0; const pages=[...root.querySelectorAll('.paper-page')]; if(!pages.length)return 0;
@@ -837,7 +955,7 @@ function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
   const copy=resultMode?'Updated interbank rate and macroeconomic indicators data for each 30-day and 90-day operating cycle, respectively.':'Updated interbank rate and macroeconomic indicators data for each 30-day and 90-day operating cycle, respectively.';
   const liquidityLabel=resultMode?'Post-OMO liquidity position':'Scenario liquidity demand';
   const rateHistory=pgRateHistory;
-  return `<article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · MARKET & MACRO INDICATORS</div><h2>${title}</h2><p>${copy}</p></div><div class="chart-sheet daily-market-layout"><div class="daily-chart-stack"><section class="chart-box daily-chart-panel"><div class="daily-chart-heading"><span>Interbank rate</span><span>30-day operating timeline</span></div>${pgDailyRateTimelineSVG(rateHistory)}</section><section class="chart-box daily-chart-panel macro-daily-panel"><div class="daily-chart-heading"><span>GDP growth & inflation</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory,pgPhase)}</section></div><aside class="chart-side"><div class="section-tag">CURRENT INTERBANK RATE</div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${Number(rate).toFixed(2)}%</div><p><b>${liquidityLabel}:</b> ${Number(liquidity)>=0?'+':''}${pgFmt(liquidity)} bn.</p><div class="indicator-stat-grid"><div class="indicator-stat"><span>GDP growth</span><strong>${gdpText}</strong><small>${macroNote}</small></div><div class="indicator-stat"><span>Inflation</span><strong>${inflationText}</strong><small>${macroNote}</small></div></div>${pgExpectedBlockHTML(!resultMode)}</aside></div></article>`;
+  return `<article class="paper-page is-right"><div class="market-page-head"><div class="section-tag">PAGE 2 · MARKET & MACRO INDICATORS</div><h2>${title}</h2><p>${copy}</p></div><div class="chart-sheet daily-market-layout"><div class="daily-chart-stack"><section class="chart-box daily-chart-panel"><div class="daily-chart-heading"><span>Interbank rate</span><span>30-day operating timeline</span></div>${pgDailyRateTimelineSVG(rateHistory)}</section><section class="chart-box daily-chart-panel macro-daily-panel"><div class="daily-chart-heading"><span>GDP growth & inflation</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory,pgPhase)}</section></div><aside class="chart-side"><div class="section-tag">CURRENT INTERBANK RATE<button class="paper-help-dot" type="button" onclick="openLearningCard('interbank')">?</button></div><div class="phase-date-label">PHASE ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</div><div class="big-rate">${Number(rate).toFixed(2)}%</div><p><b>${liquidityLabel}:</b><button class="paper-help-dot" type="button" onclick="openLearningCard('liquidity')">?</button> ${Number(liquidity)>=0?'+':''}${pgFmt(liquidity)} bn.</p><div class="indicator-stat-grid"><div class="indicator-stat"><span>Real GDP growth<button class="paper-help-dot" type="button" onclick="openLearningCard('gdp')">?</button></span><strong>${gdpText}</strong><small>${macroNote}</small></div><div class="indicator-stat"><span>Inflation<button class="paper-help-dot" type="button" onclick="openLearningCard('inflation')">?</button></span><strong>${inflationText}</strong><small>${macroNote}</small></div></div>${pgExpectedBlockHTML(!resultMode)}</aside></div></article>`;
 }
 function paperBrief(){
   currentPhase=pgPhase;pgSyncPhaseFallbacks();pgUpdateHead();pgNewsPage=0;
