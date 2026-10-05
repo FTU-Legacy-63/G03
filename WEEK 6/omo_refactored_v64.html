@@ -418,6 +418,68 @@ body{visibility:visible!important}
     <div class="guide-step"><b>2 · Decide.</b> Choose the OMO instrument, auction method, offered volume and the applicable rate/pricing method. Phase 1 also asks for expected inflation for the three-phase macro block.</div>
     <div class="guide-step"><b>3 · Process bids.</b> Five bank bids arrive from the engine. Sort them by the rule for the selected auction method, then approve the auction record.</div>
     <div class="guide-step"><b>4 · Review transmission.</b> Results show awarded volume, liquidity, the updated interbank rate, outstanding positions, maturity cash flows, and - when available - the macro block.</div>
+    <div class="guide-step">
+     <h3>Dynamic OMO and Defensive OMO</h3>
+   
+     <p>
+       OMO can be used for different purposes. Two important types are
+       <b>Dynamic OMO</b> and <b>Defensive OMO</b>.
+     </p>
+   
+     <h4>Key difference</h4>
+   
+     <div class="overflow-x-auto">
+       <table>
+         <thead>
+           <tr>
+             <th></th>
+             <th>Dynamic OMO</th>
+             <th>Defensive OMO</th>
+           </tr>
+         </thead>
+   
+         <tbody>
+           <tr>
+             <td><b>Main purpose</b></td>
+             <td>
+               Actively change monetary conditions to support the central bank's policy goals.
+             </td>
+             <td>
+               Offset unexpected changes in liquidity and keep money-market conditions more stable.
+             </td>
+           </tr>
+   
+           <tr>
+             <td><b>Main focus</b></td>
+             <td>Policy direction</td>
+             <td>Unexpected liquidity changes</td>
+           </tr>
+   
+           <tr>
+             <td><b>Key question</b></td>
+             <td>
+               “Where does the central bank want liquidity conditions to move?”
+             </td>
+             <td>
+               “Is there a liquidity shock that should be offset?”
+             </td>
+           </tr>
+   
+           <tr>
+             <td><b>Can it inject liquidity?</b></td>
+             <td>Yes</td>
+             <td>Yes</td>
+           </tr>
+   
+           <tr>
+             <td><b>Can it absorb liquidity?</b></td>
+             <td>Yes</td>
+             <td>Yes</td>
+           </tr>
+         </tbody>
+       </table>
+     </div>
+   </div> 
   </div></div>
 </div>
 <div id="learning-card-modal" class="paper-modal" onclick="if(event.target===this)closeLearningCard()" aria-hidden="true">
@@ -626,7 +688,30 @@ const learningCards={
        </div>
      `
    },
-  expectedInflation:{title:'Expected inflation',content:`<p><b>What is it?</b><br>Your expectation of inflation for the macro block that ends in Phase 3.</p><p>In this 3-phase game it is entered <b>once in Phase 1</b>. The backend stores it and uses it when the Phase 3 macro result is calculated.</p><h4>How it enters the model</h4><ul><li>Real interest rate = interbank rate − expected inflation.</li><li>The real rate feeds the output gap and GDP growth.</li><li>Expected inflation and the output gap feed the final inflation result.</li></ul><div class="learning-note">This is a player assumption, not a forecast supplied by the game.</div>`},
+  expectedInflation:{
+     title:'Expected Inflation',
+     content:`
+       <h3>What is it?</h3>
+       <p>
+         Expected Inflation is the <b>inflation rate that the Central Bank expects to occur in the future</b>.
+       </p>
+   
+       <h3>Why is it important?</h3>
+       <p>
+         Expected Inflation helps the SBV consider <b>future inflation pressure</b>, not only current inflation.
+       </p>
+   
+       <p>
+         The input of Expected Inflation is <b>required once every 3 phases</b> in the game.
+         Therefore, the value may remain unchanged during the three phases between two updates.
+       </p>
+   
+       <div class="learning-note">
+         <b>Note:</b> Expected Inflation in the game represents the
+         <b>Central Bank's expectation of future inflation</b>, not the actual inflation rate.
+       </div>
+     `
+   }
   inflation:{
      title:'Inflation',
      content:`
