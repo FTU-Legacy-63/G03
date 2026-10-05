@@ -608,7 +608,7 @@ function pgSyncPhaseFallbacks(){const c=phaseConfig[pgPhase];if(!c)return;c.preM
 const learningCards={
   auction:{title:'Auction method',content:`<p><b>What is it?</b><br>The rule banks use to submit bids in an OMO operation.</p><h4>Interest-rate auction</h4><ul><li>The central bank fixes the offered volume.</li><li>Banks compete on bid rate and volume.</li><li>Accepted bids follow the ranking rule.</li></ul><h4>Volume auction</h4><ul><li>The central bank announces the auction rate.</li><li>Banks submit the volume they want.</li><li>If demand exceeds supply, allocation can be proportional.</li></ul>`},
   pricing:{title:'Pricing method',content:`<p><b>Single-price:</b> all successful bids settle at one winning rate.</p><p><b>Multi-price:</b> each successful bid settles at its accepted bid rate.</p><div class="learning-note"><b>Applies only to interest-rate auctions.</b></div>`},
-  omo:{
+  omoInstrument:{
      title:'OMO Instruments',
      content:`
        <div class="overflow-x-auto">
@@ -1121,9 +1121,7 @@ function paperBrief(){
 function paperDecision(){
   const c=phaseConfig[pgPhase];
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
-    <div class="market-page-head">
-      <div class="section-tag">OMO OPERATING FORM</div>
-    </div><div><h1>Open Market Operations Announcement</h1><p>Set the instrument, auction method, and intervention size before issuing the OMO announcement.</p></div></div>
+    <div class="decision-head"><div class="decision-mast">THE OMO<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Announcement</h1><p>Set the instrument, auction method, and intervention size before issuing the OMO announcement.</p></div></div>
     <div class="formgrid">
       <div class="field"><label>1. OMO instrument <button class="paper-help-dot" type="button" onclick="openLearningCard('omo')">?</button></label><select id="pg-action"><option value="Repo">Repo — term sale</option><option value="Reverse Repo">Reverse repo — term purchase</option><option value="Buy Securities">Outright bill purchase</option><option value="Sell Securities">Outright bill sale</option></select></div>
       <div class="field"><label>2. Auction method <button class="paper-help-dot" type="button" onclick="openLearningCard('auction')">?</button></label><select id="pg-method" onchange="pgToggleAuctionFields()"><option value="Volume auction">Volume auction</option><option value="Interest-rate auction">Interest-rate auction</option></select></div>
