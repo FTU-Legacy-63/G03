@@ -668,7 +668,8 @@ const learningCards={
          while tightening liquidity can put downward pressure on economic growth.
        </p>
      `
-   },
+   }
+};
 function openLearningCard(key){const c=learningCards[key];if(!c)return;document.getElementById('learning-card-title').textContent=c.title;document.getElementById('learning-card-content').innerHTML=c.content;document.getElementById('learning-card-modal').classList.add('open')}
 function closeLearningCard(){document.getElementById('learning-card-modal')?.classList.remove('open')}
 function openGuideModal(){document.getElementById('guide-modal')?.classList.add('open')}
