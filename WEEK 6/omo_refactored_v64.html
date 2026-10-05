@@ -915,31 +915,119 @@ function paperRestart(){
 const pgBriefCopy = {
   1:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
     cards:[
-      ['MACROECONOMY','Short-term spending rises','Retail, tourism, and period-end payments rise quickly. Growth and inflation are not yet putting significant pressure on the policy stance.'],
-      ['MONEY MARKET','Overnight funding demand rises','Cash withdrawals reduce available reserves, so commercial banks borrow more in the interbank market.'],
-      ['QUICK INDICATOR','3.95%','Interbank rate','Liquidity need: +1,900 bn.']
+      [
+        'MACROECONOMY',
+        'Consumption and private investment are weakening, and firms are cautious about expansion plans. Inflation pressure remains low. If financial conditions do not improve, the slowdown could persist for around 3–4 months.'
+      ],
+      [
+        'MONEY MARKET',
+        'Credit demand is growing slowly. Firms are delaying investment and prioritizing cash preservation. The money market is experiencing a moderate liquidity shortage, while financial conditions remain too tight to provide meaningful support to aggregate demand.'
+      ]
     ]
   },
-
   2:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
     cards:[
-      ['MACROECONOMY','Growth momentum eases','After the holiday season, consumption returns to normal. Some sectors report weaker new orders while inventories rise.'],
-      ['CREDIT & INVESTMENT','Firms become more cautious','Demand for capacity expansion and new borrowing falls. Inflation remains low, although some input prices begin to edge higher.'],
-      ['QUICK INDICATOR','4.10%','Interbank rate','Liquidity need: +3,500 bn.']
+      [
+        'MACROECONOMY',
+        'Payment needs, cash demand, and short-term funding needs rise sharply, mainly because of seasonal and holiday-related activity. However, the rise in liquidity demand is not enough to confirm an economic recovery, as the medium-term outlook for consumption and investment is still weighed down by the earlier slowdown.'
+      ],
+      [
+        'MONEY MARKET',
+        'Working-capital and cash demand rise during the peak payment season. The liquidity shortage becomes much more pronounced, but it is considered temporary and is expected to last only around 1–2 months.'
+      ]
     ]
   },
 
   3:{
     hero:'Current market position and macroeconomic outlook',
-    dek:'Recent macroeconomic conditions, money market developments, credit activities and key indicators.',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
     cards:[
-      ['MACROECONOMY','Real-economy effects remain gradual','Production has not clearly recovered. Earlier decisions are still transmitting through credit, growth, and inflation.'],
-      ['MONEY MARKET','Maturities can reverse cash flows','Term operations from earlier phases may mature, causing liquidity conditions and the overnight rate to change quickly.'],
-      ['QUICK INDICATOR','3.20%','Interbank rate','Liquidity need: +6,000 bn.']
+      [
+        'MACROECONOMY',
+        'There is no major new macroeconomic shock. The change in financial conditions from the 02/02/2025 decision is gradually feeding through credit, but it is still too early to conclude that GDP has recovered. This transmission period is assumed to continue for another 1–2 months.'
+      ],
+      [
+        'MONEY MARKET',
+        'Firms remain cautious, while credit responds gradually to changes in interest rates and liquidity. The earlier seasonal liquidity shock has eased.'
+      ]
+    ]
+  },
+
+  4:{
+    hero:'Current market position and macroeconomic outlook',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    cards:[
+      [
+        'MACROECONOMY',
+        'This is the first point at which the macroeconomic impact of the 02/02/2025 decision is assumed to become visible. GDP may improve, remain flat, or stay weak depending on the actual decision path; recovery is not assumed.'
+      ],
+      [
+        'MONEY MARKET',
+        'Credit conditions gradually reflect the 02/02/2025 decision. If the earlier support was strong enough, credit may improve; if funding conditions were tightened, credit may remain weak. If a 60-day Reverse Repo was conducted on 04/03/2025, it matures today and withdraws the liquidity previously injected. This cash flow is captured through Maturity Volume before the new OMO decision is calculated.'
+      ]
+    ]
+  },
+
+  5:{
+    hero:'Current market position and macroeconomic outlook',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    cards:[
+      [
+        'MACROECONOMY',
+        'Raw-material prices and input costs begin to rise because of supply-side factors. The cost shock is assumed to last around 2–3 months. Current GDP may be strong, flat, or weak depending on the earlier decision path.'
+      ],
+      [
+        'MONEY MARKET',
+        'Firms need more working capital to cover higher input costs, while new investment may become more cautious. Base liquidity is slightly in surplus, but the pre-OMO state still depends on the Maturity Volume of any term operation opened on 03/04/2025.'
+      ]
+    ]
+  },
+  6:{
+    hero:'Current market position and macroeconomic outlook',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    cards:[
+      [
+        'MACROECONOMY',
+        'Cost pressures spread across production, transport, and distribution. The government announces targeted support to reduce firms’ cost burden; this is not broad-based demand stimulus. Cost pressure is assumed to persist for another 1–2 months.'
+      ],
+      [
+        'MONEY MARKET',
+        'Working-capital demand remains high. The investment outlook depends on both actual GDP and financial conditions. Short-term funding demand may rise slightly. Before the new OMO decision, the liquidity state must include the Maturity Volume of any term operation opened on 03/05/2025.'
+      ]
+    ]
+  },
+
+  7:{
+    hero:'Current market position and macroeconomic outlook',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    cards:[
+      [
+        'MACROECONOMY',
+        'Targeted fiscal support begins to be disbursed to ease firms’ cost pressure. This support does not by itself imply that GDP is rising or falling; the GDP/inflation outcome still depends on the full sequence of earlier decisions.'
+      ],
+      [
+        'MONEY MARKET',
+        'The support flow eases working-capital pressure for some firms. Part of the fiscal support flows back into the banking system and creates a short-term liquidity surplus. Before the new OMO decision, the state must still include the Maturity Volume of any term operation opened on 02/06/2025.'
+      ]
+    ]
+  },
+
+  8:{
+    hero:'Current market position and macroeconomic outlook',
+    dek:'Current macroeconomic conditions and money market developments before the OMO session.',
+    cards:[
+      [
+        'MACROECONOMY',
+        'Final-period GDP and inflation reflect the external shocks and the earlier decisions that have had time to transmit. The 02/06/2025 decision begins to be reflected in the current outcome.'
+      ],
+      [
+        'MONEY MARKET',
+        'Final credit conditions reflect the accumulated path of liquidity, interbank rate and policy direction. The final session still includes an OMO decision. Before the new decision, the engine calculates the liquidity state from LQ Base, the previous period’s Unmet, and the Maturity Volume of any 60-day operation opened on 02/07/2025.'
+      ]
     ]
   }
 };
