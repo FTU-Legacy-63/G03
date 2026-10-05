@@ -1192,7 +1192,18 @@ function paperBrief(){
      </div>
      <div class="clippings">
      
-    ${x.cards.map((a,i)=>i<2?`<article class="clipping"><div class="newslabel">${a[0]}</div><div class="headline">${a[1]}</div><p>${a[2]}</p></article>`:`<article class="clipping"><div class="newslabel">${a[0]}</div><div class="newsnumber">${a[1]}</div><div class="newscaption">${a[2]}</div><p>${a[3]}</p></article>`).join('')}</div></article>
+    ${x.cards.map((a,i)=>i<2
+     ? `<article class="clipping">
+          <div class="newslabel">${a[0]}</div>
+          <p>${a[1]}</p>
+        </article>`
+     : `<article class="clipping">
+          <div class="newslabel">${a[0]}</div>
+          <div class="newsnumber">${a[1]}</div>
+          <div class="newscaption">${a[2]}</div>
+          <p>${a[3]}</p>
+        </article>`
+   ).join('')}</div></article>
     ${page2}
     <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,null,'daily')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetNewsPage(pgNewsPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetNewsPage(pgNewsPage+1)">→</button>
