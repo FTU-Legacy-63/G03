@@ -75,13 +75,13 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   letter-spacing:.075em;
   color:#3a2116;
     text-shadow:
-       2px 2px 0 rgba(232, 210, 169, .9),
+       1px 1px 0 rgba(232, 210, 169, .9),
        0 0 3px rgba(232, 210, 169, .55);
 }
 
 .nameplate-sub{
   margin-top:7px;
-  font:900 13px/1 var(--font-vintage);
+  font:900 13px/1 var(--font-ui);
   letter-spacing:.16em;
   color:#3a2116;
   text-shadow:
@@ -92,7 +92,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   display:flex;
   align-items:center;
   gap:8px;
-  font:900 15px/1 var(--font-vintage);
+  font:900 15px/1 var(--font-ui);
   letter-spacing:.08em;
   color:#3a2116;
   text-shadow:
@@ -1285,7 +1285,7 @@ function paperBrief(){
   currentPhase=pgPhase;pgSyncPhaseFallbacks();pgUpdateHead();pgNewsPage=0;
   const c=phaseConfig[pgPhase],base=pgBriefCopy[pgPhase],rate=pgCurrentRate(),liq=pgCurrentLiquidityNeed();
   const x={...base,cards:base.cards.map(a=>[...a])};
-  x.cards[2]=['QUICK INDICATOR',`${rate.toFixed(2)}%`,'Interbank rate',`Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`];
+  x.cards[2]=['QUICK INDICATOR',`${rate.toFixed(2)}%`,'Interbank rate',${liq>=0?'+':''}${pgFmt(liq)} bn.`] `Scenario liquidity demand:;
   const page2=pgMarketMacroPageHTML({mode:'daily',rate,liquidity:liq});
   pg$('pg-brief').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
