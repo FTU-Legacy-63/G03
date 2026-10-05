@@ -1315,7 +1315,8 @@ function pgMarketMacroPageHTML({mode='daily',rate,liquidity}){
           </div>
         </div>
         ${pgExpectedBlockHTML(!resultMode,!resultMode)}
-      </div></aside></div></article>`;}
+      </div></aside></div></article>`;
+}
 function paperBrief(){
   currentPhase=pgPhase;pgSyncPhaseFallbacks();pgUpdateHead();pgNewsPage=0;
   const c=phaseConfig[pgPhase],base=pgBriefCopy[pgPhase],rate=pgCurrentRate(),liq=pgCurrentLiquidityNeed();
