@@ -422,6 +422,42 @@ body{visibility:visible!important}
 
 @media(max-width:800px){.macro-input-strip{grid-template-columns:1fr}.macro-outcome-grid{grid-template-columns:1fr 1fr}.paper-modal-sheet{padding:22px 20px}.paper-modal-head h2{font-size:28px}}
 .result-chart-main svg{height:235px!important}
+/* QUICK INDICATOR */
+.quick-indicator-card .newsnumber{
+  font-size:42px!important;
+  margin:16px 0 4px!important;
+}
+.quick-indicator-card .newscaption{
+  font-size:10px!important;
+  margin-bottom:14px!important;
+}
+.rate-band{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:10px 0 14px;
+  padding-top:10px;
+  border-top:1px solid #c8bda8;
+}
+.rate-band-item{
+  min-width:0;
+}
+.rate-band-item b{
+  display:block;
+  font:900 20px/1 var(--font-vintage);
+  color:#087f75;
+  margin-bottom:4px;
+}
+.rate-band-item span{
+  display:block;
+  font:700 9px/1.25 var(--font-ui);
+  color:#65736e;
+}
+.quick-indicator-card>p{
+  margin-top:10px!important;
+  font-size:12px!important;
+  line-height:1.4!important;
+}
 </style>
 </head>
 <body class="paper-mode">
@@ -1284,7 +1320,14 @@ function paperBrief(){
   currentPhase=pgPhase;pgSyncPhaseFallbacks();pgUpdateHead();pgNewsPage=0;
   const c=phaseConfig[pgPhase],base=pgBriefCopy[pgPhase],rate=pgCurrentRate(),liq=pgCurrentLiquidityNeed();
   const x={...base,cards:base.cards.map(a=>[...a])};
-  x.cards[2]=['QUICK INDICATOR',`${rate.toFixed(2)}%`,'Interbank rate',`Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`];
+  x.cards[2]=[
+  'QUICK INDICATOR',
+  `${rate.toFixed(2)}%`,
+  'Interbank rate',
+  `Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`,
+  '5.00%',
+  '0.50%'
+];
   const page2=pgMarketMacroPageHTML({mode:'daily',rate,liquidity:liq});
   pg$('pg-brief').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
@@ -1296,17 +1339,30 @@ function paperBrief(){
      <div class="clippings">
      
     ${x.cards.map((a,i)=>i<2
-     ? `<article class="clipping">
-          <div class="newslabel">${a[0]}</div>
-          <p>${a[1]}</p>
-        </article>`
-     : `<article class="clipping">
-          <div class="newslabel">${a[0]}</div>
-          <div class="newsnumber">${a[1]}</div>
-          <div class="newscaption">${a[2]}</div>
-          <p>${a[3]}</p>
-        </article>`
-   ).join('')}</div></article>
+       ? `<article class="clipping">
+            <div class="newslabel">${a[0]}</div>
+            <p>${a[1]}</p>
+          </article>`
+       : `<article class="clipping quick-indicator-card">
+            <div class="newslabel">${a[0]}</div>
+      
+            <div class="newsnumber">${a[1]}</div>
+            <div class="newscaption">${a[2]}</div>
+      
+            <p>${a[3]}</p>
+           <div class="rate-band">
+              <div class="rate-band-item">
+                <b>${a[4]}</b>
+                <span>SBV overnight lending rate</span>
+              </div>
+            
+              <div class="rate-band-item">
+                <b>${a[5]}</b>
+                <span>Required reserve deposit rate</span>
+              </div>
+            </div>
+          </article>`
+      ).join('')}</div></article>
     ${page2}
     <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,null,'daily')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetNewsPage(pgNewsPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetNewsPage(pgNewsPage+1)">→</button>
