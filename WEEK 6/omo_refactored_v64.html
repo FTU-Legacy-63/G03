@@ -85,10 +85,8 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   letter-spacing:.16em;
   color:#4a2919;
   text-shadow:
-     0 0 3px rgba(232,210,169,.9),
-     0 0 6px rgba(232,210,169,.55);
+    1px 1px 1px rgba(0,0,0,.22);
 }
-
 .nameplate-progress{
   display:flex;
   align-items:center;
@@ -97,8 +95,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   letter-spacing:.08em;
   color:#422417;
   text-shadow:
-    0 0 3px rgba(232,210,169,.9),
-    0 0 6px rgba(232,210,169,.55);
+    1px 1px 1px rgba(0,0,0,.22);
   transform:translateX(-45px);
 }
 .dot{width:9px;height:9px;border-radius:50%;background:rgba(91,66,25,.18);box-shadow:inset 0 0 0 1px rgba(85,60,20,.28)}.dot.on{background:#fff0a9;box-shadow:0 0 0 3px rgba(255,240,169,.34),inset 0 0 0 1px rgba(101,73,21,.3)}
@@ -550,20 +547,6 @@ const learningCards={
   omo:{title:'OMO instruments',content:`<p>Operations are named from the <b>central bank perspective</b>.</p><table><thead><tr><th>Operation</th><th>Initial liquidity effect</th><th>Time profile</th></tr></thead><tbody><tr><td>Buy Securities</td><td>Inject</td><td>Outright</td></tr><tr><td>Sell Securities</td><td>Absorb</td><td>Outright</td></tr><tr><td>Repo</td><td>Absorb</td><td>Reverses at maturity</td></tr><tr><td>Reverse Repo</td><td>Inject</td><td>Reverses at maturity</td></tr></tbody></table>`},
   volume:{title:'Offered volume',content:`<p>The scale of securities or funds offered in the OMO operation.</p><ul><li>Larger offered volume can create a larger liquidity effect.</li><li>The realized effect still depends on awarded volume and maturity cash flows.</li></ul>`},
   auctionRate:{title:'OMO offer rate',content:`<p>The rate announced for a <b>volume auction</b>. It affects how attractive the operation is to banks and therefore their bidding response.</p><div class="learning-note">The OMO offer rate is not the same thing as the interbank rate.</div>`},
-  maturity:{
-     title:'Current OMO positions',
-     content:`
-       <p>
-         <b>What is it?</b><br>
-         The tables show the OMO transactions that will mature and the amount of liquidity that will be returned or withdrawn in each phase.
-       </p>
-   
-       <p>
-         This helps players keep track of OMO transactions from previous phases.
-         Therefore, players should consider both new OMO decisions and maturing positions before determining the scale of intervention.
-       </p>
-     `
-   },
   liquidity:{
      title:'Scenario liquidity demand',
      content:`
@@ -910,7 +893,7 @@ function pgOutstandingHTML(c,stateOverride=null,mode='daily'){
   const maturitySection=resultMode?`<section class="result-table-block"><h3>Maturity events this phase</h3>${pgMaturityTableHTML(events)}</section>`:'';
   return `<div class="market-page-head"><div class="section-tag">PAGE 3 · ${resultMode?'POST-OPERATION FILE':'OUTSTANDING POSITIONS'}</div><h2>
   ${resultMode?'Outstanding positions after the operation':'Current OMO positions'}
-  <button class="paper-help-dot" type="button" onclick="openLearningCard('maturity')">?</button></h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
+  </h2><p>${resultMode?'Updated information on OMO positions, including central bank bills and repo/reverse-repo transactions.':'Information on current OMO positions, including central bank bills and repo/reverse-repo transactions.'}</p></div><div class="result-table-stack"><section class="result-table-block"><h3>Central bank bills · ${bills.length} positions</h3>${pgPositionTableHTML(bills,'Bill')}</section><section class="result-table-block"><h3>Repo / reverse repo · ${repos.length} positions</h3>${pgPositionTableHTML(repos,'Repo')}</section>${maturitySection}</div>`;
 }
 function pgSetDeck(rootId,index){
   const root=pg$(rootId); if(!root)return 0; const pages=[...root.querySelectorAll('.paper-page')]; if(!pages.length)return 0;
