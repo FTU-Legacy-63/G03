@@ -1158,7 +1158,7 @@ function pgMacroTrendSVG(history,uptoPhase=pgPhase){
     if(Number.isFinite(iv))inflationPoints.push({slot,value:iv});
   });
   const finite=[...gdpPoints.map(x=>x.value),...inflationPoints.map(x=>x.value)];
-  const w=760,h=220,l=54,r=22,t=22,b=52;
+  const w=760,h=230,l=58,r=22,t=24,b=58;
   const x=i=>l+i*(w-l-r)/2;
   if(!finite.length){
     const ticks=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
