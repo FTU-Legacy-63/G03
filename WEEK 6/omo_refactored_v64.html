@@ -1645,7 +1645,27 @@ const pgReportRules={
      when:c=>c.action==='Sell Securities'&&c.lqDemand>0,
      macro:()=>`Issuing T-bills while the market is already short withdraws additional liquidity and pushes funding costs higher. T-bill issuance is useful when excess liquidity needs to be absorbed, but in the current state it further weakens credit and aggregate demand.`}
   ],
-  2:[], 3:[]
+    2:[
+    {id:'P2-RRP-ZERO',
+     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='zero',
+     macro:()=>`The liquidity shock is seasonal and is expected to last only 1–2 months. Injecting enough to bring the market close to balance eases pressure on the overnight rate and helps avoid disruptions to credit without creating a large surplus; the risk of persistent inflation is relatively low.`},
+    {id:'P2-RRP-POS',
+     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='pos',
+     macro:()=>`Liquidity pressure is reduced but not fully resolved. Short-term rates may remain above normal during the seasonal peak, while the smaller intervention lowers the risk of excessive easing.`},
+    {id:'P2-RRP-NEG',
+     when:c=>c.action==='Reverse Repo'&&c.lqDemand>0&&pgGapState(c)==='neg',
+     macro:()=>`Based on actual cash flow measured by Price rather than offered volume, the operation moves the system from shortage into surplus. Easier funding conditions support credit, but because the shock is expected to last only 1–2 months, the surplus raises the risk of over-easing.`},
+    {id:'P2-BUY-ZERO',
+     when:c=>c.action==='Buy Securities'&&c.lqDemand>0&&pgGapState(c)==='zero',
+     macro:()=>`The liquidity shortage is resolved, but the effect of an outright purchase lasts longer than the seasonal nature of the shock. This may provide stronger support to credit and growth, while also increasing the risk of excess liquidity once seasonal demand fades.`},
+    {id:'P2-REPO',
+     when:c=>c.action==='Repo'&&c.lqDemand>0,
+     macro:()=>`Repo deepens the liquidity shortage during a temporary shock, pushing the overnight rate and funding costs higher than necessary. This is unfavorable for both market stability and credit activity.`},
+    {id:'P2-SELL',
+     when:c=>c.action==='Sell Securities'&&c.lqDemand>0,
+     macro:()=>`T-bill issuance withdraws even more liquidity while the market is already short. It is the right direction when excess liquidity needs to be absorbed, but in the current state it intensifies the seasonal funding strain.`}
+  ],
+  3:[]
 };
 
 function pgBuildReportText(){
