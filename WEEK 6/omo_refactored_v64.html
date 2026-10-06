@@ -1592,7 +1592,7 @@ function paperReport(){
 
     if(realLiquidityDemand>0 && action==='Buy Securities' && gap<0){
       return {
-        auction:marketTemplate('purchases T-bills outright'),
+        auction:marketTemplate('purchases Central Bank Bills outright'),
         macro:`
           With weak aggregate demand potentially lasting 3–4 months,
           a more accommodative stance provides stronger support to
@@ -1604,7 +1604,7 @@ function paperReport(){
 
     if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
       return {
-        auction:marketTemplate('purchases T-bills outright'),
+        auction:marketTemplate('purchases Central Bank Bills outright'),
         macro:`
           With weak aggregate demand, relieving funding pressure
           supports credit conditions, although the stimulus to growth
@@ -1615,7 +1615,7 @@ function paperReport(){
 
     if(realLiquidityDemand>0 && action==='Buy Securities' && gap>0){
       return {
-        auction:marketTemplate('purchases T-bills outright'),
+        auction:marketTemplate('purchases Central Bank Bills outright'),
         macro:`
           With weak aggregate demand, tighter funding conditions may
           continue to constrain credit and investment.<br><br>The smaller
@@ -1691,7 +1691,7 @@ function paperReport(){
 
     if(realLiquidityDemand>0 && action==='Sell Securities'){
       return {
-        auction:marketTemplate('issues T-bills'),
+        auction:marketTemplate('issues Central Bank Bills'),
         macro:`
           Issuing Central Bank Bills while the market is already short
           withdraws additional liquidity and pushes funding costs
@@ -1820,7 +1820,7 @@ function paperReport(){
       nearZero
     ){
       return {
-        auction:auctionTemplate('purchases T-bills outright'),
+        auction:auctionTemplate('purchases Central Bank Bills outright'),
         macro:`
             An outright purchase can relieve the shortage, but its
             effect lasts longer than the seasonal stress itself.
@@ -1861,7 +1861,7 @@ function paperReport(){
       action==='Sell Securities'
     ){
       return {
-        auction:auctionTemplate('issues T-bills'),
+        auction:auctionTemplate('issues Central Bank Bills'),
         macro:`
             Central Bank Bills issuance also absorbs liquidity when the market is
             already short. The additional withdrawal would intensify
@@ -1918,7 +1918,7 @@ function paperReport(){
      /* 1. Shortage + Outright purchase + Gap ≈ 0 */
      if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
        return {
-         auction:auctionTemplate('purchases T-bills outright'),
+         auction:auctionTemplate('purchases Central Bank Bills outright'),
          macro:`
              There is no major new macroeconomic shock in this phase.
              Restoring normal funding conditions lets earlier policy
@@ -1947,7 +1947,7 @@ function paperReport(){
      /* 3. Shortage + T-bill issuance */
      if(realLiquidityDemand>0 && action==='Sell Securities'){
        return {
-         auction:auctionTemplate('issues T-bills'),
+         auction:auctionTemplate('issues Central Bank Bills'),
          macro:`
              Central Bank Bills issuance keeps funding conditions tighter while
              earlier policy support is still working through the economy.
@@ -2056,7 +2056,7 @@ function paperReport(){
           nearZero
         ){
           return {
-            auction:auctionTemplate('purchases T-bills outright'),
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
             macro:`
                 GDP remains weak or flat as earlier policy effects begin
                 to appear. Longer-lasting support can reduce the risk of a
@@ -2096,7 +2096,7 @@ function paperReport(){
           nearZero
         ){
           return {
-            auction:auctionTemplate('purchases T-bills outright'),
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
             macro:`
                 Growth has improved, but an outright purchase provides
                 longer-lasting support than the immediate shortage requires.
@@ -2136,7 +2136,7 @@ function paperReport(){
           nearZero
         ){
           return {
-            auction:auctionTemplate('issues T-bills'),
+            auction:auctionTemplate('issues Central Bank Bills'),
             macro:`
                 Central Bank Bills issuance absorbs the surplus for longer than a
                 temporary Repo. This offers stronger protection against
@@ -2192,7 +2192,7 @@ function paperReport(){
           action==='Sell Securities'
         ){
           return {
-            auction:auctionTemplate('issues T-bills'),
+            auction:auctionTemplate('issues Central Bank Bills'),
             macro:`
                 Central Bank Bills issuance would withdraw liquidity from a system
                 that already needs funding. Because the absorption lasts
