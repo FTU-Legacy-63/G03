@@ -343,7 +343,7 @@ class CentralBankGame:
     def initial_tbill_rate(self):
         return excel_round(self.interbank_rate - safe_normal(self.rng, 0.64, 0.63), 2)
 
-    def initialize_market_tbill(self, face_value=10000, rate=None):
+    def initialize_market_tbill(self, face_value=20000, rate=None):
         return self.market_inventory.add_lot(
             face_value, self.current_date,
             self.initial_tbill_rate() if rate is None else rate,
@@ -743,9 +743,9 @@ class CentralBankGame:
 
     def get_scenario_liquidity_demand(self):
         liquidity_demand_by_phase = {
-            1: 5000.0,
-            2: 2000.0,
-            3: 1000.0,
+            1: 4000.0,
+            2: 10000.0,
+            3: 2000.0,
         }
         if self.phase not in liquidity_demand_by_phase:
             raise ValueError(
