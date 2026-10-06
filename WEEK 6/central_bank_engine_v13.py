@@ -237,18 +237,24 @@ class MarketTBillInventory:
         self.lots = survivors
         return cash, events
 
-    def snapshot(self):
-        self._purge_empty()
-        # Player-facing SBV Bill inventory.
-        return [{
-            "sbv_bill_id": x.security_id,
-            "issue_date": x.issue_date.isoformat(),
-            "maturity_date": x.maturity_date.isoformat(),
-            "rate": x.rate,
-            "remaining_volume": x.face_value,
-        } for x in self.lots]
-
-
+    def snapshot(self, current_date=None):
+        return [
+            {
+                "sbv_bill_id": x.security_id,
+                "issue_date": x.issue_date.isoformat(),
+                "maturity_date": x.maturity_date.isoformat(),
+                "rate": x.tbill_rate,
+                "remaining_volume": x.face_value,
+            }
+            for x in self.lots
+            if (
+                x.face_value > 1e-9
+                and (
+                    current_date is None
+                    or x.maturity_date > current_date
+                )
+            )
+        ]
 
 def excel_round(value, ndigits=0):
     """Match Excel ROUND for game values: nearest, .5 away from zero."""
@@ -560,17 +566,16 @@ class CentralBankGame:
         # into actual face-value BID VOLUME using the same instrument pricing rule.
         # For Buy / Reverse Repo, a virtual FIFO balance prevents multiple banks
         # from reusing the same SBV Bill quantity during bid conversion.
-        virtual_available = None
-        if decision.omo_action in ("Buy Securities", "Reverse Repo"):
-            virtual_available = {
-                lot.security_id: lot.face_value for lot in self.market_inventory.lots
-            }
-
         bid_vols = []
+
         for i, cash_bid in enumerate(cash_bid_vols):
-            bid_vols.append(self._cash_bid_to_face_volume(
-                cash_bid, decision.omo_action, settlement[i], virtual_available
-            ))
+            bid_vols.append(
+                self._cash_bid_to_face_volume(
+                    cash_bid,
+                    decision.omo_action,
+                    settlement[i]
+                )
+            )
 
         total_bid_volume = float(whole(sum(bid_vols)))
 
@@ -866,7 +871,7 @@ class CentralBankGame:
         return result
 
     def tbill_inventory(self):
-        return self.market_inventory.snapshot()
+        return self.market_inventory.snapshot(self.current_date)
 
     def remaining_unmatured_tbill_volume(self):
         """Total T-bill face value still outstanding and not yet matured."""
