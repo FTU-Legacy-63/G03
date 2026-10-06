@@ -1553,114 +1553,24 @@ function paperReport(){
   const c=phaseConfig[pgPhase],pre={...c.preMetrics,rate:Number(pgResult.previous_interbank_rate??c.preMetrics.rate)},post=Number(pgResult.interbank_rate),delta=post-pre.rate,bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0),maturity=Number(pgResult.maturity_volume||0);
   const pgPhase1ReportRule=()=>{
     const action=String(pgDecision?.omo_action||'');
-    const offeredVolume=Number(pgDecision?.volume??0);
+    const offeredVolume=Number(pgDecision?.volume||0);
     const realLiquidityDemand=Number(pgResult.real_liquidity_demand??0);
     const totalSupply=Number(pgResult.total_supply??0);
     const gap=Number(pgResult.liquidity_gap??0);
+    const previousON=Number(pgResult.previous_interbank_rate??0);
+    const newON=Number(pgResult.interbank_rate??0);
 
-    const previousON=Number(
-      pgResult.previous_interbank_rate??pre.rate??0
+    const bidAssessment=pgBidVolumeAssessment(
+      offeredVolume,
+      totalBid
     );
 
-    const newON=Number(
-      pgResult.interbank_rate??post??0
+    const liquidityAssessment=pgLiquidityOutcomeAssessment(
+      realLiquidityDemand,
+      totalSupply
     );
 
-    /* -----------------------------
-       BID VOLUME ASSESSMENT
-       ----------------------------- */
-
-    let bidAssessment='';
-
-    if(totalBid<=0){
-      bidAssessment=
-        'There were no submitted bids for the operation.';
-    }else{
-      const bidRatio=offeredVolume/totalBid;
-
-      if(bidRatio<0.95){
-        bidAssessment=
-          'The offered volume was below banks’ bidding demand, suggesting that the Central Bank underestimated demand for the operation.';
-      }else if(bidRatio<=1.05){
-        bidAssessment=
-          'The offered volume was broadly aligned with banks’ bidding demand, suggesting that the Central Bank estimated demand reasonably well.';
-      }else{
-        bidAssessment=
-          'The offered volume exceeded banks’ bidding demand, suggesting that the Central Bank overestimated demand for the operation.';
-      }
-    }
-
-    /* -----------------------------
-       LIQUIDITY OUTCOME ASSESSMENT
-       ----------------------------- */
-
-    let liquidityAssessment='';
-
-    if(realLiquidityDemand>0){
-
-      if(totalSupply<0){
-        liquidityAssessment=
-          'The operation withdraws liquidity while the system is already facing a liquidity shortage, further increasing the unmet funding need.';
-
-      }else if(totalSupply<0.95*realLiquidityDemand){
-        liquidityAssessment=
-          'Total liquidity supply was insufficient to meet the system’s liquidity demand, leaving part of the funding need unmet.';
-
-      }else if(totalSupply<=1.05*realLiquidityDemand){
-        liquidityAssessment=
-          'Total liquidity supply was broadly sufficient to meet the system’s liquidity demand, bringing liquidity conditions broadly into balance.';
-
-      }else{
-        liquidityAssessment=
-          'Total liquidity supply exceeded the system’s liquidity demand, providing more liquidity than needed and moving the system toward surplus.';
-      }
-
-    }else if(realLiquidityDemand<0){
-
-      if(totalSupply>0){
-        liquidityAssessment=
-          'The operation adds liquidity while the system is already in surplus, further increasing excess liquidity.';
-
-      }else if(Math.abs(totalSupply)<0.95*Math.abs(realLiquidityDemand)){
-        liquidityAssessment=
-          'Total liquidity absorption was insufficient to remove the system’s excess liquidity, leaving part of the surplus unabsorbed.';
-
-      }else if(Math.abs(totalSupply)<=1.05*Math.abs(realLiquidityDemand)){
-        liquidityAssessment=
-          'Total liquidity absorption was broadly sufficient to remove the system’s excess liquidity, bringing liquidity conditions broadly into balance.';
-
-      }else{
-        liquidityAssessment=
-          'Total liquidity absorption exceeded the system’s excess liquidity, withdrawing more liquidity than needed and moving the system toward shortage.';
-      }
-
-    }else{
-
-      liquidityAssessment=
-        'Liquidity conditions were broadly balanced before the operation.';
-    }
-
-    /* -----------------------------
-       INSTRUMENT TEXT
-       ----------------------------- */
-
-    let instrumentText='conducts the selected OMO operation';
-
-    if(action==='Buy Securities'){
-      instrumentText='purchases T-bills outright';
-    }else if(action==='Reverse Repo'){
-      instrumentText='conducts a Reverse Repo';
-    }else if(action==='Repo'){
-      instrumentText='conducts a Repo';
-    }else if(action==='Sell Securities'){
-      instrumentText='issues T-bills';
-    }
-
-    /* -----------------------------
-       AUCTION DECISION & MARKET RESPONSE
-       ----------------------------- */
-
-    const auctionText=`
+    const marketTemplate=(instrumentText)=>`
       <p>
         In the current session, the Central Bank ${instrumentText}.
         The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
@@ -1674,105 +1584,91 @@ function paperReport(){
         <b>${previousON.toFixed(2)}%</b>
         to
         <b>${newON.toFixed(2)}%</b>.
+        ${liquidityAssessment}
       </p>
     `;
 
-    /* -----------------------------
-       PHASE 1 MACROECONOMY
-       ----------------------------- */
-
     const nearZero=Math.abs(gap)<=1;
 
-    let macroText='';
+    if(realLiquidityDemand>0 && action==='Buy Securities' && gap<0){
+      return {
+        auction:marketTemplate('purchases T-bills outright'),
+        macro:`
+          With weak aggregate demand potentially lasting 3–4 months,
+          a more accommodative stance provides stronger support to
+          credit, investment, and growth with a lag. The trade-off is
+          a greater risk of price pressure once demand recovers.
+        `
+      };
+    }
 
-    if(
-      realLiquidityDemand>0 &&
-      action==='Buy Securities' &&
-      gap<0
-    ){
+    if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
+      return {
+        auction:marketTemplate('purchases T-bills outright'),
+        macro:`
+          With weak aggregate demand, relieving funding pressure
+          supports credit conditions, although the stimulus to growth
+          is more limited than under a more proactive easing stance.
+        `
+      };
+    }
 
-      macroText=`
-        ${liquidityAssessment}
-        With weak aggregate demand potentially lasting 3–4 months,
-        a more accommodative stance provides stronger support to
-        credit, investment, and growth with a lag. The trade-off is
-        a greater risk of price pressure once demand recovers.
-      `;
+    if(realLiquidityDemand>0 && action==='Buy Securities' && gap>0){
+      return {
+        auction:marketTemplate('purchases T-bills outright'),
+        macro:`
+          With weak aggregate demand, tighter funding conditions may
+          continue to constrain credit and investment. The smaller
+          intervention reduces future inflation risk, but provides
+          less support to growth.
+        `
+      };
+    }
 
-    }else if(
-      realLiquidityDemand>0 &&
-      action==='Buy Securities' &&
-      nearZero
-    ){
+    if(realLiquidityDemand>0 && action==='Reverse Repo' && nearZero){
+      return {
+        auction:marketTemplate('conducts a Reverse Repo'),
+        macro:`
+          Because the support is temporary, it can stabilize
+          short-term funding conditions while limiting persistent
+          inflation risk. If economic weakness lasts 3–4 months,
+          however, growth support may fade sooner than under an
+          outright purchase.
+        `
+      };
+    }
 
-      macroText=`
-        ${liquidityAssessment}
-        With weak aggregate demand, relieving funding pressure
-        supports credit conditions, although the stimulus to growth
-        is more limited than under a more proactive easing stance.
-      `;
+    if(realLiquidityDemand>0 && action==='Repo'){
+      return {
+        auction:marketTemplate('conducts a Repo'),
+        macro:`
+          With weak aggregate demand, withdrawing liquidity would
+          add unnecessary pressure to funding costs, credit,
+          investment, and growth, with little near-term
+          macroeconomic justification.
+        `
+      };
+    }
 
-    }else if(
-      realLiquidityDemand>0 &&
-      action==='Buy Securities' &&
-      gap>0
-    ){
-
-      macroText=`
-        ${liquidityAssessment}
-        With weak aggregate demand, tighter funding conditions may
-        continue to constrain credit and investment. The smaller
-        intervention reduces future inflation risk, but provides
-        less support to growth.
-      `;
-
-    }else if(
-      realLiquidityDemand>0 &&
-      action==='Reverse Repo' &&
-      nearZero
-    ){
-
-      macroText=`
-        ${liquidityAssessment}
-        Because the support is temporary, it can stabilize
-        short-term funding conditions while limiting persistent
-        inflation risk. If economic weakness lasts 3–4 months,
-        however, growth support may fade sooner than under an
-        outright purchase.
-      `;
-
-    }else if(
-      realLiquidityDemand>0 &&
-      action==='Repo'
-    ){
-
-      macroText=`
-        ${liquidityAssessment}
-        With weak aggregate demand, withdrawing liquidity would add
-        unnecessary pressure to funding costs, credit, investment,
-        and growth, with little near-term macroeconomic justification.
-      `;
-
-    }else if(
-      realLiquidityDemand>0 &&
-      action==='Sell Securities'
-    ){
-
-      macroText=`
-        ${liquidityAssessment}
-        Issuing T-bills while the market is already short withdraws
-        additional liquidity and pushes funding costs higher.
-        T-bill issuance is useful when excess liquidity needs to be
-        absorbed, but in the current state it further weakens credit
-        and aggregate demand.
-      `;
+    if(realLiquidityDemand>0 && action==='Sell Securities'){
+      return {
+        auction:marketTemplate('issues T-bills'),
+        macro:`
+          Issuing T-bills while the market is already short
+          withdraws additional liquidity and pushes funding costs
+          higher. T-bill issuance is useful when excess liquidity
+          needs to be absorbed, but in the current state it further
+          weakens credit and aggregate demand.
+        `
+      };
     }
 
     return {
-      auction:auctionText,
-      macro:macroText
+      auction:'',
+      macro:''
     };
   };
+
   const phase1Rule=pgPhase===1
     ? pgPhase1ReportRule()
     : {auction:'',macro:''}; 
