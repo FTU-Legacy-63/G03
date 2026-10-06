@@ -149,7 +149,7 @@ class MarketTBillInventory:
         if face_value <= 1e-9:
             return None
         lot = TBillLot(
-            security_id=f"SBV{self._counter:04d}",
+            security_id=f"CBB{self._counter:04d}",
             issue_date=issue_date,
             maturity_date=issue_date + timedelta(days=tenor_days),
             rate=float(rate),
