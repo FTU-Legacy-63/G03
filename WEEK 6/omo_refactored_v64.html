@@ -658,7 +658,7 @@ const learningCards={
              <tr>
                <td><b>Outright Purchase of Central Bank Bills</b></td>
                <td>
-                 The SBV purchases bills from banks and holds the bills.
+                 The Central Bank purchases bills from banks and holds the bills.
                </td>
                <td>
                  ↑ <b>Liquidity injection</b>
@@ -667,7 +667,7 @@ const learningCards={
              <tr>
                <td><b>Outright Sale of Central Bank Bills</b></td>
                <td>
-                 The SBV sells bills to banks.
+                 The Central Bank sells bills to banks.
                </td>
                <td>
                  ↓ <b>Liquidity absorption</b>
@@ -676,7 +676,7 @@ const learningCards={
              <tr>
                <td><b>REPO (Sale with an agreement to repurchase)</b></td>
                <td>
-                 The SBV sells bills with an agreement to repurchase them at a specified date.
+                 The Central Bank sells bills with an agreement to repurchase them at a specified date.
                  When the transaction matures, the liquidity absorbed is returned to the system.
                </td>
                <td>
@@ -686,8 +686,8 @@ const learningCards={
              <tr>
                <td><b>Reverse REPO (Purchase with an agreement to resell)</b></td>
                <td>
-                 The SBV purchases bills with an agreement to resell them at a specified date.
-                 When the transaction matures, the liquidity injected is returned to the SBV.
+                 The Central Ban purchases bills with an agreement to resell them at a specified date.
+                 When the transaction matures, the liquidity injected is returned to the Central Bank.
                </td>
                <td>
                  ↑ <b>Temporary liquidity injection</b>
@@ -782,7 +782,7 @@ const learningCards={
    
        <h3>Why is it important?</h3>
        <p>
-         Expected Inflation helps the SBV consider <b>future inflation pressure</b>, not only current inflation.
+         Expected Inflation helps the Central Bank consider <b>future inflation pressure</b>, not only current inflation.
        </p>
    
        <p>
@@ -1273,7 +1273,7 @@ function paperBrief(){
            <div class="rate-band">
               <div class="rate-band-item">
                 <b>${a[4]}</b>
-                <span>SBV overnight lending rate</span>
+                <span>Central Bank overnight lending rate</span>
               </div>
               <div class="rate-band-item">
                 <b>${a[5]}</b>
@@ -1521,7 +1521,7 @@ function paperReport(){
        <p>Updated macroeconomic conditions, money market developments, credit activities and key indicators.</p>
      </div>
      <div class="clippings">
-    <article class="clipping"><div class="newslabel">MACROECONOMY</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">AUCTION DECISION & MARKET RESPONSE</div>${pgPhase===1&&p1Decision?`<div class="headline">${p1Decision.score} – ${p1Decision.fit}${p1Decision.label?` · ${p1Decision.label}`:''}</div><p><b>Auction decision:</b> In the current session, ${pgP1InstrumentText(pgDecision.omo_action)}. The offered volume is <b>${pgFmt(offeredVolume)} bn</b> versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>. ${p1BidAssessment}</p><p><b>Market response:</b> Including maturities, net OMO cash flow is <b>${pgFmt(totalSupply)} bn</b>. After the operation, Liquidity Gap is <b>${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn</b> and the overnight rate moves from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>. ${p1LiquidityAssessment}</p>`:`<div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p>`}</article>
+    <article class="clipping"><div class="newslabel">AUCTION DECISION & MARKET RESPONSE</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">MACROECONOMY</div>${pgPhase===1&&p1Decision?`<div class="headline">${p1Decision.score} – ${p1Decision.fit}${p1Decision.label?` · ${p1Decision.label}`:''}</div><p><b>Auction decision:</b> In the current session, ${pgP1InstrumentText(pgDecision.omo_action)}. The offered volume is <b>${pgFmt(offeredVolume)} bn</b> versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>. ${p1BidAssessment}</p><p><b>Market response:</b> Including maturities, net OMO cash flow is <b>${pgFmt(totalSupply)} bn</b>. After the operation, Liquidity Gap is <b>${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn</b> and the overnight rate moves from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>. ${p1LiquidityAssessment}</p>`:`<div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p>`}</article>
     <article class="clipping quick-result-card">
      <div class="newslabel">QUICK RESULT</div>
      <div class="quick-result-item">
