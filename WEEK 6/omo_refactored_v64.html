@@ -1891,17 +1891,148 @@ function paperReport(){
     }
 
     return {
-      auction:'',
-      macro:''
-    };
-  };
-
-  const reportRule=
+     auction:'',
+     macro:''
+   };
+   };
+   
+   /* PHASE 3 REPORT RULE*/
+   const pgPhase3ReportRule=()=>{
+     const action=String(pgDecision?.omo_action||'');
+     const offeredVolume=Number(pgDecision?.volume||0);
+     const realLiquidityDemand=Number(pgResult.real_liquidity_demand??0);
+     const totalSupply=Number(pgResult.total_supply??0);
+     const gap=Number(pgResult.liquidity_gap??0);
+     const previousON=Number(pgResult.previous_interbank_rate??0);
+     const newON=Number(pgResult.interbank_rate??0);
+     const bidAssessment=pgBidVolumeAssessment(
+       offeredVolume,
+       totalBid
+     );
+     const liquidityAssessment=pgLiquidityOutcomeAssessment(
+       realLiquidityDemand,
+       totalSupply
+     );
+     const auctionTemplate=(instrumentText)=>`
+       <p>
+         In the current session, the Central Bank ${instrumentText}.
+         The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
+         versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>;
+         ${bidAssessment}
+         Including maturities, net OMO cash flow is
+         <b>${pgFmt(totalSupply)} bn</b>.
+         After the operation, Liquidity Gap is
+         <b>${gap>=0?'+':''}${pgFmt(gap)} bn</b>
+         and the overnight rate moves from
+         <b>${previousON.toFixed(2)}%</b>
+         to
+         <b>${newON.toFixed(2)}%</b>.
+       </p>
+     `;
+     const nearZero=Math.abs(gap)<=1;
+   
+     /* 1. Shortage + Outright purchase + Gap ≈ 0 */
+     if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
+       return {
+         auction:auctionTemplate('purchases T-bills outright'),
+         macro:`
+           <p>
+             ${liquidityAssessment}
+             There is no major new macroeconomic shock in this phase.
+             Restoring normal funding conditions lets earlier policy
+             decisions continue to transmit. Credit can adjust without
+             another strong easing or tightening impulse. The objective
+             is stability while the earlier effects become clearer.
+           </p>
+         `
+       };
+     }
+   
+     /*2. Shortage + Reverse Repo + Gap ≈ 0 */
+     if(realLiquidityDemand>0 && action==='Reverse Repo' && nearZero){
+       return {
+         auction:auctionTemplate('conducts a Reverse Repo'),
+         macro:`
+           <p>
+             ${liquidityAssessment}
+             A Reverse Repo can cover the shortage while keeping the
+             support temporary. This helps credit conditions without
+             committing to a lasting expansion of liquidity. If earlier
+             easing is already beginning to transmit, however, additional
+             support may become less necessary. The trade-off is
+             flexibility versus the risk of cumulative accommodation.
+           </p>
+         `
+       };
+     }
+   
+     /* 3. Shortage + T-bill issuance */
+     if(realLiquidityDemand>0 && action==='Sell Securities'){
+       return {
+         auction:auctionTemplate('issues T-bills'),
+         macro:`
+           <p>
+             ${liquidityAssessment}
+             T-bill issuance keeps funding conditions tighter while
+             earlier policy support is still working through the economy.
+             This may limit the risk of excessive easing. However, it can
+             also slow credit and investment before the recovery is clearly
+             established. The action therefore prioritizes caution over
+             smoother policy transmission.
+           </p>
+         `
+       };
+     }
+   
+     /* 4. Shortage + Repo */
+     if(realLiquidityDemand>0 && action==='Repo'){
+       return {
+         auction:auctionTemplate('conducts a Repo'),
+         macro:`
+           <p>
+             ${liquidityAssessment}
+             A Repo withdraws liquidity even though the system remains
+             short of funding. This creates a new tightening impulse in a
+             phase with no new inflation shock. Higher funding costs can
+             weaken credit and interrupt earlier policy transmission.
+             The action is therefore inconsistent with the immediate
+             liquidity need.
+           </p>
+         `
+       };
+     }
+   
+     /* 5. Balanced / surplus + new OMO injection pushes Gap < 0 */
+     if(realLiquidityDemand<=0 && action==='Reverse Repo' && gap<0){
+       return {
+         auction:auctionTemplate('conducts a Reverse Repo'),
+         macro:`
+           <p>
+             ${liquidityAssessment}
+             Additional injection is unnecessary when liquidity is already
+             balanced or in surplus. It may push funding conditions easier
+             without a new macroeconomic reason for doing so. The marginal
+             benefit to growth is limited at this stage. The main risk is
+             creating excess liquidity before earlier support has fully
+             transmitted.
+           </p>
+         `
+       };
+     }
+     return {
+       auction:'',
+       macro:''
+     };
+   };
+   
+   const reportRule=
      pgPhase===1
        ? pgPhase1ReportRule()
        : pgPhase===2
          ? pgPhase2ReportRule()
-         : {auction:'',macro:''};
+         : pgPhase===3
+           ? pgPhase3ReportRule()
+           : {auction:'',macro:''};
   const liquidityPosition=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0);
   const rateHeadline=Number.isFinite(post)?`${post.toFixed(2)}%`:'—';
   const deltaText=`${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp`;
