@@ -746,6 +746,12 @@ class CentralBankGame:
             1: 4000.0,
             2: 10000.0,
             3: 2000.0,
+            4: 1000.0,
+            5: -3000.0,
+            6: 2000.0,
+            7: -5000.0,
+            8: 2000.0,  
+        }
         }
         if self.phase not in liquidity_demand_by_phase:
             raise ValueError(
