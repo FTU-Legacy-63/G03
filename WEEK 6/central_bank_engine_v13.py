@@ -764,26 +764,42 @@ class CentralBankGame:
         return liquidity_demand_by_phase[self.phase]
         
     def _calculate_macro_block(self, interbank_rate):
-        """Macro result published once every 3 phases."""
+        """Calculate macro variables for every phase."""
         if self.pending_expected_inflation is None:
-            raise ValueError("Expected inflation is missing for this 3-phase macro block.")
-
+            raise ValueError("Expected inflation is missing for this phase.")
+    
         expected = float(self.pending_expected_inflation)
-        real_rate = excel_round(interbank_rate - expected, 2)
-        output_gap = excel_round(
-            self.output_gap_persistence * self.last_macro_output_gap
-            - self.output_gap_rate_sensitivity * (real_rate - self.neutral_real_rate),
+    
+        real_rate = excel_round(
+            interbank_rate - expected,
             2
         )
-        gdp_growth = excel_round(self.potential_gdp_growth + output_gap, 2)
+    
+        output_gap = excel_round(
+            self.output_gap_persistence * self.last_macro_output_gap
+            - self.output_gap_rate_sensitivity
+            * (real_rate - self.neutral_real_rate),
+            2
+        )
+    
+        # GDP growth = Potential GDP growth
+        #               + (Current Output Gap - Previous Output Gap)
+        gdp_growth = excel_round(
+            self.potential_gdp_growth
+            + (output_gap - self.last_macro_output_gap),
+            2
+        )
+    
         inflation = excel_round(
             self.inflation_expectation_weight * expected
             + self.inflation_output_gap_sensitivity * output_gap,
             2
         )
-
+    
+        # Store current Output Gap so the next phase can use it as
+        # the previous-period Output Gap.
         self.last_macro_output_gap = output_gap
-        self.pending_expected_inflation = None
+    
         return {
             "expected_inflation": expected,
             "real_interest_rate": real_rate,
@@ -826,15 +842,16 @@ class CentralBankGame:
         raw_new_rate = 0.069 * prev_rate + 0.000123 * gap + 3.584
         new_rate = excel_round(min(20.0, max(0.0, raw_new_rate)), 2)
 
-        macro = {
-            "expected_inflation": None,
-            "real_interest_rate": None,
-            "output_gap": None,
-            "gdp_growth": None,
-            "inflation": None,
-        }
-        if self.phase % 3 == 0:
-            macro = self._calculate_macro_block(new_rate)
+        macro = self._calculate_macro_block(new_rate)
+
+        if self.phase % 3 != 0:
+            macro = {
+                "expected_inflation": None,
+                "real_interest_rate": None,
+                "output_gap": None,
+                "gdp_growth": None,
+                "inflation": None,
+            }
 
         result = PhaseResult(
             phase=self.phase,
