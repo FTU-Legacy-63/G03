@@ -2067,7 +2067,6 @@ function paperReport(){
        </p>
      `;
      const nearZero=Math.abs(gap)<=1;
-   
      /* 1. Shortage + Outright purchase + Gap ≈ 0 */
      if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
        return {
@@ -2081,7 +2080,6 @@ function paperReport(){
          `
        };
      }
-   
      /*2. Shortage + Reverse Repo + Gap ≈ 0 */
      if(realLiquidityDemand>0 && action==='Reverse Repo' && nearZero){
        return {
@@ -2110,7 +2108,6 @@ function paperReport(){
          `
        };
      }
-   
      /* 4. Shortage + Repo */
      if(realLiquidityDemand>0 && action==='Repo'){
        return {
@@ -2139,6 +2136,196 @@ function paperReport(){
          `
        };
      }
+   /* 6. Shortage + Outright purchase + Gap < 0 */
+      if(
+        realLiquidityDemand>0 &&
+        action==='Buy Securities' &&
+        gap<0
+      ){
+        return {
+          auction:auctionTemplate('purchases Central Bank Bills outright'),
+          macro:`
+              The purchase exceeds the remaining shortage and creates a
+              surplus. There is no major new macro shock, so policy should
+              avoid creating a fresh disturbance while earlier effects
+              continue to transmit.<br><br>There is no new macro shock
+              requiring a stronger easing impulse. The extra liquidity
+              risks obscuring the transmission of earlier policy decisions.
+          `
+        };
+      }
+      /* 7. Shortage + Reverse Repo + Gap > 0 */
+      if(
+        realLiquidityDemand>0 &&
+        action==='Reverse Repo' &&
+        gap>0 &&
+        !nearZero
+      ){
+        return {
+          auction:auctionTemplate('conducts a Reverse Repo'),
+          macro:`
+              The Reverse Repo eases the shortage but leaves part of the
+              funding need unmet. There is no major new macro shock, so
+              policy should avoid creating a fresh disturbance while
+              earlier effects continue to transmit.<br><br>Temporary support
+              is consistent with a transition phase and avoids locking in
+              permanent easing. The trade-off is incomplete stabilization
+              of current funding conditions.
+          `
+        };
+      }
+      /* 8. Shortage + Reverse Repo + Gap < 0 */
+      if(
+        realLiquidityDemand>0 &&
+        action==='Reverse Repo' &&
+        gap<0
+      ){
+        return {
+          auction:auctionTemplate('conducts a Reverse Repo'),
+          macro:`
+              The Reverse Repo more than covers the shortage and creates
+              a surplus. There is no major new macro shock, so policy should
+              avoid creating a fresh disturbance while earlier effects
+              continue to transmit.<br><br>Temporary support is flexible,
+              but the size is larger than the market requires. The excess
+              liquidity may create a new disturbance while earlier policy
+              effects are still transmitting.
+          `
+        };
+      }
+      /* 9. Surplus + Repo + Gap ≈ 0 */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Repo' &&
+        nearZero
+      ){
+        return {
+          auction:auctionTemplate('conducts a Repo'),
+          macro:`
+              The Repo removes the surplus and restores liquidity toward
+              balance. There is no major new macro shock, so policy should
+              avoid creating a fresh disturbance while earlier effects
+              continue to transmit.<br><br>A short-term correction is well
+              suited to a phase with no major new shock. The action
+              stabilizes the money market without imposing a persistent
+              tightening stance.
+          `
+        };
+      }
+      /* 10. Surplus + Repo + Gap < 0 */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Repo' &&
+        gap<0 &&
+        !nearZero
+      ){
+        return {
+          auction:auctionTemplate('conducts a Repo'),
+          macro:`
+              The Repo absorbs part of the surplus, but some excess
+              liquidity remains. There is no major new macro shock, so
+              policy should avoid creating a fresh disturbance while
+              earlier effects continue to transmit.<br><br>This moves
+              conditions in the correct direction without sharply
+              tightening funding. The trade-off is that market
+              normalization remains incomplete.
+          `
+        };
+      }
+      /* 11. Surplus + Repo + Gap > 0 */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Repo' &&
+        gap>0
+      ){
+        return {
+          auction:auctionTemplate('conducts a Repo'),
+          macro:`
+              The Repo removes more than the surplus and creates a shortage.
+              There is no major new macro shock, so policy should avoid
+              creating a fresh disturbance while earlier effects continue
+              to transmit.<br><br>This introduces a new tightening impulse
+              despite the absence of a new macro shock. The action may
+              interrupt the transmission of earlier support.
+          `
+        };
+      }
+      /* 12. Surplus + T-bill issuance + Gap ≈ 0 */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Sell Securities' &&
+        nearZero
+      ){
+        return {
+          auction:auctionTemplate('issues Central Bank Bills'),
+          macro:`
+              Central Bank Bills issuance removes the surplus and restores
+              the market toward balance. There is no major new macro shock,
+              so policy should avoid creating a fresh disturbance while
+              earlier effects continue to transmit.<br><br>The direction is
+              appropriate, but the absorption lasts longer than a simple
+              transition adjustment requires. The trade-off is less
+              flexibility if liquidity conditions change again.
+          `
+        };
+      }
+      /* 13. Surplus + T-bill issuance + Gap < 0 */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Sell Securities' &&
+        gap<0 &&
+        !nearZero
+      ){
+        return {
+          auction:auctionTemplate('issues Central Bank Bills'),
+          macro:`
+              Central Bank Bills issuance reduces the surplus but does not
+              fully remove it. There is no major new macro shock, so policy
+              should avoid creating a fresh disturbance while earlier
+              effects continue to transmit.<br><br>The operation moves
+              conditions in the correct direction while keeping some
+              support in place. The remaining surplus may still keep
+              funding conditions easier than intended.
+          `
+        };
+         }
+      /* 14. Surplus + T-bill issuance + Gap > 0 */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Sell Securities' &&
+        gap>0
+      ){
+        return {
+          auction:auctionTemplate('issues Central Bank Bills'),
+          macro:`
+              Central Bank Bills issuance absorbs more than the surplus and
+              creates a shortage. There is no major new macro shock, so
+              policy should avoid creating a fresh disturbance while
+              earlier effects continue to transmit.<br><br>The longer-lasting
+              tightening is stronger than the transition phase requires.
+              This risks slowing credit before the earlier policy effects
+              are fully visible.
+          `
+        };
+      }
+      /* 15. Surplus + Outright purchase */
+      if(
+        realLiquidityDemand<0 &&
+        action==='Buy Securities'
+      ){
+        return {
+          auction:auctionTemplate('purchases Central Bank Bills outright'),
+          macro:`
+              The outright purchase adds liquidity while the system is
+              already in surplus. There is no major new macro shock, so
+              policy should avoid creating a fresh disturbance while
+              earlier effects continue to transmit.<br><br>There is no new
+              shock requiring a persistent increase in accommodation.
+              The additional liquidity may delay normalization and increase
+              later inflation risk.
+          `
+        };
+      }
      return {
         auction:'',
         macro:''
