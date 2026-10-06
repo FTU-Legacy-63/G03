@@ -2020,19 +2020,282 @@ function paperReport(){
        };
      }
      return {
-       auction:'',
-       macro:''
-     };
-   };
-   
-   const reportRule=
-     pgPhase===1
-       ? pgPhase1ReportRule()
-       : pgPhase===2
-         ? pgPhase2ReportRule()
-         : pgPhase===3
-           ? pgPhase3ReportRule()
-           : {auction:'',macro:''};
+        auction:'',
+        macro:''
+      };
+      };
+      
+      /*PHASE 4 REPORT RULE */
+      const pgPhase4ReportRule=()=>{
+        const action=String(pgDecision?.omo_action||'');
+        const offeredVolume=Number(pgDecision?.volume||0);
+        const realLiquidityDemand=Number(pgResult.real_liquidity_demand??0);
+        const totalSupply=Number(pgResult.total_supply??0);
+        const gap=Number(pgResult.liquidity_gap??0);
+        const previousON=Number(pgResult.previous_interbank_rate??0);
+        const newON=Number(pgResult.interbank_rate??0);
+        const bidAssessment=pgBidVolumeAssessment(
+          offeredVolume,
+          totalBid
+        );
+        const liquidityAssessment=pgLiquidityOutcomeAssessment(
+          realLiquidityDemand,
+          totalSupply
+        );
+        const auctionTemplate=(instrumentText)=>`
+          <p>
+            In the current session, the Central Bank ${instrumentText}.
+            The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
+            versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>;
+            ${bidAssessment}
+            Including maturities, net OMO cash flow is
+            <b>${pgFmt(totalSupply)} bn</b>.
+            After the operation, Liquidity Gap is
+            <b>${gap>=0?'+':''}${pgFmt(gap)} bn</b>
+            and the overnight rate moves from
+            <b>${previousON.toFixed(2)}%</b>
+            to
+            <b>${newON.toFixed(2)}%</b>.
+          </p>
+        `;
+        const nearZero=Math.abs(gap)<=1;
+      
+        /* GDP assessment*/
+        const currentGDP=Number(pgLatestMacroValue('gdp_growth'));
+        let previousGDP=NaN;
+        for(let i=pgMacroHistory.length-1;i>=0;i--){
+          const historyGDP=Number(pgMacroHistory[i]?.gdp);
+          if(!Number.isFinite(historyGDP)) continue;
+          if(Number.isFinite(currentGDP) && historyGDP!==currentGDP){
+            previousGDP=historyGDP;
+            break;
+          }
+        }
+        const gdpImproved=
+          Number.isFinite(currentGDP) &&
+          Number.isFinite(previousGDP) &&
+          currentGDP>previousGDP;
+        const gdpWeakOrFlat=
+          !gdpImproved;
+      
+        /* 1. Shortage + weak/flat GDP + outright purchase + Gap ≈ 0 */
+        if(
+          realLiquidityDemand>0 &&
+          gdpWeakOrFlat &&
+          action==='Buy Securities' &&
+          nearZero
+        ){
+          return {
+            auction:auctionTemplate('purchases T-bills outright'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                GDP remains weak or flat as earlier policy effects begin
+                to appear. Longer-lasting support can reduce the risk of a
+                credit squeeze and reinforce the recovery. It also gives
+                investment and borrowing more time to respond. The trade-off
+                is greater inflation risk if easing persists after growth
+                strengthens.
+              </p>
+            `
+          };
+        }
+      
+        /* 2. Shortage + improved GDP + Reverse Repo + Gap ≈ 0 */
+        if(
+          realLiquidityDemand>0 &&
+          gdpImproved &&
+          action==='Reverse Repo' &&
+          nearZero
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                Growth has improved, so the main need is short-term
+                liquidity stabilization rather than additional stimulus.
+                A Reverse Repo can cover the shortage without locking in
+                prolonged easing. This keeps funding conditions orderly
+                while preserving policy flexibility. It is therefore well
+                suited to a temporary funding need.
+              </p>
+            `
+          };
+        }
+      
+        /* 3. Shortage + improved GDP + outright purchase + Gap ≈ 0 */
+        if(
+          realLiquidityDemand>0 &&
+          gdpImproved &&
+          action==='Buy Securities' &&
+          nearZero
+        ){
+          return {
+            auction:auctionTemplate('purchases T-bills outright'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                Growth has improved, but an outright purchase provides
+                longer-lasting support than the immediate shortage requires.
+                This may still help credit and investment at the margin.
+                However, the benefit is smaller once recovery is already
+                visible. The main trade-off is a higher risk of excess
+                liquidity and later inflation.
+              </p>
+            `
+          };
+        }
+      
+        /*4. Surplus + improved GDP + Repo + Gap ≈ 0*/
+        if(
+          realLiquidityDemand<0 &&
+          gdpImproved &&
+          action==='Repo' &&
+          nearZero
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                Growth is improving while the system is in surplus.
+                A short-term Repo can remove excess liquidity without
+                imposing a persistent tightening stance. This helps keep
+                the overnight market stable as the recovery continues.
+                The action balances market discipline with continued
+                macroeconomic support.
+              </p>
+            `
+          };
+        }
+      
+        /* 5. Surplus + improved GDP + T-bill issuance + Gap ≈ 0 */
+        if(
+          realLiquidityDemand<0 &&
+          gdpImproved &&
+          action==='Sell Securities' &&
+          nearZero
+        ){
+          return {
+            auction:auctionTemplate('issues T-bills'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                T-bill issuance absorbs the surplus for longer than a
+                temporary Repo. This offers stronger protection against
+                future inflation pressure. However, it may keep funding
+                conditions tighter than the immediate liquidity situation
+                requires. The choice therefore leans more toward price
+                stability than growth support.
+              </p>
+            `
+          };
+        }
+      
+        /* 6. Surplus + weak/flat GDP + Repo + Gap ≈ 0 */
+        if(
+          realLiquidityDemand<0 &&
+          gdpWeakOrFlat &&
+          action==='Repo' &&
+          nearZero
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                GDP is still weak even though liquidity is in surplus.
+                A Repo can restore market balance and prevent funding
+                conditions from becoming too easy. At the same time,
+                tighter liquidity reduces support to credit and investment.
+                The decision is reasonable but carries a clearer growth
+                trade-off.
+              </p>
+            `
+          };
+        }
+      
+        /* 7. Shortage + Repo */
+        if(
+          realLiquidityDemand>0 &&
+          action==='Repo'
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                The system is already short of liquidity, so a Repo moves
+                conditions in the wrong direction. Funding costs would
+                rise while credit and investment are still sensitive to
+                financial conditions. This could weaken the recovery
+                unnecessarily. The action therefore conflicts with the
+                immediate market need.
+              </p>
+            `
+          };
+        }
+      
+        /* 8. Shortage + T-bill issuance */
+        if(
+          realLiquidityDemand>0 &&
+          action==='Sell Securities'
+        ){
+          return {
+            auction:auctionTemplate('issues T-bills'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                T-bill issuance would withdraw liquidity from a system
+                that already needs funding. Because the absorption lasts
+                longer, the tightening effect could persist beyond the
+                current shortage. This places additional pressure on
+                credit and growth. The action is therefore both mistimed
+                and unnecessarily restrictive.
+              </p>
+            `
+          };
+        }
+      
+        /* 9. Balanced / surplus + continued injection makes Gap < 0*/
+        if(
+          realLiquidityDemand<=0 &&
+          action==='Reverse Repo' &&
+          gap<0
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:`
+              <p>
+                ${liquidityAssessment}
+                Liquidity is already comfortable, so further injection
+                provides little stabilization benefit. Extra easing may
+                support growth only marginally at this stage. It also
+                increases the chance that funding conditions become too
+                loose. The main risk is stronger inflation pressure as
+                the recovery develops.
+              </p>
+            `
+          };
+        }
+      
+        return {
+          auction:'',
+          macro:''
+        };
+      };
+      
+      const reportRule=
+        pgPhase===1
+          ? pgPhase1ReportRule()
+          : pgPhase===2
+            ? pgPhase2ReportRule()
+            : pgPhase===3
+              ? pgPhase3ReportRule()
+              : pgPhase===4
+                ? pgPhase4ReportRule()
+                : {auction:'',macro:''};
   const liquidityPosition=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0);
   const rateHeadline=Number.isFinite(post)?`${post.toFixed(2)}%`:'—';
   const deltaText=`${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp`;
