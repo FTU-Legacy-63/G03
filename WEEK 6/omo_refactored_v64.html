@@ -2123,7 +2123,7 @@ function paperReport(){
        };
      }
      /* 5. Balanced / surplus + new OMO injection pushes Gap < 0 */
-     if(realLiquidityDemand<=0 && action==='Reverse Repo' && gap<0){
+     if(realLiquidityDemand<=0 && action==='Reverse Repo' && gap<0 && !nearZero){
        return {
          auction:auctionTemplate('conducts a Reverse Repo'),
          macro:`
@@ -2140,7 +2140,7 @@ function paperReport(){
       if(
         realLiquidityDemand>0 &&
         action==='Buy Securities' &&
-        gap<0
+        gap<0 && !nearZero
       ){
         return {
           auction:auctionTemplate('purchases Central Bank Bills outright'),
@@ -2178,7 +2178,7 @@ function paperReport(){
       if(
         realLiquidityDemand>0 &&
         action==='Reverse Repo' &&
-        gap<0
+        gap<0 && !nearZero
       ){
         return {
           auction:auctionTemplate('conducts a Reverse Repo'),
@@ -2236,7 +2236,7 @@ function paperReport(){
       if(
         realLiquidityDemand<0 &&
         action==='Repo' &&
-        gap>0
+        gap>0 && !nearZero
       ){
         return {
           auction:auctionTemplate('conducts a Repo'),
@@ -2293,7 +2293,7 @@ function paperReport(){
       if(
         realLiquidityDemand<0 &&
         action==='Sell Securities' &&
-        gap>0
+        gap>0 && !nearZero
       ){
         return {
           auction:auctionTemplate('issues Central Bank Bills'),
