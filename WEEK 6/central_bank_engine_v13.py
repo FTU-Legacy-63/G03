@@ -243,7 +243,7 @@ class MarketTBillInventory:
                 "sbv_bill_id": x.security_id,
                 "issue_date": x.issue_date.isoformat(),
                 "maturity_date": x.maturity_date.isoformat(),
-                "rate": x.tbill_rate,
+                "rate": x.rate,
                 "remaining_volume": x.face_value,
             }
             for x in self.lots
