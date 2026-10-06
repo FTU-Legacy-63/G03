@@ -472,67 +472,89 @@ class CentralBankGame:
         return price(fv, auction_rate, self.tbill_tenor_days)
 
     def _cash_bid_to_face_volume(self, cash_bid, action, settlement_rate,
-                                 virtual_available=None):
-        """Convert a bank's cash bid into whole-unit security face volume.
-
-        Sell Securities / Repo: new CB security, 90-day tenor, settlement rate.
-        Buy Securities / Reverse Repo: FIFO market SBV bills, each lot's own
-        stored rate and remaining maturity (no weighted-average rate).
-
-        virtual_available is used only while constructing bids. It prevents a
-        later bank from reusing the same FIFO SBV Bill quantity already used to
-        convert an earlier bank's Cash Bid Volume, without mutating real inventory.
+                             virtual_available=None):
+        """Convert Cash Bid Volume into Bid Volume.
+    
+        Bid Volume represents bank demand and is NOT constrained by
+        the actual market inventory.
+    
+        Actual security availability is applied later when calculating
+        Real Volume.
         """
         cash_bid = max(0.0, float(cash_bid))
         if cash_bid <= 1e-12:
             return 0.0
-
+    
+        # Sell Securities / Repo:
+        # Cash Bid -> face-value Bid Volume using the announced settlement rate.
         if action in ("Sell Securities", "Repo"):
-            fv = cash_bid * (1 + settlement_rate * self.tbill_tenor_days / 36500)
+            fv = cash_bid * (
+                1 + settlement_rate * self.tbill_tenor_days / 36500
+            )
             return float(max(0, whole(fv)))
-
-        if virtual_available is None:
-            virtual_available = {
-                lot.security_id: lot.face_value for lot in self.market_inventory.lots
-            }
-
-        min_days = self.repo_tenor_days if action == "Reverse Repo" else 0
-        cutoff = self.current_date + timedelta(days=min_days)
+    
+        # Buy Securities / Reverse Repo:
+        # Bid Volume represents DEMAND only.
+        # Do NOT cap it by market inventory here.
+        #
+        # Use existing SBV Bills only as a pricing reference,
+        # preserving FIFO and each bill's own rate / maturity.
+        eligible_lots = [
+            lot for lot in sorted(
+                self.market_inventory.lots,
+                key=lambda x: (x.issue_date, x.security_id)
+            )
+            if lot.face_value > 1e-9
+            and lot.maturity_date > self.current_date
+        ]
+    
+        # If there is no outstanding T-bill to reference,
+        # still generate Bid Volume from Cash Bid.
+        # Inventory limitation will be applied later to Real Volume.
+        if not eligible_lots:
+            days = self.repo_tenor_days if action == "Reverse Repo" else self.tbill_tenor_days
+            unit_price = 1 / (
+                1 + settlement_rate * days / 36500
+            )
+            return float(max(0, whole(cash_bid / unit_price)))
+    
         cash_left = cash_bid
         fv_total = 0.0
-
-        eligible_lots = []
-        for lot in sorted(self.market_inventory.lots, key=lambda x: (x.issue_date, x.security_id)):
-            available = max(0.0, virtual_available.get(lot.security_id, 0.0))
-            if available <= 1e-9 or lot.maturity_date < cutoff:
-                continue
-
-            eligible_lots.append(lot)
-            days = max((lot.maturity_date - self.current_date).days, 0)
-            unit_price = 1 / (1 + lot.rate * days / 36500)
-            max_cash = available * unit_price
-
-            if cash_left >= max_cash - 1e-9:
-                fv_total += available
-                cash_left -= max_cash
+        last_unit_price = None
+    
+        for lot in eligible_lots:
+            if cash_left <= 1e-9:
+                break
+    
+            days = max(
+                (lot.maturity_date - self.current_date).days,
+                0
+            )
+    
+            unit_price = 1 / (
+                1 + lot.rate * days / 36500
+            )
+            last_unit_price = unit_price
+    
+            # Use the lot's actual quantity only to establish its
+            # pricing reference; do NOT use it as a hard demand limit.
+            lot_cash_value = lot.face_value * unit_price
+    
+            if cash_left >= lot_cash_value - 1e-9:
+                fv_total += lot.face_value
+                cash_left -= lot_cash_value
             else:
                 fv_total += cash_left / unit_price
                 cash_left = 0.0
                 break
-
-        # Bid Volume is an integer security quantity. Reserve exactly that rounded
-        # quantity in the virtual FIFO balance, rather than the pre-rounding amount.
-        rounded_fv = float(max(0, whole(fv_total)))
-        reserve_left = rounded_fv
-        for lot in eligible_lots:
-            if reserve_left <= 1e-9:
-                break
-            available = max(0.0, virtual_available.get(lot.security_id, 0.0))
-            take = min(available, reserve_left)
-            virtual_available[lot.security_id] = available - take
-            reserve_left -= take
-
-        return rounded_fv
+    
+        # If Cash Bid exceeds the outstanding reference inventory,
+        # continue converting the remaining demand using the marginal
+        # FIFO reference price rather than truncating Bid Volume.
+        if cash_left > 1e-9 and last_unit_price is not None:
+            fv_total += cash_left / last_unit_price
+    
+        return float(max(0, whole(fv_total)))
 
     def run_auction(self, decision, rld):
         decision.validate()
