@@ -752,7 +752,6 @@ class CentralBankGame:
             7: -5000.0,
             8: 2000.0,  
         }
-        }
         if self.phase not in liquidity_demand_by_phase:
             raise ValueError(
                 f"Scenario Liquidity Demand is not configured for Phase {self.phase}."
