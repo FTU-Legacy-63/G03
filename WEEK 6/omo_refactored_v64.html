@@ -1625,19 +1625,58 @@ function paperReport(){
       };
     }
 
-    if(realLiquidityDemand>0 && action==='Reverse Repo' && nearZero){
-      return {
-        auction:marketTemplate('conducts a Reverse Repo'),
-        macro:`
-          Because the support is temporary, it can stabilize
-          short-term funding conditions while limiting persistent
-          inflation risk. If economic weakness lasts 3–4 months,
-          however, growth support may fade sooner than under an
-          outright purchase.
-        `
-      };
-    }
-
+    if(
+     realLiquidityDemand>0 &&
+     action==='Reverse Repo' &&
+     nearZero
+   ){
+     return {
+       auction:marketTemplate('conducts a Reverse Repo'),
+       macro:`
+         Because the support is temporary, it can stabilize
+         short-term funding conditions while limiting persistent
+         inflation risk. If economic weakness lasts 3–4 months,
+         however, growth support may fade sooner than under an
+         outright purchase.
+       `
+     };
+   }
+   
+   if(
+     realLiquidityDemand>0 &&
+     action==='Reverse Repo' &&
+     gap>0 &&
+     !nearZero
+   ){
+     return {
+       auction:marketTemplate('conducts a Reverse Repo'),
+       macro:`
+         The operation eases part of the liquidity shortage but
+         does not fully normalize funding conditions. Banks still
+         face some short-term funding pressure, which may constrain
+         credit and working-capital demand. The cautious intervention
+         limits the risk of excessive liquidity, but provides less
+         support to economic activity.
+       `
+     };
+   }
+   
+   if(
+     realLiquidityDemand>0 &&
+     action==='Reverse Repo' &&
+     gap<0
+   ){
+     return {
+       auction:marketTemplate('conducts a Reverse Repo'),
+       macro:`
+         The operation provides more liquidity than the system
+         currently needs, creating a liquidity surplus. This can
+         temporarily ease funding conditions and support credit,
+         but the excess liquidity may increase future inflation
+         pressure once the temporary funding demand fades.
+       `
+     };
+   }
     if(realLiquidityDemand>0 && action==='Repo'){
       return {
         auction:marketTemplate('conducts a Repo'),
