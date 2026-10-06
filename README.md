@@ -2,7 +2,7 @@
 
 ## Tên sản phẩm
 
-![WHO RUNS THE WORLD?](https://who-runs-the-world-xajm.onrender.com/)
+[WHO RUNS THE WORLD?](https://who-runs-the-world-xajm.onrender.com/)
 
 ## Mã nhóm
 
