@@ -1421,7 +1421,6 @@ function paperAuctionResult(){
              <th>Status</th>
            </tr>
          </thead>
-   
          <tbody>
            ${orderedBids.map(b=>`
              <tr>
@@ -1442,7 +1441,6 @@ function paperAuctionResult(){
          </tbody>
          </table>
          </section>
-         
          <div class="auction-result-note">
            <b>Settlement:</b>
            ${
@@ -1564,12 +1562,10 @@ function paperReport(){
       offeredVolume,
       totalBid
     );
-
     const liquidityAssessment=pgLiquidityOutcomeAssessment(
       realLiquidityDemand,
       totalSupply
     );
-
     const marketTemplate=(instrumentText)=>`
       <p>
         In the current session, the Central Bank ${instrumentText}.
@@ -1587,9 +1583,7 @@ function paperReport(){
         ${liquidityAssessment}
       </p>
     `;
-
     const nearZero=Math.abs(gap)<=1;
-
     if(realLiquidityDemand>0 && action==='Buy Securities' && gap<0){
       return {
         auction:marketTemplate('purchases Central Bank Bills outright'),
@@ -1601,7 +1595,6 @@ function paperReport(){
         `
       };
     }
-
     if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
       return {
         auction:marketTemplate('purchases Central Bank Bills outright'),
@@ -1612,7 +1605,6 @@ function paperReport(){
         `
       };
     }
-
     if(realLiquidityDemand>0 && action==='Buy Securities' && gap>0){
       return {
         auction:marketTemplate('purchases Central Bank Bills outright'),
@@ -1624,7 +1616,6 @@ function paperReport(){
         `
       };
     }
-
     if(
      realLiquidityDemand>0 &&
      action==='Reverse Repo' &&
@@ -1641,7 +1632,6 @@ function paperReport(){
        `
      };
    }
-   
    if(
      realLiquidityDemand>0 &&
      action==='Reverse Repo' &&
@@ -1660,7 +1650,6 @@ function paperReport(){
        `
      };
    }
-   
    if(
      realLiquidityDemand>0 &&
      action==='Reverse Repo' &&
@@ -1688,7 +1677,6 @@ function paperReport(){
         `
       };
     }
-
     if(realLiquidityDemand>0 && action==='Sell Securities'){
       return {
         auction:marketTemplate('issues Central Bank Bills'),
@@ -1706,7 +1694,6 @@ function paperReport(){
       macro:''
     };
   };
-
   /* PHASE 2 REPORT RULE */
   const pgPhase2ReportRule=()=>{
     const action=String(pgDecision?.omo_action||'');
@@ -1716,17 +1703,14 @@ function paperReport(){
     const gap=Number(pgResult.liquidity_gap??0);
     const previousON=Number(pgResult.previous_interbank_rate??0);
     const newON=Number(pgResult.interbank_rate??0);
-
     const bidAssessment=pgBidVolumeAssessment(
       offeredVolume,
       totalBid
     );
-
     const liquidityAssessment=pgLiquidityOutcomeAssessment(
       realLiquidityDemand,
       totalSupply
     );
-
     const auctionTemplate=(instrumentText)=>`
       <p>
         In the current session, the Central Bank ${instrumentText}.
@@ -1744,9 +1728,7 @@ function paperReport(){
         ${liquidityAssessment}
       </p>
     `;
-
     const nearZero=Math.abs(gap)<=1;
-
     /* ------------------------------------------------------------
        1. Reverse Repo + Liquidity Gap ≈ 0
        ------------------------------------------------------------ */
@@ -1767,7 +1749,6 @@ function paperReport(){
         `
       };
     }
-
     /* ------------------------------------------------------------
        2. Reverse Repo + Liquidity Gap > 0
        ------------------------------------------------------------ */
@@ -1789,7 +1770,6 @@ function paperReport(){
         `
       };
     }
-
     /* ------------------------------------------------------------
        3. Reverse Repo + Liquidity Gap < 0
        ------------------------------------------------------------ */
@@ -1810,7 +1790,6 @@ function paperReport(){
         `
       };
     }
-
     /* ------------------------------------------------------------
        4. Outright purchase + Liquidity Gap ≈ 0
        ------------------------------------------------------------ */
@@ -1832,7 +1811,6 @@ function paperReport(){
         `
       };
     }
-
     /* ------------------------------------------------------------
        5. Repo
        ------------------------------------------------------------ */
@@ -1852,7 +1830,6 @@ function paperReport(){
         `
       };
     }
-
     /* ------------------------------------------------------------
        6. T-bill issuance
        ------------------------------------------------------------ */
@@ -1872,13 +1849,189 @@ function paperReport(){
         `
       };
     }
-
+/* 7. Shortage + Outright purchase + Gap > 0 */
+    if(
+      realLiquidityDemand>0 &&
+      action==='Buy Securities' &&
+      gap>0 &&
+      !nearZero
+    ){
+      return {
+        auction:auctionTemplate('purchases Central Bank Bills outright'),
+        macro:`
+            The purchase reduces the seasonal shortage but leaves part
+            of the funding need unmet. The funding shock is seasonal and
+            expected to fade within about 1–2 months.<br><br>Because the
+            shock is temporary, the longer-lasting support still does not
+            fully stabilize the market. The result combines insufficient
+            near-term relief with a less flexible instrument.
+        `
+      };
+    }
+    /* 8. Shortage + Outright purchase + Gap < 0 */
+    if(
+      realLiquidityDemand>0 &&
+      action==='Buy Securities' &&
+      gap<0
+    ){
+      return {
+        auction:auctionTemplate('purchases Central Bank Bills outright'),
+        macro:`
+            The purchase more than covers the seasonal shortage and
+            creates a liquidity surplus. The funding shock is seasonal
+            and expected to fade within about 1–2 months.<br><br>The
+            longer-lasting injection may keep financing conditions easier
+            after the seasonal pressure fades. The trade-off is unnecessary
+            accommodation and higher risk of excess liquidity later.
+        `
+      };
+    }
+    /* 9. Surplus + Repo + Gap ≈ 0 */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Repo' &&
+      nearZero
+    ){
+      return {
+        auction:auctionTemplate('conducts a Repo'),
+        macro:`
+            The Repo broadly absorbs the liquidity surplus and restores
+            the market toward balance. The funding shock is seasonal and
+            expected to fade within about 1–2 months.<br><br>A short-term
+            absorption instrument is consistent with the temporary nature
+            of the phase. The choice corrects the actual state without
+            locking in a longer tightening stance.
+        `
+      };
+    }
+    /* 10. Surplus + Repo + Gap < 0 */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Repo' &&
+      gap<0 &&
+      !nearZero
+    ){
+      return {
+        auction:auctionTemplate('conducts a Repo'),
+        macro:`
+            The Repo absorbs part of the surplus, but some excess liquidity 
+            remains. The funding shock is seasonal and expected to fade
+            within about 1–2 months.<br><br>The operation moves conditions
+            in the correct direction while preserving some funding support.
+            The trade-off is incomplete normalization of the money market.
+        `
+      };
+    }
+    /* 11. Surplus + Repo + Gap > 0 */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Repo' &&
+      gap>0
+    ){
+      return {
+        auction:auctionTemplate('conducts a Repo'),
+        macro:`
+            The Repo absorbs more than the surplus and pushes the system into shortage. The funding shock is seasonal and expected to
+            fade within about 1–2 months.<br><br>This removes the excess
+            liquidity but creates unnecessary funding pressure. The action
+            is too strong for a temporary seasonal setting.
+        `
+      };
+    }
+    /* 12. Surplus + T-bill issuance + Gap ≈ 0 */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Sell Securities' &&
+      nearZero
+    ){
+      return {
+        auction:auctionTemplate('issues Central Bank Bills'),
+        macro:`
+            Central Bank Bills issuance broadly removes the liquidity surplus
+            and restores balance. The funding shock is seasonal and expected
+            to fade within about 1–2 months.<br><br>The absorption is effective
+            but lasts longer than a short-lived seasonal adjustment normally
+            requires. The trade-off is less flexibility once market
+            conditions normalize.
+        `
+      };
+    }
+    /* 13. Surplus + T-bill issuance + Gap < 0 */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Sell Securities' &&
+      gap<0 &&
+      !nearZero
+    ){
+      return {
+        auction:auctionTemplate('issues Central Bank Bills'),
+        macro:`
+            Central Bank Bills issuance absorbs part of the surplus, but
+            excess liquidity remains. The funding shock is seasonal and
+            expected to fade within about 1–2 months.<br><br>The direction
+            is appropriate, although the market is not fully normalized.
+            The remaining surplus keeps conditions supportive but may
+            persist beyond the seasonal episode.
+        `
+      };
+    }
+    /* 14. Surplus + T-bill issuance + Gap > 0 */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Sell Securities' &&
+      gap>0
+    ){
+      return {
+        auction:auctionTemplate('issues Central Bank Bills'),
+        macro:`
+            Central Bank Bills issuance absorbs more than the available
+            surplus and creates a shortage. The funding shock is seasonal
+            and expected to fade within about 1–2 months.<br><br>The
+            longer-lasting withdrawal tightens conditions beyond what
+            the market requires. This is unnecessarily restrictive for
+            a temporary liquidity situation.
+        `
+      };
+    }
+    /* 15. Surplus + Reverse Repo */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Reverse Repo'
+    ){
+      return {
+        auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:`
+            The Reverse Repo adds liquidity while the system is already
+            in surplus. The funding shock is seasonal and expected to
+            fade within about 1–2 months.<br><br>This moves the money market
+            farther from balance instead of correcting it. The action
+            unnecessarily increases excess liquidity after a temporary
+            seasonal shock.
+        `
+      };
+    }
+/* 16. Surplus + Outright purchase */
+    if(
+      realLiquidityDemand<0 &&
+      action==='Buy Securities'
+    ){
+      return {
+        auction:auctionTemplate('purchases Central Bank Bills outright'),
+        macro:`
+            The outright purchase adds liquidity while the system is already
+            in surplus. The funding shock is seasonal and expected to fade
+            within about 1–2 months.<br><br>The longer-lasting injection
+            moves conditions farther from the actual market need. The action
+            increases both excess liquidity and the risk of persistent
+            accommodation.
+        `
+      };
+    }      
     return {
      auction:'',
      macro:''
    };
    };
-   
    /* PHASE 3 REPORT RULE*/
    const pgPhase3ReportRule=()=>{
      const action=String(pgDecision?.omo_action||'');
@@ -1943,7 +2096,6 @@ function paperReport(){
          `
        };
      }
-   
      /* 3. Shortage + T-bill issuance */
      if(realLiquidityDemand>0 && action==='Sell Securities'){
        return {
@@ -1973,7 +2125,6 @@ function paperReport(){
          `
        };
      }
-   
      /* 5. Balanced / surplus + new OMO injection pushes Gap < 0 */
      if(realLiquidityDemand<=0 && action==='Reverse Repo' && gap<0){
        return {
@@ -1992,8 +2143,7 @@ function paperReport(){
         auction:'',
         macro:''
       };
-      };
-      
+      };  
       /*PHASE 4 REPORT RULE */
       const pgPhase4ReportRule=()=>{
         const action=String(pgDecision?.omo_action||'');
@@ -2029,7 +2179,6 @@ function paperReport(){
           </p>
         `;
         const nearZero=Math.abs(gap)<=1;
-      
         /* GDP assessment*/
         const currentGDP=Number(pgLatestMacroValue('gdp_growth'));
         let previousGDP=NaN;
@@ -2047,7 +2196,6 @@ function paperReport(){
           currentGDP>previousGDP;
         const gdpWeakOrFlat=
           !gdpImproved;
-      
         /* 1. Shortage + weak/flat GDP + outright purchase + Gap ≈ 0 */
         if(
           realLiquidityDemand>0 &&
@@ -2067,7 +2215,6 @@ function paperReport(){
             `
           };
         }
-      
         /* 2. Shortage + improved GDP + Reverse Repo + Gap ≈ 0 */
         if(
           realLiquidityDemand>0 &&
@@ -2087,7 +2234,6 @@ function paperReport(){
             `
           };
         }
-      
         /* 3. Shortage + improved GDP + outright purchase + Gap ≈ 0 */
         if(
           realLiquidityDemand>0 &&
@@ -2107,7 +2253,6 @@ function paperReport(){
             `
           };
         }
-      
         /*4. Surplus + improved GDP + Repo + Gap ≈ 0*/
         if(
           realLiquidityDemand<0 &&
@@ -2127,7 +2272,6 @@ function paperReport(){
             `
           };
         }
-      
         /* 5. Surplus + improved GDP + T-bill issuance + Gap ≈ 0 */
         if(
           realLiquidityDemand<0 &&
@@ -2147,7 +2291,6 @@ function paperReport(){
             `
           };
         }
-      
         /* 6. Surplus + weak/flat GDP + Repo + Gap ≈ 0 */
         if(
           realLiquidityDemand<0 &&
@@ -2166,8 +2309,7 @@ function paperReport(){
                 trade-off.
             `
           };
-        }
-      
+        }  
         /* 7. Shortage + Repo */
         if(
           realLiquidityDemand>0 &&
@@ -2203,7 +2345,6 @@ function paperReport(){
             `
           };
         }
-      
         /* 9. Balanced / surplus + continued injection makes Gap < 0*/
         if(
           realLiquidityDemand<=0 &&
@@ -2222,13 +2363,11 @@ function paperReport(){
             `
           };
         }
-      
         return {
           auction:'',
           macro:''
         };
       };
-      
       const reportRule=
         pgPhase===1
           ? pgPhase1ReportRule()
@@ -2259,7 +2398,6 @@ function paperReport(){
        <p>Updated macroeconomic conditions, money market developments, credit activities and key indicators.</p>
      </div>
      <div class="clippings">
-     
       <article class="clipping">
         <div class="newslabel">AUCTION DECISION & MARKET RESPONSE</div>
         ${reportRule.auction || `
@@ -2274,24 +2412,19 @@ function paperReport(){
           </p>
         `}
       </article>
-
       <article class="clipping">
         <div class="newslabel">MACROECONOMY</div>
-
         ${reportRule.macro
           ? `<p>${reportRule.macro}</p>`
           : `<p>Macroeconomic assessment will be available for this phase.</p>`
         }
       </article>
-
       <article class="clipping quick-result-card">
         <div class="newslabel">QUICK RESULT</div>
-
         <div class="quick-result-item">
           <div class="newsnumber">${pgFmt(totalWin)}</div>
           <div class="newscaption">Awarded volume · bn</div>
         </div>
-
         <div class="quick-result-item">
           <div class="newsnumber">${rateHeadline}</div>
           <div class="newscaption">Interbank Rate after OMO</div>
@@ -2299,9 +2432,7 @@ function paperReport(){
       </article>
      </div>
    </article>
-
   ${page2}
-
   <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,pgResult,'result')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
     <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<3?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
