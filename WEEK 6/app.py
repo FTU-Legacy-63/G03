@@ -70,7 +70,7 @@ def start_game():
 
         # Khởi tạo T-Bill ban đầu
         tb = game_instance.initialize_market_tbill(
-            face_value=10000
+            face_value=20000
         )
 
         # Scenario Demand
