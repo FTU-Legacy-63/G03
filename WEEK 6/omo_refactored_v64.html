@@ -1491,6 +1491,56 @@ function pgMacroOutcomeHTML(result){
   const fmt=v=>Number.isFinite(v)?`${v.toFixed(2)}%`:'—';
   return `<section class="macro-outcome"><div class="macro-outcome-head"><h3>Macro block published</h3><span>Backend result · Phase ${pgPhase} · ${getPhaseDisplayDate(pgPhase-1)}</span></div><div class="macro-outcome-grid"><div class="macro-card"><strong>${fmt(vals.expected)}</strong><span>Expected inflation</span></div><div class="macro-card"><strong>${fmt(vals.real)}</strong><span>Real interest rate</span></div><div class="macro-card"><strong>${fmt(vals.gdp)}</strong><span>GDP growth</span></div><div class="macro-card"><strong>${fmt(vals.inflation)}</strong><span>Inflation</span></div></div><div class="macro-trend-chart"><div class="macro-trend-title"><span>GDP growth & inflation · 30-day phase timeline</span><span class="legend"><span><i class="gdp"></i>GDP growth</span><span><i class="inf"></i>Inflation</span></span></div>${pgMacroTrendSVG(pgMacroHistory)}<p class="macro-chart-note">The backend publishes the macro block at the end of Phase 3; earlier phases remain blank rather than using estimated values.</p></div></section>`;
 }
+function pgBidVolumeAssessment(offeredVolume,totalBid){
+  const offered=Number(offeredVolume||0);
+  const bid=Number(totalBid||0);
+
+  if(bid<=0){
+    return 'There were no submitted bids for the operation.';
+  }
+
+  const ratio=offered/bid;
+
+  if(ratio<0.95){
+    return 'The offered volume was below banks’ bidding demand, suggesting that the Central Bank underestimated demand for the operation.';
+  }
+
+  if(ratio<=1.05){
+    return 'The offered volume was broadly aligned with banks’ bidding demand, suggesting that the Central Bank estimated demand reasonably well.';
+  }
+
+  return 'The offered volume exceeded banks’ bidding demand, suggesting that the Central Bank overestimated demand for the operation.';
+}
+
+function pgLiquidityOutcomeAssessment(realLiquidityDemand,totalSupply){
+  const demand=Number(realLiquidityDemand||0);
+  const supply=Number(totalSupply||0);
+  if(demand>0){
+    if(supply<0){
+      return 'The operation withdraws liquidity while the system is already facing a liquidity shortage, further increasing the unmet funding need.';
+    }
+    if(supply<0.95*demand){
+      return 'Total liquidity supply was insufficient to meet the system’s liquidity demand, leaving part of the funding need unmet.';
+    }
+    if(supply<=1.05*demand){
+      return 'Total liquidity supply was broadly sufficient to meet the system’s liquidity demand, bringing liquidity conditions broadly into balance.';
+    }
+    return 'Total liquidity supply exceeded the system’s liquidity demand, providing more liquidity than needed and moving the system toward surplus.';
+  }
+  if(demand<0){
+    if(supply>0){
+      return 'The operation adds liquidity while the system is already in surplus, further increasing excess liquidity.';
+    }
+    if(Math.abs(supply)<0.95*Math.abs(demand)){
+      return 'Total liquidity absorption was insufficient to remove the system’s excess liquidity, leaving part of the surplus unabsorbed.';
+    }
+    if(Math.abs(supply)<=1.05*Math.abs(demand)){
+      return 'Total liquidity absorption was broadly sufficient to remove the system’s excess liquidity, bringing liquidity conditions broadly into balance.';
+    }
+    return 'Total liquidity absorption exceeded the system’s excess liquidity, withdrawing more liquidity than needed and moving the system toward shortage.';
+  }
+  return 'Liquidity conditions were broadly balanced before the operation.';
+}
 function pgSetReportPage(n){pgReportPage=pgSetDeck('pg-report',n)}
 /* PHASE 1 · CREDIT CONDITIONS & MONEY MARKET */
 function pgP1Num(...v){for(const x of v){if(x!==null&&x!==undefined&&x!==''&&Number.isFinite(Number(x)))return Number(x)}return 0}
@@ -1501,6 +1551,127 @@ function pgP1DecisionAssessment(demand,totalSupply,gap,action){demand=pgP1Num(de
 function pgP1InstrumentText(action){const type=pgP1ActionType(action);if(type==='outright_purchase')return'the Central Bank purchases T-bills outright';if(type==='reverse_repo')return'the Central Bank conducts a Reverse Repo';if(type==='repo')return'the Central Bank conducts a Repo';if(type==='t_bill_issuance')return'the Central Bank issues T-bills';return`the Central Bank conducts ${action}`}
 function paperReport(){
   const c=phaseConfig[pgPhase],pre={...c.preMetrics,rate:Number(pgResult.previous_interbank_rate??c.preMetrics.rate)},post=Number(pgResult.interbank_rate),delta=post-pre.rate,bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0),maturity=Number(pgResult.maturity_volume||0);
+  const pgPhase1ReportRule=()=>{
+    const action=String(pgDecision?.omo_action||'');
+    const offeredVolume=Number(pgDecision?.volume||0);
+    const realLiquidityDemand=Number(pgResult.real_liquidity_demand??0);
+    const totalSupply=Number(pgResult.total_supply??0);
+    const gap=Number(pgResult.liquidity_gap??0);
+    const previousON=Number(pgResult.previous_interbank_rate??0);
+    const newON=Number(pgResult.interbank_rate??0);
+
+    const bidAssessment=pgBidVolumeAssessment(
+      offeredVolume,
+      totalBid
+    );
+
+    const liquidityAssessment=pgLiquidityOutcomeAssessment(
+      realLiquidityDemand,
+      totalSupply
+    );
+
+    const marketTemplate=(instrumentText)=>`
+      <p>
+        In the current session, the Central Bank ${instrumentText}.
+        The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
+        versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>.
+        ${bidAssessment}
+        Including maturities, net OMO cash flow is
+        <b>${pgFmt(totalSupply)} bn</b>.
+        After the operation, Liquidity Gap is
+        <b>${gap>=0?'+':''}${pgFmt(gap)} bn</b>
+        and the overnight rate moves from
+        <b>${previousON.toFixed(2)}%</b>
+        to
+        <b>${newON.toFixed(2)}%</b>.
+        ${liquidityAssessment}
+      </p>
+    `;
+
+    const nearZero=Math.abs(gap)<=1;
+
+    if(realLiquidityDemand>0 && action==='Buy Securities' && gap<0){
+      return {
+        auction:marketTemplate('purchases T-bills outright'),
+        macro:`
+          With weak aggregate demand potentially lasting 3–4 months,
+          a more accommodative stance provides stronger support to
+          credit, investment, and growth with a lag. The trade-off is
+          a greater risk of price pressure once demand recovers.
+        `
+      };
+    }
+
+    if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
+      return {
+        auction:marketTemplate('purchases T-bills outright'),
+        macro:`
+          With weak aggregate demand, relieving funding pressure
+          supports credit conditions, although the stimulus to growth
+          is more limited than under a more proactive easing stance.
+        `
+      };
+    }
+
+    if(realLiquidityDemand>0 && action==='Buy Securities' && gap>0){
+      return {
+        auction:marketTemplate('purchases T-bills outright'),
+        macro:`
+          With weak aggregate demand, tighter funding conditions may
+          continue to constrain credit and investment. The smaller
+          intervention reduces future inflation risk, but provides
+          less support to growth.
+        `
+      };
+    }
+
+    if(realLiquidityDemand>0 && action==='Reverse Repo' && nearZero){
+      return {
+        auction:marketTemplate('conducts a Reverse Repo'),
+        macro:`
+          Because the support is temporary, it can stabilize
+          short-term funding conditions while limiting persistent
+          inflation risk. If economic weakness lasts 3–4 months,
+          however, growth support may fade sooner than under an
+          outright purchase.
+        `
+      };
+    }
+
+    if(realLiquidityDemand>0 && action==='Repo'){
+      return {
+        auction:marketTemplate('conducts a Repo'),
+        macro:`
+          With weak aggregate demand, withdrawing liquidity would
+          add unnecessary pressure to funding costs, credit,
+          investment, and growth, with little near-term
+          macroeconomic justification.
+        `
+      };
+    }
+
+    if(realLiquidityDemand>0 && action==='Sell Securities'){
+      return {
+        auction:marketTemplate('issues T-bills'),
+        macro:`
+          Issuing T-bills while the market is already short
+          withdraws additional liquidity and pushes funding costs
+          higher. T-bill issuance is useful when excess liquidity
+          needs to be absorbed, but in the current state it further
+          weakens credit and aggregate demand.
+        `
+      };
+    }
+
+    return {
+      auction:'',
+      macro:''
+    };
+  };
+
+  const phase1Rule=pgPhase===1
+    ? pgPhase1ReportRule()
+    : {auction:'',macro:''}; 
   const liquidityPosition=Number(pgResult.liquidity_gap??pgResult.real_liquidity_demand??0);
   const rateHeadline=Number.isFinite(post)?`${post.toFixed(2)}%`:'—';
   const deltaText=`${delta>=0?'+':''}${Number.isFinite(delta)?delta.toFixed(2):'—'} pp`;
@@ -1521,20 +1692,46 @@ function paperReport(){
        <p>Updated macroeconomic conditions, money market developments, credit activities and key indicators.</p>
      </div>
      <div class="clippings">
-    <article class="clipping"><div class="newslabel">AUCTION DECISION & MARKET RESPONSE</div><div class="headline">${actionLabel}</div><p><b>${pgFmt(totalWin)} bn</b> was awarded from <b>${pgFmt(totalBid)} bn</b> of submitted bids.</p></article><article class="clipping"><div class="newslabel">MACROECONOMY</div>${pgPhase===1&&p1Decision?`<div class="headline">${p1Decision.score} – ${p1Decision.fit}${p1Decision.label?` · ${p1Decision.label}`:''}</div><p><b>Auction decision:</b> In the current session, ${pgP1InstrumentText(pgDecision.omo_action)}. The offered volume is <b>${pgFmt(offeredVolume)} bn</b> versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>. ${p1BidAssessment}</p><p><b>Market response:</b> Including maturities, net OMO cash flow is <b>${pgFmt(totalSupply)} bn</b>. After the operation, Liquidity Gap is <b>${liquidityPosition>=0?'+':''}${pgFmt(liquidityPosition)} bn</b> and the overnight rate moves from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>. ${p1LiquidityAssessment}</p>`:`<div class="headline">Interbank rate ${delta<=0?'eases':'rises'} after OMO</div><p>The rate moved from <b>${Number(pre.rate||0).toFixed(2)}%</b> to <b>${rateHeadline}</b>, a change of <b>${deltaText}</b>. Post-operation liquidity position: <b>${liquidityText}</b>.</p>`}</article>
-    <article class="clipping quick-result-card">
-     <div class="newslabel">QUICK RESULT</div>
-     <div class="quick-result-item">
-       <div class="newsnumber">${pgFmt(totalWin)}</div>
-       <div class="newscaption">Awarded volume · bn</div>
+     
+      <article class="clipping">
+        <div class="newslabel">AUCTION DECISION & MARKET RESPONSE</div>
+        ${phase1Rule.auction || `
+          <p>
+            The rate moved from
+            <b>${Number(pre.rate||0).toFixed(2)}%</b>
+            to
+            <b>${rateHeadline}</b>,
+            a change of <b>${deltaText}</b>.
+            Post-operation liquidity position:
+            <b>${liquidityText}</b>.
+          </p>
+        `}
+      </article>
+
+      <article class="clipping">
+        <div class="newslabel">MACROECONOMY</div>
+
+        ${phase1Rule.macro
+          ? `<p>${phase1Rule.macro}</p>`
+          : `<p>Macroeconomic assessment will be available for this phase.</p>`
+        }
+      </article>
+
+      <article class="clipping quick-result-card">
+        <div class="newslabel">QUICK RESULT</div>
+
+        <div class="quick-result-item">
+          <div class="newsnumber">${pgFmt(totalWin)}</div>
+          <div class="newscaption">Awarded volume · bn</div>
+        </div>
+
+        <div class="quick-result-item">
+          <div class="newsnumber">${rateHeadline}</div>
+          <div class="newscaption">Interbank Rate after OMO</div>
+        </div>
+      </article>
      </div>
-     <div class="quick-result-item">
-       <div class="newsnumber">${rateHeadline}</div>
-       <div class="newscaption">Interbank Rate after OMO</div>
-     </div>
-    </article>
-   </div>
-  </article>
+   </article>
 
   ${page2}
 
