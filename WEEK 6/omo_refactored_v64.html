@@ -2080,6 +2080,25 @@ function paperReport(){
          `
        };
      }
+      /* 1b. Shortage + Outright purchase + Gap > 0 */
+      if(
+        realLiquidityDemand>0 &&
+        action==='Buy Securities' &&
+        gap>0 &&
+        !nearZero
+      ){
+        return {
+          auction:auctionTemplate('purchases Central Bank Bills outright'),
+          macro:`
+              The outright purchase reduces the liquidity shortage,
+              but part of the funding need remains unmet. There is no
+              major new macro shock, so the policy should avoid creating
+              an unnecessary additional disturbance.<br><br>The remaining
+              funding pressure may still constrain credit and investment,
+              although the operation moves conditions in the right direction.
+          `
+        };
+      }
      /*2. Shortage + Reverse Repo + Gap ≈ 0 */
      if(realLiquidityDemand>0 && action==='Reverse Repo' && nearZero){
        return {
