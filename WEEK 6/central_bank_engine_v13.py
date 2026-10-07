@@ -337,7 +337,7 @@ class CentralBankGame:
 
         # Macro block: calculated once every 3 phases.
         # Percentage-point units are used throughout (4.00 means 4%).
-        self.neutral_real_rate = 1.5
+        self.neutral_real_rate = 0
         self.output_gap_persistence = 0.5603
         self.output_gap_rate_sensitivity = 0.2
         self.potential_gdp_growth = 6.5
