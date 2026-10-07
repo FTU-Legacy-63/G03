@@ -818,8 +818,8 @@ class CentralBankGame:
         inflation = excel_round(
             self.inflation_expectation_weight * expected
             + (1 - self.inflation_expectation_weight) * self.last_inflation
-            + 0.5*gdp_growth
-            + self.inflation_output_gap_sensitivity*output_gap,
+            + 0.5*(gdp_growth - self.potential_gdp_growth)
+            + self.inflation_output_gap_sensitivity*(output_gap - self.last_macro_output_gap),
             2
         )
         self.last_inflation = inflation
