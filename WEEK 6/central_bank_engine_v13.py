@@ -814,15 +814,12 @@ class CentralBankGame:
             + (output_gap - self.last_macro_output_gap),
             2
         )
-    
-        beta = self.inflation_expectation_weight
-        kappa = self.inflation_output_gap_sensitivity
         
         inflation = excel_round(
-            beta * expected
-            + (1 - beta) * self.last_inflation
+            self.inflation_expectation_weight * expected
+            + (1 - self.inflation_expectation_weight) * self.last_inflation
             + 0.5*(gdp_growth - self.potential_gdp_growth)
-            + kappa*(output_gap - self.last_macro_output_gap),
+            + self.inflation_output_gap_sensitivity*(output_gap - self.last_macro_output_gap),
             2
         )
         self.last_inflation = inflation
