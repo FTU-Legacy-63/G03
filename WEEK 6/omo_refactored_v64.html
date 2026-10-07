@@ -2958,10 +2958,20 @@ function paperReport(){
           macro:''
         };
       };
-/* Store one assessment snapshot per completed phase.
+/* Select the phase-specific report rule used by the Results screen. */
+  const reportRule=
+    pgPhase===1
+      ? pgPhase1ReportRule()
+      : pgPhase===2
+        ? pgPhase2ReportRule()
+        : pgPhase===3
+          ? pgPhase3ReportRule()
+          : pgPhase===4
+            ? pgPhase4ReportRule()
+            : {auction:'',macro:''};
+  /* Store one assessment snapshot per completed phase.
      This metadata is used only by the ending screen. */
   const phaseAssessment=pgAssessmentCase(pgPhase,pgResult,pgDecision);
-
   const oldAssessmentIndex=pgPhaseAssessments.findIndex(
     x=>Number(x.phase)===Number(pgPhase)
   );
