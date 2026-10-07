@@ -339,7 +339,7 @@ class CentralBankGame:
         # Percentage-point units are used throughout (4.00 means 4%).
         self.neutral_real_rate = 1
         self.output_gap_persistence = 0.5603
-        self.output_gap_rate_sensitivity = 0.35
+        self.output_gap_rate_sensitivity = 0.2
         self.potential_gdp_growth = 6.5
         self.inflation_expectation_weight = 0.2254
         self.inflation_output_gap_sensitivity = 0.2726
