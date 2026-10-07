@@ -2741,7 +2741,7 @@ function paperReport(){
         macro:''
       };
       };  
-      /*PHASE 4 REPORT RULE */
+/* PHASE 4 REPORT RULE */
       const pgPhase4ReportRule=()=>{
         const action=String(pgDecision?.omo_action||'');
         const offeredVolume=Number(pgDecision?.volume||0);
@@ -2775,188 +2775,596 @@ function paperReport(){
             ${liquidityAssessment}
           </p>
         `;
-        const nearZero=Math.abs(gap)<=1;
-        /* GDP assessment*/
-        const currentGDP=Number(pgLatestMacroValue('gdp_growth'));
-        let previousGDP=NaN;
-        for(let i=pgMacroHistory.length-1;i>=0;i--){
-          const historyGDP=Number(pgMacroHistory[i]?.gdp);
-          if(!Number.isFinite(historyGDP)) continue;
-          if(Number.isFinite(currentGDP) && historyGDP!==currentGDP){
-            previousGDP=historyGDP;
-            break;
-          }
-        }
-        const gdpImproved=
-          Number.isFinite(currentGDP) &&
-          Number.isFinite(previousGDP) &&
-          currentGDP>previousGDP;
-        const gdpWeakOrFlat=
-          !gdpImproved;
-        /* 1. Shortage + weak/flat GDP + outright purchase + Gap ≈ 0 */
+        const macroText=(text)=>text;
+        /* =========================================================
+           SHORTAGE: LQ DEMAND > 0
+           ========================================================= */
+        /* Reverse Repo */
         if(
           realLiquidityDemand>0 &&
-          gdpWeakOrFlat &&
-          action==='Buy Securities' &&
-          nearZero
-        ){
-          return {
-            auction:auctionTemplate('purchases Central Bank Bills outright'),
-            macro:`
-                GDP remains weak or flat as earlier policy effects begin
-                to appear. Longer-lasting support can reduce the risk of a
-                credit squeeze and reinforce the recovery. <br><br>It also gives
-                investment and borrowing more time to respond. The trade-off
-                is greater inflation risk if easing persists after growth
-                strengthens.
-            `
-          };
-        }
-        /* 2. Shortage + improved GDP + Reverse Repo + Gap ≈ 0 */
-        if(
-          realLiquidityDemand>0 &&
-          gdpImproved &&
           action==='Reverse Repo' &&
-          nearZero
+          Math.abs(gap)<=1000
         ){
           return {
             auction:auctionTemplate('conducts a Reverse Repo'),
-            macro:`
-                Growth has improved, so the main need is short-term
-                liquidity stabilization rather than additional stimulus.
-                A Reverse Repo can cover the shortage without locking in
-                prolonged easing. <br><br>This keeps funding conditions orderly
-                while preserving policy flexibility. It is therefore well
-                suited to a temporary funding need.
-            `
+            macro:macroText(`
+              The Reverse Repo matches a temporary, maturity-driven shortage.
+              Its P6 maturity withdraws liquidity just as the scenario moves
+              toward tighter anti-inflation conditions.
+              <br><br>
+              The final gap remains inside P4’s near-balance tolerance,
+              so no additional magnitude penalty applies.
+            `)
           };
         }
-        /* 3. Shortage + improved GDP + outright purchase + Gap ≈ 0 */
         if(
           realLiquidityDemand>0 &&
-          gdpImproved &&
+          action==='Reverse Repo' &&
+          gap>1000 &&
+          gap<=2000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. Only part of the payment-related need
+              is covered.
+              <br><br>
+              Remaining funding pressure keeps short-term rates elevated
+              while the economy is still in transmission. The support is directionally right but incomplete. The residual gap is within
+              P4’s moderate-deviation band: the direction can be defended,
+              but the sizing is not precise enough for level 4.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand>0 &&
+          action==='Reverse Repo' &&
+          gap>2000 &&
+          gap<=4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. Only part of the payment-related need
+              is covered.
+              <br><br>
+              Remaining funding pressure keeps short-term rates elevated
+              while the economy is still in transmission. The support is
+              directionally right but incomplete. The residual imbalance is
+              large for P4, so the action is downgraded even if the initial
+              direction is defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand>0 &&
+          action==='Reverse Repo' &&
+          gap>4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. Only part of the payment-related need
+              is covered. Remaining funding pressure keeps short-term rates
+              elevated while the economy is still in transmission.
+              <br><br>
+              The support is directionally right but incomplete. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand>0 &&
+          action==='Reverse Repo' &&
+          gap>=-4000 &&
+          gap<-1000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo more than covers the shortage and creates a
+              surplus. The injection exceeds the payment-related shortage
+              and leaves a surplus.
+              <br><br>
+              Tax and payment pressure is temporary and does not justify
+              extra accommodation, which may reduce the room for later
+              normalization. The residual imbalance is large for P4, so
+              the action is downgraded even if the initial direction is
+              defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand>0 &&
+          action==='Reverse Repo' &&
+          gap<-4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo more than covers the shortage and creates a surplus. The injection exceeds the payment-related shortage
+              and leaves a surplus.
+              <br><br>
+              Tax and payment pressure is temporary and does not justify
+              extra accommodation, which may reduce the room for later
+              normalization. The final imbalance is outside P4’s admissible
+              operating range and is treated as an excessive policy shock.
+            `)
+          };
+        }
+        /* Outright purchase */
+        if(
+          realLiquidityDemand>0 &&
           action==='Buy Securities' &&
-          nearZero
+          Math.abs(gap)<=1000
         ){
           return {
             auction:auctionTemplate('purchases Central Bank Bills outright'),
-            macro:`
-                Growth has improved, but an outright purchase provides
-                longer-lasting support than the immediate shortage requires.
-                This may still help credit and investment at the margin.
-                <br><br>However, the benefit is smaller once recovery is already
-                visible. The main trade-off is a higher risk of excess
-                liquidity and later inflation.
-            `
+            macro:macroText(`
+              The outright purchase removes the shortage and restores
+              liquidity balance, with longer-lasting support than a Reverse
+              Repo.
+              <br><br>
+              The purchase covers the shortage but leaves a lasting injection
+              for what is a temporary payment need. It supports credit during
+              transmission. The trade-off is less flexibility once payments
+              pass. The final gap remains inside P4’s near-balance tolerance,
+              so no additional magnitude penalty applies.
+            `)
           };
         }
-        /*4. Surplus + improved GDP + Repo + Gap ≈ 0*/
         if(
-          realLiquidityDemand<0 &&
-          gdpImproved &&
-          action==='Repo' &&
-          nearZero
+          realLiquidityDemand>0 &&
+          action==='Buy Securities' &&
+          gap>1000 &&
+          gap<=4000
         ){
           return {
-            auction:auctionTemplate('conducts a Repo'),
-            macro:`
-                Growth is improving while the system is in surplus.
-                A short-term Repo can remove excess liquidity without
-                imposing a persistent tightening stance. <br><br>This helps keep
-                the overnight market stable as the recovery continues.
-                The action balances market discipline with continued
-                macroeconomic support.
-            `
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
+            macro:macroText(`
+              The outright purchase reduces the shortage but does not fully
+              meet the funding need. Only part of the payment-related need
+              is covered.
+              <br><br>
+              Remaining funding pressure keeps short-term rates elevated
+              while the economy is still in transmission. The support is
+              directionally right but incomplete. The residual imbalance is
+              large for P4, so the action is downgraded even if the initial
+              direction is defensible.
+            `)
           };
         }
-        /* 5. Surplus + improved GDP + T-bill issuance + Gap ≈ 0 */
         if(
-          realLiquidityDemand<0 &&
-          gdpImproved &&
-          action==='Sell Securities' &&
-          nearZero
+          realLiquidityDemand>0 &&
+          action==='Buy Securities' &&
+          gap>4000
         ){
           return {
-            auction:auctionTemplate('issues Central Bank Bills'),
-            macro:`
-                Central Bank Bills issuance absorbs the surplus for longer than a
-                temporary Repo. This offers stronger protection against
-                future inflation pressure. <br><br>However, it may keep funding
-                conditions tighter than the immediate liquidity situation
-                requires. The choice therefore leans more toward price
-                stability than growth support.
-            `
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
+            macro:macroText(`
+              The outright purchase reduces the shortage but does not fully
+              meet the funding need. Only part of the payment-related need
+              is covered. Remaining funding pressure keeps short-term rates
+              elevated while the economy is still in transmission.
+              <br><br>
+              The support is directionally right but incomplete. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
           };
         }
-        /* 6. Surplus + weak/flat GDP + Repo + Gap ≈ 0 */
-        if(
-          realLiquidityDemand<0 &&
-          gdpWeakOrFlat &&
-          action==='Repo' &&
-          nearZero
+        if(realLiquidityDemand>0 &&
+          action==='Buy Securities' &&
+          gap<-1000
         ){
           return {
-            auction:auctionTemplate('conducts a Repo'),
-            macro:`
-                GDP is still weak even though liquidity is in surplus.
-                A Repo can restore market balance and prevent funding
-                conditions from becoming too easy. <br><br>At the same time,
-                tighter liquidity reduces support to credit and investment.
-                The decision is reasonable but carries a clearer growth
-                trade-off.
-            `
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
+            macro:macroText(`
+              The outright purchase exceeds the shortage and creates a
+              surplus. The injection exceeds the payment-related shortage
+              and leaves a surplus.
+              <br><br>
+              Tax and payment pressure is temporary and does not justify
+              extra accommodation, which may reduce the room for later
+              normalization. The final imbalance is outside P4’s admissible
+              operating range and is treated as an excessive policy shock.
+            `)
           };
-        }  
-        /* 7. Shortage + Repo */
+        }
+        /* Wrong-direction absorption */
         if(
           realLiquidityDemand>0 &&
           action==='Repo'
         ){
           return {
             auction:auctionTemplate('conducts a Repo'),
-            macro:`
-                The system is already short of liquidity, so a Repo moves
-                conditions in the wrong direction. Funding costs would
-                rise while credit and investment are still sensitive to
-                financial conditions. <br><br>This could weaken the recovery
-                unnecessarily. The action therefore conflicts with the
-                immediate market need.
-            `
+            macro:macroText(`
+              The Repo withdraws liquidity while the system is already short,
+              worsening the shortage.
+              <br><br>
+              Payment obligations already create a shortage, so withdrawing
+              liquidity raises funding stress and squeezes working capital.
+              The action conflicts with the immediate need. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
           };
-        }     
-        /* 8. Shortage + T-bill issuance */
+        }
         if(
           realLiquidityDemand>0 &&
           action==='Sell Securities'
         ){
           return {
             auction:auctionTemplate('issues Central Bank Bills'),
-            macro:`
-                Central Bank Bills issuance would withdraw liquidity from a system
-                that already needs funding. Because the absorption lasts
-                longer, the tightening effect could persist beyond the
-                current shortage. <br><br>This places additional pressure on
-                credit and growth. The action is therefore both mistimed
-                and unnecessarily restrictive.
-            `
+            macro:macroText(`
+              T-bill issuance withdraws liquidity while the system already
+              needs funding, worsening the shortage.
+              <br><br>
+              Payment obligations already create a shortage, so withdrawing
+              liquidity raises funding stress and squeezes working capital.
+              The action conflicts with the immediate need. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
           };
         }
-        /* 9. Balanced / surplus + continued injection makes Gap < 0*/
+        /* =========================================================
+           SURPLUS: LQ DEMAND < 0
+           ========================================================= */
         if(
-          realLiquidityDemand<=0 &&
+          realLiquidityDemand<0 &&
+          action==='Reverse Repo'
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo injects liquidity while the system is already
+              in surplus, deepening the surplus.
+              <br><br>
+              Payment pressure is temporary and no funding gap exists to
+              address, so injecting into a surplus only adds excess liquidity. The action is poorly aligned with the market state. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Buy Securities'
+        ){
+          return {
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
+            macro:macroText(`
+              The outright purchase injects liquidity while the system is
+              already in surplus, deepening the surplus.
+              <br><br>
+              Payment pressure is temporary and no funding gap exists to
+              address, so injecting into a surplus only adds excess liquidity.
+              The action is poorly aligned with the market state. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
+          };
+        }
+        /* Repo */
+        if(
+          realLiquidityDemand<0 &&
+          action==='Repo' &&
+          Math.abs(gap)<=1000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo removes the surplus today, but its 60-day maturity
+              re-injects liquidity in P6, when the scenario is expected to
+              require a tighter stance.
+              <br><br>
+              The final gap remains inside P4’s near-balance tolerance, so
+              no additional magnitude penalty applies.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Repo' &&
+          gap>1000 &&
+          gap<=4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo absorbs more than the surplus and creates a shortage.
+              <br><br>
+              Absorbing more than the surplus creates a shortage during a
+              period of heavy payment obligations. This raises funding
+              pressure and tightens conditions while transmission is
+              incomplete, turning a correction into tightening. The residual
+              imbalance is large for P4, so the action is downgraded even if
+              the initial direction is defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Repo' &&
+          gap>4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo absorbs more than the surplus and creates a shortage.
+              Absorbing more than the surplus creates a shortage during a
+              period of heavy payment obligations.
+              <br><br>
+              This raises funding pressure and tightens conditions while
+              transmission is incomplete, turning a correction into tightening. The final imbalance is outside P4’s admissible
+              operating range and is treated as an excessive policy shock.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Repo' &&
+          gap>=-4000 &&
+          gap<-1000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo absorbs part of the surplus, but some excess liquidity
+              remains.
+              <br><br>
+              Part of the surplus is absorbed and some liquidity stays in
+              place. That fits a phase in which payment needs are still
+              lifting demand for funds. The correction is incomplete. The
+              residual imbalance is large for P4, so the action is downgraded
+              even if the initial direction is defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Repo' &&
+          gap<-4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo absorbs part of the surplus, but some excess liquidity
+              remains. Part of the surplus is absorbed and some liquidity
+              stays in place.
+              <br><br>
+              That fits a phase in which payment needs are still lifting
+              demand for funds. The correction is incomplete. The final
+              imbalance is outside P4’s admissible operating range and is
+              treated as an excessive policy shock.
+            `)
+          };
+        }
+        /* T-bill issuance */
+        if(
+          realLiquidityDemand<0 &&
+          action==='Sell Securities' &&
+          Math.abs(gap)<=1000
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`
+              T-bill issuance removes the surplus and restores liquidity
+              balance.
+              <br><br>
+              The longer tenor avoids a Repo maturity that would re-inject
+              liquidity in P6, but a short Repo is the more natural instrument
+              for a temporary surplus, so the choice is acceptable rather
+              than ideal. The final gap remains inside P4’s near-balance
+              tolerance, so no additional magnitude penalty applies.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Sell Securities' &&
+          gap>=-2000 &&
+          gap<-1000
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`
+              T-bill issuance reduces the liquidity surplus but leaves part
+              of it in the system.
+              <br><br>
+              The choice avoids a Repo maturity that would re-inject liquidity in P6, but absorption is still incomplete because some surplus
+              remains.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Sell Securities' &&
+          gap>=-4000 &&
+          gap<-2000
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`
+              T-bill issuance reduces the liquidity surplus but leaves part
+              of it in the system.
+              <br><br>
+              The longer-tenor instrument avoids a P6 liquidity reversal,
+              but the remaining surplus means the current correction is
+              incomplete.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Sell Securities' &&
+          gap>1000 &&
+          gap<=4000
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`
+              T-bill issuance absorbs more than the surplus and creates a
+              shortage.
+              <br><br>
+              Absorbing more than the surplus creates a shortage during a
+              period of heavy payment obligations. This raises funding
+              pressure and tightens conditions while transmission is
+              incomplete, turning a correction into tightening. The residual
+              imbalance is large for P4, so the action is downgraded even if
+              the initial direction is defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand<0 &&
+          action==='Sell Securities' &&
+          (gap>4000 || gap<-4000)
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`
+              T-bill issuance leaves the final liquidity position outside
+              P4’s admissible operating range.
+              <br><br>
+              The remaining imbalance is treated as an excessive policy
+              shock.
+            `)
+          };
+        }
+        /* =========================================================
+           BALANCED: LQ DEMAND = 0
+           ========================================================= */
+        if(
+          realLiquidityDemand===0 &&
           action==='Reverse Repo' &&
+          gap>=-4000 &&
           gap<0
         ){
           return {
             auction:auctionTemplate('conducts a Reverse Repo'),
-            macro:`
-                Liquidity is already comfortable, so further injection
-                provides little stabilization benefit. Extra easing may
-                support growth only marginally at this stage. <br><br>It also
-                increases the chance that funding conditions become too
-                loose. The main risk is stronger inflation pressure as
-                the recovery develops.
-            `
+            macro:macroText(`
+              The Reverse Repo injects liquidity into a balanced market and
+              creates a surplus.
+              <br><br>
+              The market is balanced despite payment obligations, so injecting
+              creates a surplus unrelated to the temporary payment need. The
+              residual imbalance is large for P4, so the action is downgraded
+              even if the initial direction is defensible.
+            `)
+          };
+        }
+        if(realLiquidityDemand===0 &&
+          action==='Reverse Repo' &&
+          gap<-4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Reverse Repo'),
+            macro:macroText(`
+              The Reverse Repo injects liquidity into a balanced market and
+              creates a surplus.
+              <br><br>
+              The market is balanced despite payment obligations, so injecting
+              creates a surplus unrelated to the temporary payment need. The
+              final imbalance is outside P4’s admissible operating range and
+              is treated as an excessive policy shock.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand===0 &&
+          action==='Buy Securities' &&
+          gap<0
+        ){
+          return {
+            auction:auctionTemplate('purchases Central Bank Bills outright'),
+            macro:macroText(`
+              The outright purchase injects liquidity into a balanced market
+              and creates a surplus.
+              <br><br>
+              The market is balanced despite payment obligations, so injecting
+              creates a surplus unrelated to the temporary payment need. The
+              final imbalance is outside P4’s admissible operating range and
+              is treated as an excessive policy shock.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand===0 &&
+          action==='Repo' &&
+          gap>0 &&
+          gap<=4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo withdraws liquidity from a balanced market and creates
+              a shortage.
+              <br><br>
+              The market is balanced, so absorbing creates a shortage during
+              heavy payment obligations and adds avoidable funding pressure.
+              The residual imbalance is large for P4, so the action is
+              downgraded even if the initial direction is defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand===0 &&
+          action==='Repo' &&
+          gap>4000
+        ){
+          return {
+            auction:auctionTemplate('conducts a Repo'),
+            macro:macroText(`
+              The Repo withdraws liquidity from a balanced market and creates
+              a shortage.
+              <br><br>
+              The market is balanced, so absorbing creates a shortage during
+              heavy payment obligations and adds avoidable funding pressure.
+              The final imbalance is outside P4’s admissible operating range
+              and is treated as an excessive policy shock.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand===0 &&
+          action==='Sell Securities' &&
+          gap>0 &&
+          gap<=4000
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`T-bill issuance withdraws liquidity from a balanced market and
+              creates a shortage.
+              <br><br>
+              The market is balanced, so absorbing creates a shortage during
+              heavy payment obligations and adds avoidable funding pressure.
+              The residual imbalance is large for P4, so the action is
+              downgraded even if the initial direction is defensible.
+            `)
+          };
+        }
+        if(
+          realLiquidityDemand===0 &&
+          action==='Sell Securities' &&
+          gap>4000
+        ){
+          return {
+            auction:auctionTemplate('issues Central Bank Bills'),
+            macro:macroText(`
+              T-bill issuance withdraws liquidity from a balanced market and
+              creates a shortage.
+              <br><br>
+              The market is balanced, so absorbing creates a shortage during
+              heavy payment obligations and adds avoidable funding pressure.
+              The final imbalance is outside P4’s admissible operating range
+              and is treated as an excessive policy shock.
+            `)
           };
         }
         return {
@@ -3043,7 +3451,7 @@ function paperReport(){
   ${page2}
   <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,pgResult,'result')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
-    <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<3?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
+    <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<6?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
   </div>`;
   pgReportPage=0;pgShow('pg-report');pgSetReportPage(0);
 }
