@@ -772,13 +772,14 @@ class CentralBankGame:
     def get_scenario_liquidity_demand(self):
         liquidity_demand_by_phase = {
             1: 4000.0,
-            2: 10000.0,
-            3: 2000.0,
-            4: 1000.0,
-            5: -3000.0,
-            6: 2000.0,
-            7: -5000.0,
-            8: 2000.0,  
+            2: 6000.0,
+            3: 3000.0,
+            4: 2000.0,
+            5: -4000.0,
+            6: -5000.0,
+            7: -1000.0,
+            8: -4000.0,
+            9: -3000.0,
         }
         if self.phase not in liquidity_demand_by_phase:
             raise ValueError(
@@ -809,7 +810,7 @@ class CentralBankGame:
         #               + (Current Output Gap - Previous Output Gap)
         gdp_growth = excel_round(
             self.potential_gdp_growth
-            + output_gap,
+            + (output_gap - self.last_macro_output_gap),
             2
         )
     
