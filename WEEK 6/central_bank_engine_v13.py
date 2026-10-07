@@ -809,7 +809,7 @@ class CentralBankGame:
         #               + (Current Output Gap - Previous Output Gap)
         gdp_growth = excel_round(
             self.potential_gdp_growth
-            + output_gap),
+            + output_gap,
             2
         )
     
