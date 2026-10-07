@@ -341,9 +341,10 @@ class CentralBankGame:
         self.output_gap_persistence = 0.5603
         self.output_gap_rate_sensitivity = 0.0984
         self.potential_gdp_growth = 6.5
-        self.inflation_expectation_weight = 0.99
+        self.inflation_expectation_weight = 0.2254
         self.inflation_output_gap_sensitivity = 0.2726
         self.last_macro_output_gap = 1.0  # Starting Output Gap at Phase 1
+        self.last_inflation = 4.0
         self.pending_expected_inflation = None
 
     def initial_tbill_rate(self):
@@ -812,12 +813,16 @@ class CentralBankGame:
             2
         )
     
+        beta = self.inflation_expectation_weight
+        kappa = self.inflation_output_gap_sensitivity
+        
         inflation = excel_round(
-            self.inflation_expectation_weight * expected
-            + self.inflation_output_gap_sensitivity * output_gap,
+            beta * expected
+            + (1 - beta) * self.last_inflation
+            + kappa * output_gap,
             2
         )
-    
+        self.last_inflation = inflation
         # Store current Output Gap so the next phase can use it as
         # the previous-period Output Gap.
         self.last_macro_output_gap = output_gap
