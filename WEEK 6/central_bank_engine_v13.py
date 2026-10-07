@@ -807,8 +807,7 @@ class CentralBankGame:
             2
         )
     
-        # GDP growth = Potential GDP growth
-        #               + (Current Output Gap - Previous Output Gap)
+        # GDP growth = Potential GDP growth + (Current Output Gap - Previous Output Gap)
         gdp_growth = excel_round(
             self.potential_gdp_growth
             + (output_gap - self.last_macro_output_gap),
@@ -817,13 +816,13 @@ class CentralBankGame:
         
         inflation = excel_round(
             self.inflation_expectation_weight * expected
+            + (1-self.inflation_expectation_weight) * self.last_inflation
             + 0.5*(gdp_growth - self.potential_gdp_growth)
             + self.inflation_output_gap_sensitivity*(output_gap - self.last_macro_output_gap),
             2
         )
         self.last_inflation = inflation
-        # Store current Output Gap so the next phase can use it as
-        # the previous-period Output Gap.
+        # Store current Output Gap so the next phase can use it as the previous-period Output Gap.
         self.last_macro_output_gap = output_gap
     
         return {
