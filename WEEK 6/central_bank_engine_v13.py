@@ -822,7 +822,7 @@ class CentralBankGame:
             beta * expected
             + (1 - beta) * self.last_inflation
             + 0.35*(gdp_growth - self.potential_gdp_growth)
-            + kappa*output_gap,
+            + kappa*(output_gap - self.last_macro_output_gap),
             2
         )
         self.last_inflation = inflation
