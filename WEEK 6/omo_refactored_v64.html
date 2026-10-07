@@ -3372,16 +3372,595 @@ function paperReport(){
           macro:''
         };
       };
+/* PHASE 5 REPORT RULE */
+const pgPhase5ReportRule=()=>{
+  const action=String(pgDecision?.omo_action||'');
+  const offeredVolume=Number(pgDecision?.volume||0);
+  const realLiquidityDemand=Number(pgResult.real_liquidity_demand??0);
+  const totalSupply=Number(pgResult.total_supply??0);
+  const gap=Number(pgResult.liquidity_gap??0);
+  const previousON=Number(pgResult.previous_interbank_rate??0);
+  const newON=Number(pgResult.interbank_rate??0);
+  const bidAssessment=pgBidVolumeAssessment(offeredVolume,totalBid);
+  const liquidityAssessment=pgLiquidityOutcomeAssessment(
+    realLiquidityDemand,
+    totalSupply
+  );
+  const auctionTemplate=(instrumentText)=>`
+    <p>
+      In the current session, the Central Bank ${instrumentText}.
+      The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
+      versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>;
+      ${bidAssessment}
+      <br><br>Including maturities, net OMO cash flow is
+      <b>${pgFmt(totalSupply)} bn</b>.
+      After the operation, Liquidity Gap is
+      <b>${gap>=0?'+':''}${pgFmt(gap)} bn</b>
+      and the overnight rate moves from
+      <b>${previousON.toFixed(2)}%</b>
+      to <b>${newON.toFixed(2)}%</b>.
+      ${liquidityAssessment}
+    </p>
+  `;
+  const nearZero=Math.abs(gap)<=250;
+  /* Determine whether GDP is recovering or weak / flat */
+  const currentGDP=Number(pgLatestMacroValue('gdp_growth'));
+  let previousGDP=NaN;
+  for(let i=pgMacroHistory.length-1;i>=0;i--){
+    const historyGDP=Number(pgMacroHistory[i]?.gdp);
+    if(!Number.isFinite(historyGDP)) continue;
+    if(Number.isFinite(currentGDP) && historyGDP!==currentGDP){
+      previousGDP=historyGDP;
+      break;
+    }
+  }
+  const gdpRecovering=
+    Number.isFinite(currentGDP) &&
+    Number.isFinite(previousGDP) &&
+    currentGDP>previousGDP;
+
+  const gdpWeakOrFlat=!gdpRecovering;
+  /* =========================================================
+     LQ DEMAND > 0 — SHORTAGE
+     ========================================================= */
+  /* ---------- REVERSE REPO ---------- */
+  if(realLiquidityDemand>0 && action==='Reverse Repo'){
+    if(nearZero){
+      return{
+        auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:gdpRecovering
+          ? `
+              The Reverse Repo covers the shortage and brings liquidity
+              back to balance. GDP is recovering and liquidity is abundant,
+              so a shortage here is mainly technical.<br><br>
+              A temporary Reverse Repo fixes it without adding stimulus.
+              The emerging cost shock argues against locking in longer
+              easing. The final gap remains inside P5’s near-balance
+              tolerance.
+            `
+          : `
+              The Reverse Repo covers the shortage and brings liquidity
+              back to balance. GDP is still weak despite earlier easing,
+              so closing the shortage with a temporary Reverse Repo protects funding for a recovery that has not taken hold.<br><br>
+              It avoids committing to longer easing while the cost shock
+              is only emerging. The final gap remains inside P5’s
+              near-balance tolerance.
+            `
+      };
+    }
+    if(gap>250 && gap<=500){
+      return{
+        auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:gdpRecovering
+          ? `
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. Part of a technical shortage remains
+              unresolved.<br><br>
+              With GDP recovering, the remaining pressure is a small
+              market-management issue and does not threaten the recovery.
+              The residual gap is within P5’s moderate-deviation band.
+            `
+          : `
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. Part of the shortage remains while
+              GDP is weak, adding funding pressure to a fragile recovery.
+              <br><br>The support is right in direction but incomplete.
+              The residual gap is within P5’s moderate-deviation band.
+            `
+      };
+    }
+    if(gap>500 && gap<=1000){
+      return{
+        auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:gdpRecovering
+          ? `
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. With GDP recovering, the remaining
+              pressure is mainly a market-management issue.<br><br>
+              The residual imbalance is large for P5, so the action is
+              materially undersized.
+            `
+          : `
+              The Reverse Repo reduces the shortage but leaves part of the
+              funding need unresolved. Part of the shortage remains while
+              GDP is weak, adding funding pressure to a fragile recovery.
+              <br><br>The support is right in direction but incomplete and
+              the residual imbalance is large for P5.
+            `
+      };
+    }
+    if(gap>1000){
+      return{
+        auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:gdpRecovering
+          ? `
+              The Reverse Repo reduces the shortage but leaves a substantial
+              technical funding need unresolved. GDP is recovering, but the
+              final imbalance is outside P5’s admissible operating range
+              and represents an excessive policy shock.
+            `
+          : `
+              The Reverse Repo reduces the shortage but leaves substantial
+              funding pressure while GDP remains weak. The support is right
+              in direction but far too small.<br><br>
+              The final imbalance is outside P5’s admissible operating range
+              and represents an excessive policy shock.
+            `
+      };
+    }
+    if(gap>=-1000 && gap<-250){
+      return{auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:gdpRecovering
+          ? `
+              The Reverse Repo more than covers the shortage and creates a
+              surplus. GDP is already recovering while a cost shock is
+              emerging.<br><br>
+              Extra liquidity adds little to growth and may feed cost
+              pressure. The action is more accommodative than conditions
+              require.
+            `
+          : `
+              The Reverse Repo more than covers the shortage and creates a
+              surplus while GDP is weak. Extra support helps growth somewhat,
+              but the amount exceeds the funding need.<br><br>
+              The emerging cost shock limits how far easing should go.
+            `
+      };
+    }
+    if(gap<-1000){
+      return{
+        auction:auctionTemplate('conducts a Reverse Repo'),
+        macro:gdpRecovering
+          ? `
+              The Reverse Repo more than covers the shortage and creates a
+              large surplus while GDP is already recovering and a cost shock
+              is emerging.<br><br>
+              The final imbalance is outside P5’s admissible operating range
+              and represents an excessive policy shock.
+            `
+          : `
+              The Reverse Repo more than covers the shortage and creates a
+              large surplus while GDP remains weak. Although additional
+              liquidity can support growth, the amount exceeds the funding
+              need and the cost shock limits further easing.<br><br>
+              The final imbalance is outside P5’s admissible operating range.
+            `
+      };
+    }
+  }
+  /* ---------- OUTRIGHT PURCHASE ---------- */
+  if(realLiquidityDemand>0 && action==='Buy Securities'){
+  if(nearZero){
+      return{
+        auction:auctionTemplate('purchases T-bills outright'),
+        macro:gdpRecovering
+          ? `
+              The outright purchase removes the shortage and restores
+              liquidity balance, with longer-lasting support than a Reverse
+              Repo.<br><br>
+              GDP is recovering and a cost shock is emerging, so the support
+              lasts longer than needed and creates greater inflation risk
+              later. The final gap remains inside P5’s near-balance tolerance.
+            `
+          : `
+              The outright purchase removes the shortage and restores
+              liquidity balance, with longer-lasting support than a Reverse
+              Repo.<br><br>
+              This suits a recovery that has not taken hold, but the trade-off
+              is inflation risk if the cost shock builds. The final gap remains
+              inside P5’s near-balance tolerance.
+            `
+      };
+    }
+    if(gap>250 && gap<=1000){
+      return{
+        auction:auctionTemplate('purchases T-bills outright'),
+        macro:gdpRecovering
+          ? `
+              The outright purchase reduces the shortage but does not fully meet the funding need. Part of a technical shortage remains.
+              <br><br>With GDP recovering, the remaining pressure is mainly
+              a market-management issue, but the support is incomplete.
+            `
+          : `
+              The outright purchase reduces the shortage but does not fully
+              meet the funding need. Part of the shortage remains while GDP
+              is weak, so funding stays tight for a fragile recovery.
+              <br><br>The support is right in direction but incomplete.
+            `
+      };
+    }
+    if(gap>1000){
+      return{
+        auction:auctionTemplate('purchases T-bills outright'),
+        macro:gdpRecovering
+          ? `
+              The outright purchase reduces the shortage but leaves a large
+              technical funding need unresolved. The final imbalance is
+              outside P5’s admissible operating range and represents an
+              excessive policy shock.
+            `
+          : `
+              The outright purchase reduces the shortage but leaves substantial
+              funding pressure while GDP remains weak. The final imbalance is
+              outside P5’s admissible operating range and represents an
+              excessive policy shock.
+            `
+      };
+    }
+    if(gap>=-1000 && gap<-250){
+      return{
+        auction:auctionTemplate('purchases T-bills outright'),
+        macro:gdpRecovering
+          ? `
+              The outright purchase exceeds the shortage and creates a
+              surplus while GDP is already recovering and a cost shock is
+              emerging.<br><br>
+              Extra liquidity adds little to growth and may feed cost pressure.
+              The action is more accommodative than conditions require.
+            `
+          : `
+              The outright purchase exceeds the shortage and creates a
+              surplus while GDP remains weak. Extra support helps growth
+              somewhat, but the amount exceeds the funding need and the
+              cost shock limits how far easing should go.
+            `
+      };
+    }
+    if(gap<-1000){
+      return{
+        auction:auctionTemplate('purchases T-bills outright'),
+        macro:`
+            The outright purchase exceeds the shortage by a large amount
+            and creates excessive surplus liquidity.<br><br>
+            The final imbalance is outside P5’s admissible operating range
+            and represents an excessive policy shock.
+          `
+      };
+    }
+  }
+  /* Wrong-direction absorption while system is short */
+  if(realLiquidityDemand>0 && action==='Repo'){
+    return{
+      auction:auctionTemplate('conducts a Repo'),
+      macro:gdpRecovering
+        ? `
+            The Repo withdraws liquidity while the system is already short,
+            worsening the shortage.<br><br>
+            Withdrawing liquidity tightens funding and weighs on a recovery
+            that is just emerging. It also does nothing to address the underlying cost shock.
+          `
+        : `
+            The Repo withdraws liquidity while the system is already short.
+            GDP is weak, so the additional tightening puts further pressure
+            on a recovery that has not taken hold and does nothing to address
+            the underlying cost shock.
+          `
+    };
+  }
+  if(realLiquidityDemand>0 && action==='Sell Securities'){
+    return{
+      auction:auctionTemplate('issues T-bills'),
+      macro:gdpRecovering
+        ? `
+            T-bill issuance withdraws liquidity while the system already
+            needs funding, worsening the shortage.<br><br>
+            This tightens funding and weighs on a recovery that is just
+            emerging while doing nothing to address the underlying cost shock.
+          `
+        : `
+            T-bill issuance withdraws liquidity while the system already
+            needs funding. GDP is weak, so the longer-lasting tightening
+            puts further pressure on a recovery that has not taken hold and
+            does nothing to address the underlying cost shock.
+          `
+    };
+  }
+  /* =========================================================
+     LQ DEMAND < 0 — SURPLUS
+     ========================================================= */
+  if(realLiquidityDemand<0 &&
+     (action==='Reverse Repo' || action==='Buy Securities')){
+    return{
+      auction:auctionTemplate(
+        action==='Reverse Repo'
+          ? 'conducts a Reverse Repo'
+          : 'purchases T-bills outright'
+      ),
+      macro:gdpRecovering
+        ? `
+            The operation injects liquidity while the system is already in
+            surplus, deepening excess liquidity.<br><br>
+            GDP is recovering and a cost shock is emerging, so additional
+            liquidity provides little stabilization benefit and increases
+            the risk of second-round inflation effects.
+          `
+        : `
+            The operation injects liquidity while the system is already in
+            surplus. Growth is weak, but extra liquidity is not the right
+            tool for a supply-side cost shock and may add to inflation
+            pressure.
+          `
+    };
+  }
+  /* ---------- REPO ---------- */
+  if(realLiquidityDemand<0 && action==='Repo'){
+  if(nearZero){
+      return{
+        auction:auctionTemplate('conducts a Repo'),
+        macro:gdpRecovering
+          ? `
+              The Repo removes the small surplus without creating a new
+              shortage. Its P7 maturity returns liquidity just as expected
+              subsidy support raises firms’ funding demand.<br><br>
+              The final gap remains inside P5’s near-balance tolerance.
+            `
+          : `
+              The Repo removes the surplus and restores liquidity balance
+              without a lasting tightening.<br><br>
+              GDP is still weak despite earlier easing, so tighter liquidity
+              reduces support to credit and investment before recovery is confirmed. The decision carries a clear growth trade-off.
+            `
+      };
+    }
+    if(gap>250 && gap<=1000){
+      return{
+        auction:auctionTemplate('conducts a Repo'),
+        macro:gdpRecovering
+          ? `
+              The Repo absorbs more than the surplus and creates a shortage.
+              GDP is recovering, but inflation is cost-push.<br><br>
+              Creating a new shortage before P6 is more tightening than
+              needed because OMO cannot remove the original supply shock.
+            `
+          : `
+              The Repo absorbs more than the surplus and creates a shortage
+              while GDP is weak.<br><br>
+              The cost shock does not justify tightening a weak economy,
+              and credit and investment face avoidable pressure.
+            `
+      };
+    }
+    if(gap>1000){
+      return{
+        auction:auctionTemplate('conducts a Repo'),
+        macro:`
+            The Repo absorbs more than the surplus and creates an excessive
+            shortage. The final imbalance is outside P5’s admissible operating
+            range and represents an excessive policy shock.
+          `
+      };
+    }
+    if(gap>=-500 && gap<-250){
+      return{
+        auction:auctionTemplate('conducts a Repo'),
+        macro:gdpRecovering
+          ? `
+              The Repo absorbs part of the surplus, but some excess liquidity
+              remains.<br><br>
+              The remaining liquidity gives the recovery some room while
+              cost pressure is still emerging. The correction is cautious
+              but incomplete.
+            `
+          : `
+              The Repo absorbs part of the surplus and leaves some liquidity
+              in the system.<br><br>
+              With GDP weak, keeping some liquidity protects credit and
+              growth while the cost shock is still emerging. The correction
+              favors growth.
+            `
+      };
+    }
+    if(gap>=-1000 && gap<-500){
+      return{
+        auction:auctionTemplate('conducts a Repo'),
+        macro:gdpRecovering
+          ? `
+              The Repo absorbs part of the surplus, but a large amount of
+              excess liquidity remains. This gives the recovery room while
+              cost pressure is emerging, but the correction is materially
+              incomplete.
+            `
+          : `
+              The Repo absorbs part of the surplus and leaves substantial
+              liquidity in place. Keeping liquidity supports weak GDP, but
+              the remaining imbalance is large for P5.
+            `
+      };
+    }
+    if(gap<-1000){
+      return{
+        auction:auctionTemplate('conducts a Repo'),
+        macro:`
+            The Repo leaves a very large liquidity surplus unresolved.
+            The final imbalance is outside P5’s admissible operating range
+            and represents an excessive policy shock.
+          `
+      };
+    }
+  }
+  /* ---------- T-BILL ISSUANCE ---------- */
+   if(realLiquidityDemand<0 && action==='Sell Securities'){
+   if(nearZero){
+      return{
+        auction:auctionTemplate('issues T-bills'),
+        macro:gdpRecovering
+          ? `
+              T-bill issuance removes the surplus for longer than a temporary
+              Repo would.<br><br>
+              This gives more protection against cost pressure but may keep
+              funding tighter than the small surplus requires. The choice
+              leans toward price stability.
+            `
+          : `
+              T-bill issuance removes the surplus for a long period while
+              GDP remains weak.<br><br>
+              The cost shock is supply-side and OMO cannot solve it, so the
+              restrictive stance risks weighing on a recovery that has not
+              taken hold.
+            `
+      };
+    }
+    if(gap>250 && gap<=1000){
+      return{
+        auction:auctionTemplate('issues T-bills'),
+        macro:gdpRecovering
+          ? `
+              T-bill issuance absorbs more than the surplus and creates a
+              shortage. This leans toward price stability against possible
+              second-round effects of the cost shock.<br><br>
+              It also tightens funding at an early stage of recovery, while
+              OMO cannot remove the input-cost shock itself.
+            `
+          : `
+              T-bill issuance absorbs more than the surplus and creates a
+              shortage while GDP is weak.<br><br>
+              The cost shock does not justify tightening a weak economy,
+              and credit and investment face avoidable pressure.
+            `
+      };
+    }
+    if(gap>1000){
+      return{
+        auction:auctionTemplate('issues T-bills'),
+        macro:`
+            T-bill issuance absorbs more than the surplus and creates an
+            excessive shortage. The final imbalance is outside P5’s
+            admissible operating range and represents an excessive policy
+            shock.
+          `
+      };
+    }
+    if(gap>=-500 && gap<-250){
+      return{
+        auction:auctionTemplate('issues T-bills'),
+        macro:gdpRecovering
+          ? `
+              T-bill issuance reduces the liquidity surplus but leaves part
+              of it in the system.<br><br>
+              The action is cautious: it removes some excess liquidity
+              without forcing the system into shortage, although remaining
+              liquidity still carries inflation risk.
+            `
+          : `
+              T-bill issuance reduces the liquidity surplus but leaves part
+              of it in the system.<br><br>
+              Keeping some liquidity avoids over-tightening while GDP is weak,
+              although persistent excess liquidity may add to later price
+              pressure.
+            `
+      };
+    }
+    if(gap>=-1000 && gap<-500){
+      return{
+        auction:auctionTemplate('issues T-bills'),
+        macro:gdpRecovering
+          ? `
+          T-bill issuance reduces the surplus but leaves a large residual
+              imbalance. Leaving some liquidity avoids over-tightening, but
+              persistent excess liquidity can add to later price pressure.
+            `
+          : `
+              T-bill issuance reduces the surplus but leaves a large residual
+              imbalance. The remaining liquidity supports weak GDP, although
+              it also leaves some exposure to later price pressure.
+            `
+      };
+    }
+    if(gap<-1000){
+      return{
+        auction:auctionTemplate('issues T-bills'),
+        macro:`
+            T-bill issuance leaves an excessive liquidity surplus unresolved.
+            The final imbalance is outside P5’s admissible operating range
+            and represents an excessive policy shock.
+          `
+      };
+    }
+  }
+  /* =========================================================
+     LQ DEMAND = 0 — BALANCED
+     ========================================================= */
+  if(realLiquidityDemand===0 &&
+     (action==='Reverse Repo' || action==='Buy Securities')){
+    return{
+      auction:auctionTemplate(
+        action==='Reverse Repo'
+          ? 'conducts a Reverse Repo'
+          : 'purchases T-bills outright'
+      ),
+      macro:gdpRecovering
+        ? `
+            The market is balanced while GDP is recovering and a cost shock
+            is emerging. Injecting liquidity creates an unnecessary surplus
+            and may feed cost pressure.<br><br>
+            The operation goes beyond the actual funding need.
+          `
+        : `
+            The market is balanced while GDP remains weak. Injecting creates
+            a surplus beyond the actual funding need and offers limited
+            additional growth support while a cost shock is emerging.
+          `
+    };
+  }
+  if(realLiquidityDemand===0 &&
+     (action==='Repo' || action==='Sell Securities')){
+    return{
+      auction:auctionTemplate(
+        action==='Repo'
+          ? 'conducts a Repo'
+          : 'issues T-bills'
+      ),
+      macro:gdpRecovering
+        ? `
+            The market is balanced, so absorbing liquidity creates a
+            deliberate shortage.<br><br>
+            This leans toward price stability against the emerging cost shock,
+            but imposes a growth cost early in the recovery.
+          `
+        : `
+            The market is balanced and GDP is weak, so absorbing liquidity
+            creates a shortage that tightens funding against a weak economy.
+            The operation therefore imposes an unnecessary growth cost.
+          `
+    };
+  }
+  return{
+    auction:'',
+    macro:''
+  };
+};
 /* Select the phase-specific report rule used by the Results screen. */
-  const reportRule=
-    pgPhase===1
-      ? pgPhase1ReportRule()
-      : pgPhase===2
-        ? pgPhase2ReportRule()
-        : pgPhase===3
-          ? pgPhase3ReportRule()
-          : pgPhase===4
-            ? pgPhase4ReportRule()
+const reportRule=
+  pgPhase===1
+    ? pgPhase1ReportRule()
+    : pgPhase===2
+      ? pgPhase2ReportRule()
+      : pgPhase===3
+        ? pgPhase3ReportRule()
+        : pgPhase===4
+          ? pgPhase4ReportRule()
+          : pgPhase===5
+            ? pgPhase5ReportRule()
             : {auction:'',macro:''};
   /* Store one assessment snapshot per completed phase.
      This metadata is used only by the ending screen. */
