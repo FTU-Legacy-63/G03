@@ -1245,7 +1245,7 @@ function pgSetDeck(rootId,index){
 function pgSetNewsPage(n){pgNewsPage=pgSetDeck('pg-brief',n)}
 function pgExpectedBlockHTML(editable,showHelp=true){
   const expectedValue=pgHasExpectedInflation()?Number(pgExpectedInflation).toFixed(2):'';
-  if(editable&&pgPhase===1){
+  if(editable&&[1,4,7].includes(pgPhase)){
     return `<div class="expected-daily">
       <label>
         Expected inflation (%)
