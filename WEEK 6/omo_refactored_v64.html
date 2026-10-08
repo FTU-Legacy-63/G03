@@ -4574,7 +4574,30 @@ function paperNext(){
              <small>INFLATION</small>
            </div>
          </div>
-        <section class="end-assessment">
+         
+         <section class="end-final-charts">
+         
+           <div class="end-chart-block">
+             <div class="end-chart-head">
+               <span>INTERBANK RATE</span>
+               <strong>Interbank rate trend</strong>
+             </div>
+         
+             ${pgDailyRateTimelineSVG(pgRateHistory)}
+           </div>
+         
+           <div class="end-chart-block">
+             <div class="end-chart-head">
+               <span>MACROECONOMIC OUTCOME</span>
+               <strong>GDP growth & inflation</strong>
+             </div>
+         
+             ${pgMacroTrendSVG(pgMacroHistory,6)}
+           </div>
+         
+         </section>
+         
+         <section class="end-assessment">
           <div class="end-assessment-head">
             <span>FINAL POLICY REVIEW</span>
             <strong>Overall Assessment</strong>
