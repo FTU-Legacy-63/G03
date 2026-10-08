@@ -681,7 +681,7 @@ function pgExpectedInputChanged(el){
 function pgSyncExpectedGate(){
   const btn=pg$('pg-go-decision');
   if(!btn)return;
-  const locked=pgPhase===1&&!pgHasExpectedInflation();
+  const locked=[1,4,7].includes(pgPhase)&&!pgHasExpectedInflation();
   btn.disabled=locked;
   btn.setAttribute('aria-disabled',locked?'true':'false');
   btn.title=locked?'Enter expected inflation on Page 2 before continuing.':'';
@@ -1418,8 +1418,8 @@ async function pgRunEngine(){
 // ---------------------------------------------------------------------
 async function paperExecute(){
   const method=pg$('pg-method').value,volume=Number(pg$('pg-volume').value); if(volume<=0)return alert('Offered volume must be greater than 0.');
-  if(pgPhase===1&&!pgHasExpectedInflation()){alert('Expected inflation is required before the Phase 1 auction can be submitted.');paperBrief();pgSetNewsPage(1);setTimeout(()=>{const el=pg$('pg-expected-inflation-daily');el?.classList.add('invalid');el?.focus()},120);return;}
-  pgDecision={auction_method:method,pricing_method:method==='Interest-rate auction'?pg$('pg-pricing').value:null,omo_action:pg$('pg-action').value,volume,repo_rate:method==='Volume auction'?Number(pg$('pg-rate').value):null,expected_inflation:pgPhase===1&&pgHasExpectedInflation()?Number(pgExpectedInflation):null};
+  if([1,4,7].includes(pgPhase)&&!pgHasExpectedInflation()){alert('Expected inflation is required before the Phase 1 auction can be submitted.');paperBrief();pgSetNewsPage(1);setTimeout(()=>{const el=pg$('pg-expected-inflation-daily');el?.classList.add('invalid');el?.focus()},120);return;}
+  pgDecision={auction_method:method,pricing_method:method==='Interest-rate auction'?pg$('pg-pricing').value:null,omo_action:pg$('pg-action').value,volume,repo_rate:method==='Volume auction'?Number(pg$('pg-rate').value):null,expected_inflation:[1,4,7].includes(pgPhase)&&pgHasExpectedInflation()?Number(pgExpectedInflation):null};
   const resultPromise=pgRunEngine();
   const option4=method==='Interest-rate auction'?(pgDecision.pricing_method||'Single-price'):`${Number(pgDecision.repo_rate||0).toFixed(2)}%`;
   pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="document-sheet transition-notice rise"><div class="decision-head"><div class="decision-mast">THE OMO<br>OPERATING FORM<br>NO. 0${pgPhase}/OMO-2025</div><div><h1>Open Market Operations Announcenment</h1><p>The announcement has been issued and is sending to commercial banks for auction.</p></div></div><div class="formgrid"><div class="field"><label>1. OMO instrument</label><input value="${pgDecision.omo_action}" readonly></div><div class="field"><label>2. Auction method</label><input value="${pgDecision.auction_method}" readonly></div><div class="field"><label>3. Offered volume</label><input value="${pgFmt(pgDecision.volume)} bn" readonly></div><div class="field"><label>4. ${method==='Interest-rate auction'?'Pricing method':'OMO offer rate'}</label><input value="${option4}" readonly></div></div></div><div class="transition-caption">NOTICE ISSUED</div></div>`;
