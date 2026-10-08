@@ -342,9 +342,9 @@ class CentralBankGame:
         self.output_gap_rate_sensitivity = 0.25
         self.potential_gdp_growth = 6
         self.inflation_expectation_weight = 0.25
-        self.inflation_past_weight = 0.1
+        self.inflation_past_weight = 0.65
         self.inflation_output_gap_sensitivity = 0.3
-        self.inflation_growth_sensitivity = 0.3
+        self.inflation_growth_sensitivity = 0.1
         self.last_macro_output_gap = 0  # Starting Output Gap at Phase 1
         self.last_inflation = 4.0
         self.pending_expected_inflation = None
