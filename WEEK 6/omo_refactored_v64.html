@@ -1019,7 +1019,9 @@ async function paperStart(){
   try{
     const r=await fetch('/api/start-game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start_date:'02/02/2025',initial_rate:3.95})});
     const data=await r.json();if(!r.ok||data.status==='error')throw new Error(data.message||'Unable to start backend game.');
-    pgBackendState=data;pgInitialState=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate))pgRateHistory=[{kind:'opening',phase:0,date:getPhaseDate(0),rate}];
+    pgBackendState=data;pgInitialState=data;
+    const rate=Number(data.interbank_rate);
+    if(Number.isFinite(rate))pgRateHistory=[{kind:'opening',phase:0,date:getPhaseDate(0),rate}];
   }catch(e){console.error(e);alert('Unable to start the OMO backend: '+e.message);return}
   pgSyncPhaseFallbacks();paperBrief();
 }
@@ -1166,35 +1168,157 @@ function pgDailyRateTimelineSVG(history){
   const raw=Array.isArray(history)?history:[];
   const slots=[
     {kind:'opening',phase:0,label:'OPENING',date:getPhaseDisplayDate(0)},
-    {kind:'result',phase:1,label:'OPENING RESULT',date:getPhaseDisplayDate(1)},
-    {kind:'result',phase:2,label:'PHASE 2 RESULT',date:getPhaseDisplayDate(2)},
-    {kind:'result',phase:3,label:'PHASE 3 RESULT',date:getPhaseDisplayDate(3)}
+    {kind:'result',phase:1,label:'PHASE 1',date:getPhaseDisplayDate(1)},
+    {kind:'result',phase:2,label:'PHASE 2',date:getPhaseDisplayDate(2)},
+    {kind:'result',phase:3,label:'PHASE 3',date:getPhaseDisplayDate(3)},
+    {kind:'result',phase:4,label:'PHASE 4',date:getPhaseDisplayDate(4)},
+    {kind:'result',phase:5,label:'PHASE 5',date:getPhaseDisplayDate(5)},
+    {kind:'result',phase:6,label:'PHASE 6',date:getPhaseDisplayDate(6)}
   ];
   const points=[];
   raw.forEach((item,i)=>{
     if(item&&typeof item==='object'){
-      const rate=Number(item.rate);if(!Number.isFinite(rate))return;
+      const rate=Number(item.rate);
+      if(!Number.isFinite(rate))return;
       const kind=item.kind||((Number(item.phase)||0)>0?'result':'opening');
       const phase=Number(item.phase)||0;
       const slot=kind==='opening'?0:phase;
-      if(slot>=0&&slot<slots.length)points.push({slot,rate});
+      if(slot>=0&&slot<slots.length){
+        points.push({slot,rate});
+      }
     }else{
-      const rate=Number(item);if(Number.isFinite(rate))points.push({slot:Math.min(i,3),rate});
+      const rate=Number(item);
+      if(Number.isFinite(rate)){
+        points.push({
+          slot:Math.min(i,slots.length-1),
+          rate
+        });
+      }
     }
   });
-  const finite=points.map(p=>p.rate),w=760,h=230,l=58,r=22,t=24,b=58;
-  const x=i=>l+i*(w-l-r)/3;
-  const min0=finite.length?Math.min(...finite):3.5,max0=finite.length?Math.max(...finite):4.5;
-  const pad=Math.max(.20,(max0-min0)*.45||.20),min=min0-pad,max=max0+pad,span=(max-min)||1;
+
+  const finite=points.map(p=>p.rate);
+  const w=760,h=230,l=58,r=22,t=24,b=58;
+  const x=i=>l+i*(w-l-r)/(slots.length-1);
+  const min0=finite.length?Math.min(...finite):3.5;
+  const max0=finite.length?Math.max(...finite):4.5;
+  const pad=Math.max(.20,(max0-min0)*.45||.20);
+  const min=min0-pad;
+  const max=max0+pad;
+  const span=(max-min)||1;
   const y=v=>t+(max-v)/span*(h-t-b);
-  const grid=[0,.25,.5,.75,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="7" y="${yy+4}" font-family=var(--font-ui) font-size="10" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
-  const xaxis=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family=var(--font-ui) font-size="8.5" font-weight="700" fill="#52675f">${slot.label}</text><text x="${x(i)}" y="${h-16}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
+  const grid=[0,.25,.5,.75,1].map(fr=>{
+    const yy=t+fr*(h-t-b);
+    const val=max-fr*span;
+    return `
+      <line
+        x1="${l}"
+        y1="${yy}"
+        x2="${w-r}"
+        y2="${yy}"
+        stroke="#c9bea9"
+      />
+      <text
+        x="7"
+        y="${yy+4}"
+        font-family="var(--font-ui)"
+        font-size="10"
+        fill="#65736e"
+      >${val.toFixed(2)}%</text>
+    `;
+  }).join('');
+
+  const xaxis=slots.map((slot,i)=>`
+    <line
+      x1="${x(i)}"
+      y1="${h-b}"
+      x2="${x(i)}"
+      y2="${h-b+6}"
+      stroke="#9d927c"
+    />
+    <text
+      x="${x(i)}"
+      y="${h-30}"
+      text-anchor="middle"
+      font-family="var(--font-ui)"
+      font-size="8.5"
+      font-weight="700"
+      fill="#52675f"
+    >${slot.label}</text>
+    <text
+      x="${x(i)}"
+      y="${h-16}"
+      text-anchor="middle"
+      font-family="var(--font-ui)"
+      font-size="9"
+      fill="#65736e"
+    >${slot.date}</text>
+  `).join('');
+
   const ordered=[...points].sort((a,b)=>a.slot-b.slot);
-  const path=ordered.length>1?`<path d="${ordered.map((q,j)=>(j?'L':'M')+x(q.slot).toFixed(1)+' '+y(q.rate).toFixed(1)).join(' ')}" fill="none" stroke="#087f75" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:'';
-  const dots=ordered.map(q=>`<circle cx="${x(q.slot)}" cy="${y(q.rate)}" r="6" fill="#087f75" stroke="#fff7de" stroke-width="2"><title>${slots[q.slot].label} · ${slots[q.slot].date} · ${q.rate.toFixed(2)}%</title></circle>`).join('');
+  const path=ordered.length>1
+    ? `<path
+        d="${ordered.map((q,j)=>
+          (j?'L':'M')+
+          x(q.slot).toFixed(1)+' '+
+          y(q.rate).toFixed(1)
+        ).join(' ')}"
+        fill="none"
+        stroke="#087f75"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />`
+    :'';
+  const dots=ordered.map(q=>`
+    <circle
+      cx="${x(q.slot)}"
+      cy="${y(q.rate)}"
+      r="6"
+      fill="#087f75"
+      stroke="#fff7de"
+      stroke-width="2"
+    >
+      <title>
+        ${slots[q.slot].label} ·
+        ${slots[q.slot].date} ·
+        ${q.rate.toFixed(2)}%
+      </title>
+    </circle>
+  `).join('');
   const occupied=new Set(ordered.map(q=>q.slot));
-  const pending=slots.map((slot,i)=>occupied.has(i)?'':`<circle cx="${x(i)}" cy="${h-b}" r="4" fill="#d0c6b2"><title>${slot.label} not observed yet</title></circle>`).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Interbank rate: opening level plus one new point for each completed player phase">${grid}<line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${xaxis}${path}${dots}${pending}</svg>`;
+  const pending=slots.map((slot,i)=>
+    occupied.has(i)
+      ? ''
+      : `<circle
+           cx="${x(i)}"
+           cy="${h-b}"
+           r="4"
+           fill="#d0c6b2"
+         >
+           <title>${slot.label} not observed yet</title>
+         </circle>`
+  ).join('');
+  return `
+    <svg
+      viewBox="0 0 ${w} ${h}"
+      role="img"
+      aria-label="Interbank rate: opening level plus one new point for each completed player phase"
+    >
+      ${grid}
+      <line
+        x1="${l}"
+        y1="${h-b}"
+        x2="${w-r}"
+        y2="${h-b}"
+        stroke="#52675f"
+      />
+      ${xaxis}
+      ${path}
+      ${dots}
+      ${pending}
+    </svg>
+  `;
 }
 function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
@@ -1426,7 +1550,16 @@ async function pgRunEngine(){
     const r=await fetch('/api/run-phase',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data=await r.json();
     if(!r.ok||data.status==='error')throw new Error(data.message||'Backend rejected the phase decision.');
-    pgBackendState=data;pgResult=data;const rate=Number(data.interbank_rate);if(Number.isFinite(rate)){const point={kind:'result',phase:pgPhase,date:getPhaseDate(pgPhase),rate};const ix=pgRateHistory.findIndex(x=>x&&typeof x==='object'&&x.kind==='result'&&Number(x.phase)===pgPhase);if(ix>=0)pgRateHistory[ix]=point;else pgRateHistory.push(point);}
+    pgBackendState=data;
+    pgResult=data;
+    const rate=Number(data.interbank_rate);
+    if(Number.isFinite(rate)){
+       const point={
+          kind:'result',
+          phase:pgPhase,
+          date:getPhaseDate(pgPhase),
+          rate};
+       const ix=pgRateHistory.findIndex(x=>x&&typeof x==='object'&&x.kind==='result'&&Number(x.phase)===pgPhase);if(ix>=0)pgRateHistory[ix]=point;else pgRateHistory.push(point);}
     const gdpRaw=data.gdp_growth,inflationRaw=data.inflation;
     const gdp=(gdpRaw===null||gdpRaw===undefined||gdpRaw==='')?null:Number(gdpRaw);
     const inflation=(inflationRaw===null||inflationRaw===undefined||inflationRaw==='')?null:Number(inflationRaw);
