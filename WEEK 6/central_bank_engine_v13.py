@@ -398,13 +398,13 @@ class CentralBankGame:
         """
         Confirmed formula:
         - If action matches the sign of RLD, Total Bid = ABS(RLD).
-        - If action goes against RLD, Total Bid = Volume * random 50%-80%.
+        - If action goes against RLD, Total Bid = Volume * random 30%-50%.
         """
         injection = action in ("Buy Securities", "Reverse Repo")
         matches = (rld > 0) if injection else (rld < 0)
         if matches:
             return float(whole(abs(rld)))
-        return float(whole(volume * self.rng.randint(50, 80) / 100))
+        return float(whole(volume * self.rng.randint(30, 50) / 100))
 
     def _volume_total_cash_bid(self, rld, volume, rate):
         raise RuntimeError("Use _volume_total_cash_bid_for_action")
@@ -437,7 +437,7 @@ class CentralBankGame:
         if rate < self.floor:
             factor = self.rng.randint(10, 30) / 100
             if not matches:  # Excel's Volume branch has the extra 50%-80% factor.
-                factor *= self.rng.randint(50, 80) / 100
+                factor *= self.rng.randint(30, 50) / 100
         elif rate <= self.cap:
             if injection:
                 factor = self.rng.randint(90, 100) / 100
