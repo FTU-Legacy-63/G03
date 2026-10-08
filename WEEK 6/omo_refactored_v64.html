@@ -341,7 +341,36 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
      color:#233c37;
      outline:none;
    }
-   .end-summary{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:14px;align-items:center;max-width:620px;margin:28px auto;padding:18px;border-top:1px solid #c3b495;border-bottom:1px solid #c3b495}.end-summary span{font:900 38px var(--font-ui);color:#0b8178}.end-summary small{text-align:left;font:850 9px var(--font-ui);letter-spacing:.1em;color:#65736c}
+   .end-summary{
+     display:grid;
+     grid-template-columns:repeat(3,1fr);
+     gap:14px;
+     max-width:900px;
+     margin:28px auto;
+     padding:18px 0;
+     border-top:1px solid #c3b495;
+     border-bottom:1px solid #c3b495;
+   }
+   .end-summary-card{
+     display:flex;
+     flex-direction:column;
+     align-items:center;
+     justify-content:center;
+     min-width:0;
+     padding:6px 12px;
+   }
+   .end-summary-card span{
+     font:900 30px/1 var(--font-ui);
+     color:#0b8178;
+     white-space:nowrap;
+   }
+   .end-summary-card small{
+     margin-top:8px;
+     text-align:center;
+     font:850 9px/1.2 var(--font-ui);
+     letter-spacing:.1em;
+     color:#65736c;
+   }
 .end-assessment{
   max-width:900px;
   margin:26px auto 24px;
@@ -4271,6 +4300,9 @@ function paperNext(){
     return;
   }
   const overall=pgBuildOverallAssessment();
+  const finalInterbankRate=Number(pgResult?.interbank_rate);
+  const finalGDPGrowth=Number(pgResult?.gdp_growth);
+  const finalInflation=Number(pgResult?.inflation);
   const invalidHTML=overall.invalid
     ? `<div class="end-warning">
          <b>Contains an infeasible decision.</b><br>
@@ -4299,11 +4331,21 @@ function paperNext(){
           post-intervention effects.
         </p>
         <div class="end-summary">
-          <span>6</span>
-          <small>PHASES COMPLETED</small>
-          <span>5</span>
-          <small>BANKS PER AUCTION</small>
-        </div>
+           <div class="end-summary-card">
+             <span>${Number.isFinite(finalInterbankRate)?finalInterbankRate.toFixed(2):'—'}%</span>
+             <small>INTERBANK RATE</small>
+           </div>
+         
+           <div class="end-summary-card">
+             <span>${Number.isFinite(finalGDPGrowth)?finalGDPGrowth.toFixed(2):'—'}%</span>
+             <small>GDP GROWTH</small>
+           </div>
+         
+           <div class="end-summary-card">
+             <span>${Number.isFinite(finalInflation)?finalInflation.toFixed(2):'—'}%</span>
+             <small>INFLATION</small>
+           </div>
+         </div>
         <section class="end-assessment">
           <div class="end-assessment-head">
             <span>FINAL POLICY REVIEW</span>
