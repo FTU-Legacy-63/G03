@@ -900,6 +900,49 @@ const learningCards={
        </div>
      `
    },
+    overnightLendingRate:{
+       title:'Central Bank Overnight Lending rate',
+       content:`
+         <p>
+           <b>What is it?</b><br>
+           The interest rate charged by the Central Bank when banks borrow
+           overnight liquidity from the Central Bank.
+         </p>
+   
+         <p>
+           <b>Why does it matter?</b><br>
+           It provides a reference for the cost of overnight central bank
+           funding and can place an upper boundary on short-term market rates.
+         </p>
+   
+         <p>
+           <b>How to read it?</b><br>
+           A higher rate makes overnight central bank funding more expensive,
+           while a lower rate makes it cheaper.
+         </p>
+       `
+     },
+     reserveDepositRate:{
+       title:'Required Reserve Deposit Rate',
+       content:`
+         <p>
+           <b>What is it?</b><br>
+           The interest rate applied to funds that banks hold as required
+           reserves at the Central Bank.
+         </p>
+         <p>
+           <b>Why does it matter?</b><br>
+           It affects the return banks receive on required reserve balances
+           and therefore influences the incentive to hold liquidity at the
+           Central Bank.
+         </p>
+         <p>
+           <b>How to read it?</b><br>
+           A higher rate increases the return on required reserve balances,
+           while a lower rate reduces that return.
+         </p>
+       `
+     },
   inflation:{
      title:'Inflation',
      content:`
@@ -1493,11 +1536,25 @@ function paperBrief(){
            <div class="rate-band">
               <div class="rate-band-item">
                 <b>${a[4]}</b>
-                <span>Central Bank overnight lending rate</span>
+                <span>
+                  Central Bank overnight lending rate
+                  <button
+                    class="paper-help-dot"
+                    type="button"
+                    onclick="openLearningCard('overnightLendingRate')"
+                  >?</button>
+                </span>
               </div>
               <div class="rate-band-item">
                 <b>${a[5]}</b>
-                <span>Required reserve deposit rate</span>
+                <span>
+                  Required reserve deposit rate
+                  <button
+                    class="paper-help-dot"
+                    type="button"
+                    onclick="openLearningCard('reserveDepositRate')"
+                  >?</button>
+                </span>
               </div>
             </div>
           </article>`
