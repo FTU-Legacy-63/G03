@@ -211,7 +211,8 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 .newslabel{font:800 10px/1.3 var(--font-ui);letter-spacing:.08em;color:#65776f}.headline{margin:12px 0;font:700 27px/1.12 var(--font-vintage);color:#233e38}.clipping p{font:15px/1.62 var(--font-vintage);color:#3d514b}
 .newsnumber{font:900 52px/1 var(--font-ui);color:var(--desk-teal);margin:18px 0 7px}.newscaption{font:700 10px/1.4 var(--font-ui);letter-spacing:.08em;color:#68766e;text-transform:uppercase}
 .market-page-head{padding-bottom:18px;margin-bottom:26px;border-bottom:4px double #214b4a}.market-page-head h2{font:700 clamp(46px,4.2vw,56px)/1.04 var(--font-vintage);color:#203a35;margin:7px 0}.market-page-head p{font:15px/1.6 var(--font-vintage);color:#51665f;max-width:900px}
-.chart-sheet{display:grid;grid-template-columns:1.45fr .55fr;gap:26px;margin-top:22px}.chart-box{position:relative;border:1px solid #c3b495;background:rgba(255,252,244,.48);padding:16px 18px 10px}.chart-box svg{width:100%;height:330px;display:block}.chart-side{border-left:1px solid #c3b495;padding:12px 0 0 25px}.phase-date-label{display:inline-block;margin-top:10px;padding:6px 9px;border:1px solid #c3b495;background:rgba(238,226,201,.44);font:850 9px/1 var(--font-ui);letter-spacing:.08em;color:#6d684f;text-transform:uppercase}.big-rate{font:900 48px/1 var(--font-ui);color:var(--desk-teal);margin:18px 0 8px}.chart-side p{font:14px/1.6 var(--font-vintage);color:#40534d}
+.chart-sheet{display:grid;grid-template-columns:1.45fr .55fr;gap:26px;margin-top:22px}.chart-box{position:relative;border:1px solid #c3b495;background:rgba(255,252,244,.48);padding:16px 18px 10px}.chart-box svg{width:100%;height:330px;display:block}.chart-side{border-left:1px solid #c3b495;padding:12px 0 0 25px}
+.phase-date-label{display:inline-block;margin-top:10px;padding:6px 9px;border:1px solid #c3b495;background:rgba(238,226,201,.44);font:850 9px/1 var(--font-ui);letter-spacing:.08em;color:#6d684f;text-transform:uppercase}.big-rate{font:900 48px/1 var(--font-ui);color:var(--desk-teal);margin:18px 0 8px}.chart-side p{font:14px/1.6 var(--font-vintage);color:#40534d}
 /* Daily page 2: two aligned backend charts + macro input on the same operating sheet. */
 .daily-market-layout{grid-template-columns:minmax(0,1.48fr) minmax(300px,.52fr);gap:24px;margin-top:16px;align-items:start}
 .daily-chart-stack{display:grid;grid-template-rows:auto auto;gap:12px;min-width:0}.daily-chart-panel{padding:10px 14px 7px}.daily-chart-panel svg{height:190px}.daily-chart-panel.macro-daily-panel svg{height:190px}.daily-chart-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 2px;font:850 9px/1.2 var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:#607069}.daily-chart-heading span:last-child{font-size:8px;color:#8a806c;letter-spacing:.06em}.daily-chart-heading .legend{display:flex;gap:10px;align-items:center}.daily-chart-heading i{display:inline-block;width:14px;height:3px;margin-right:4px;vertical-align:middle}.daily-chart-heading i.gdp{background:#087f75}.daily-chart-heading i.inf{background:#b7892f}
@@ -503,12 +504,22 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   color:#4c615a!important;
 }
 .end-warning{
-  margin-top:14px;
-  padding:13px 15px;
-  border-left:4px solid #9e824a;
-  background:rgba(238,226,201,.64);
-  font:13px/1.5 var(--font-vintage);
-  color:#4a4235;
+  margin-top:18px;
+  padding:10px 12px;
+  border:1px solid #c3b495;
+  background:rgba(238,226,201,.44);
+  box-sizing:border-box;
+}
+.end-warning-label{
+  font:850 9px/1 var(--font-ui);
+  letter-spacing:.08em;
+  color:#6d684f;
+  text-transform:uppercase;
+}
+.end-warning p{
+  margin:8px 0 0;
+  font:14px/1.6 var(--font-vintage);
+  color:#40534d;
 }
 .ending-sheet.has-assessment{
   align-items:flex-start;
@@ -4590,11 +4601,15 @@ function paperNext(){
        </div>`
     : '';
   const marketWarningHTML=overall.warning
-    ? `<div class="end-warning">
-         <b>${overall.warning.title}</b><br>
-         ${overall.warning.text}
-       </div>`
-    : '';
+     ? `
+       <div class="end-warning">
+         <div class="end-warning-label">
+           ${overall.warning.title}
+         </div>
+         <p>${overall.warning.text}</p>
+       </div>
+     `
+     : '';
   pg$('pg-final').innerHTML=`
     <div class="document-sheet ending-sheet has-assessment">
       <div class="ending-inner">
@@ -4646,7 +4661,6 @@ function paperNext(){
            </div>
          
          </section>
-         
          <section class="end-assessment">
           <div class="end-assessment-head">
             <span>FINAL POLICY REVIEW</span>
