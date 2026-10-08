@@ -836,8 +836,7 @@ class CentralBankGame:
     def run_phase(self, scenario_liquidity_demand, decision):
         scenario_liquidity_demand = self.get_scenario_liquidity_demand()
 
-        # Expected inflation is entered at Phase 1, 4, 7, ... and used
-        # for the macro result at Phase 3, 6, 9, ... respectively.
+        # Expected inflation is entered at Phase 1, 4, 7, ... and used for the macro result at Phase 3, 6, 9, ... respectively.
         block_start = ((self.phase - 1) % 3 == 0)
         if block_start:
             if decision.expected_inflation is None:
