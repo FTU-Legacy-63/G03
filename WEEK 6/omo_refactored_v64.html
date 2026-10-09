@@ -1337,7 +1337,7 @@ function pgDailyRateTimelineSVG(history){
     kind:i===0?'opening':'result',
     phase:i+1,
     label:i===0?'PHASE 1 (OPENING)':`PHASE ${i+1}`,
-    date:getPhaseDisplayDate(i===0?0:i+1)
+    date:getPhaseDisplayDate(i)
   }));
   const points=[];
   raw.forEach((item,i)=>{
