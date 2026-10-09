@@ -697,79 +697,136 @@ class CentralBankGame:
             supply=excel_round(sign*cash_abs, 2)
         )
 
-    def process_maturities(self):
-        total, events = self.market_inventory.process_maturities(self.current_date)
+    def process_maturities(self, cutoff_date=None):
+        """
+        Process all maturities due on or before cutoff_date.
+
+        This includes:
+        - Central Bank Bills held by commercial banks.
+        - Repo maturity cash flows.
+        - Reverse Repo maturity cash flows.
+        - Underlying Central Bank Bills maturing while held under
+          an active Reverse Repo, even if the Reverse Repo itself
+          has not yet matured.
+        """
+        if cutoff_date is None:
+            cutoff_date = self.current_date
+
+        total, events = self.market_inventory.process_maturities(cutoff_date)
 
         for pos in self.repo_positions:
-            if pos.status != "active" or pos.maturity_date > self.current_date:
+            if pos.status != "active":
                 continue
 
-            value = excel_round(repayment(
-                pos.initial_cash, pos.transaction_rate,
-                (pos.maturity_date-pos.start_date).days
-            ), 2)
-
-            if pos.action == "Repo":
-                # CB buys securities back -> injection (+).
-                flow = +value
-            else:
-                # Reverse Repo: CB sells securities back -> absorption (-).
-                flow = -value
-
-                # Underlying SBV Bills are outside market_inventory during an RRP.
-                # If one reaches its own maturity on/before RRP maturity, recognize
-                # its SBV Bill maturity cash flow as well (confirmed game rule).
+            # 1. Process underlying bills held under Reverse Repo.
+            # A bill can mature before the Reverse Repo transaction itself.
+            if pos.action == "Reverse Repo":
                 for sec in pos.securities:
-                    if sec.maturity_date <= self.current_date and sec.face_value > 1e-9:
+                    if (
+                        sec.maturity_date <= cutoff_date
+                        and sec.face_value > 1e-9
+                    ):
                         bill_flow = excel_round(sec.face_value, 2)
                         total += bill_flow
+
                         events.append({
-                            "type": "SBV Bill maturity", "id": sec.security_id,
-                            "bank": pos.bank, "action": "SBV Bill",
+                            "type": "SBV Bill maturity",
+                            "id": sec.security_id,
+                            "bank": "-",
+                            "action": "SBV Bill",
                             "issue_date": sec.issue_date.isoformat(),
                             "maturity_date": sec.maturity_date.isoformat(),
-                            "rate": sec.tbill_rate, "volume": sec.face_value,
+                            "rate": sec.tbill_rate,
+                            "volume": sec.face_value,
                             "cash_flow": bill_flow,
                         })
 
-                # Only non-matured bills are returned to market outstanding.
-                self.market_inventory.return_slices(pos.securities, self.current_date)
+                        # Mark this portion as already matured so it
+                        # cannot be counted again when the RRP matures.
+                        sec.face_value = 0.0
+
+            # 2. Process the Repo / Reverse Repo transaction itself.
+            # Repo and Reverse Repo have their own maturity dates.
+            if pos.maturity_date > cutoff_date:
+                continue
+
+            value = excel_round(
+                repayment(
+                    pos.initial_cash,
+                    pos.transaction_rate,
+                    (pos.maturity_date - pos.start_date).days
+                ),
+                2
+            )
+
+            if pos.action == "Repo":
+                # Repo: the Central Bank buys securities back at maturity,
+                # injecting liquidity into the banking system.
+                flow = +value
+            else:
+                # Reverse Repo: the Central Bank sells securities back,
+                # absorbing liquidity at maturity.
+                flow = -value
+
+                # Return only securities that have not matured.
+                self.market_inventory.return_slices(
+                    pos.securities,
+                    cutoff_date
+                )
 
             pos.status = "matured"
             total += flow
+
             events.append({
-                "type": f"{pos.action} maturity", "id": pos.position_id,
-                "bank": pos.bank, "action": pos.action,
+                "type": f"{pos.action} maturity",
+                "id": pos.position_id,
+                "bank": pos.bank,
+                "action": pos.action,
                 "issue_date": pos.start_date.isoformat(),
                 "maturity_date": pos.maturity_date.isoformat(),
-                "rate": pos.transaction_rate, "volume": pos.face_value,
-                "cash_flow": flow, "repayment": value,
+                "rate": pos.transaction_rate,
+                "volume": pos.face_value,
+                "cash_flow": flow,
+                "repayment": value,
             })
 
-        # One SBV Bill can be split across market outstanding and several RRP
-        # positions. Present its maturity as ONE row per security ID.
+        # Merge the same Central Bank Bill into one maturity row,
+        # including bills split across market inventory and multiple
+        # Reverse Repo positions.
         merged_sbv = {}
         other_events = []
+
         for event in events:
             if event.get("type") == "SBV Bill maturity":
                 key = event["id"]
+
                 if key not in merged_sbv:
                     merged_sbv[key] = dict(event)
                     merged_sbv[key]["bank"] = "-"
                 else:
                     merged_sbv[key]["volume"] = excel_round(
-                        merged_sbv[key].get("volume", 0.0) + event.get("volume", 0.0), 2
+                        merged_sbv[key].get("volume", 0.0)
+                        + event.get("volume", 0.0),
+                        2
                     )
                     merged_sbv[key]["cash_flow"] = excel_round(
-                        merged_sbv[key].get("cash_flow", 0.0) + event.get("cash_flow", 0.0), 2
+                        merged_sbv[key].get("cash_flow", 0.0)
+                        + event.get("cash_flow", 0.0),
+                        2
                     )
             else:
                 other_events.append(event)
 
         events = list(merged_sbv.values()) + other_events
-        events.sort(key=lambda e: (e.get("maturity_date", ""), e.get("id", "")))
+        events.sort(
+            key=lambda e: (
+                e.get("maturity_date", ""),
+                e.get("id", "")
+            )
+        )
 
         return excel_round(total, 2), events
+
 
     def get_scenario_liquidity_demand(self):
         liquidity_demand_by_phase = {
@@ -847,16 +904,51 @@ class CentralBankGame:
         elif decision.expected_inflation is not None:
             raise ValueError("Expected Inflation is entered only at Phase 1, 4, 7, ...")
 
+        
+        # Define the reporting window for the current phase.
+        phase_start_date = self.current_date
+        phase_end_date = phase_start_date + timedelta(days=self.phase_days)
+
         prev_rate = self.interbank_rate
         unmet = self.previous_liquidity_gap
 
-        maturity, maturity_events = self.process_maturities()
+        # 1. Process maturities due at the start of the phase.
+        maturity_start, maturity_events_start = self.process_maturities(
+            phase_start_date
+        )
+
+        # 2. Execute OMO using the inventory available on the operation date.
         rld = scenario_liquidity_demand + unmet
         auction = self.run_auction(decision, rld)
 
         supply = auction["supply"]
+
+        # 3. Process maturities occurring during the phase,
+        # including those due exactly on the reporting date.
+        maturity_end, maturity_events_end = self.process_maturities(
+            phase_end_date
+        )
+
+        # Combine cash flows and events from the full reporting window.
+        maturity = excel_round(
+            maturity_start + maturity_end,
+            2
+        )
+
+        maturity_events = sorted(
+            maturity_events_start + maturity_events_end,
+            key=lambda e: (
+                e.get("maturity_date", ""),
+                e.get("id", "")
+            )
+        )
+
+        # Total supply includes OMO cash flow and maturity cash flows
+        # occurring within this phase's reporting window.
         total_supply = excel_round(supply + maturity, 2)
+
         gap = excel_round(rld - total_supply, 2)
+
         liquidity_pressure = (
             excel_round(gap / abs(rld), 6) if abs(rld) > 1e-12 else 0.0
         )
@@ -908,7 +1000,7 @@ class CentralBankGame:
         self.previous_liquidity_gap = gap
         self.interbank_rate = new_rate
         self.phase += 1
-        self.current_date += timedelta(days=self.phase_days)
+        self.current_date = phase_end_date
         return result
 
     def tbill_inventory(self):
