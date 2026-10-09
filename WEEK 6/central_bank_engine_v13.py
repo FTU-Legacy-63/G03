@@ -34,8 +34,12 @@ class Decision:
     pricing_method: Optional[PricingMethod] = None
     repo_rate: Optional[float] = None
     expected_inflation: Optional[float] = None
+    auction_enabled: bool = True
 
     def validate(self):
+        if not self.auction_enabled:
+            return
+        
         if self.volume < 0:
             raise ValueError("Volume must be >= 0.")
 
@@ -114,7 +118,6 @@ class PhaseResult:
     maturity_volume: float
     total_supply: float
     liquidity_gap: float
-    liquidity_pressure: float
     previous_interbank_rate: float
     interbank_rate: float
     total_cash_bid_volume: float
@@ -563,11 +566,15 @@ class CentralBankGame:
         decision.validate()
         banks = self._banks()
 
+        # Bid generation uses 1.5 times the Real Liquidity Demand.
+        bid_rld = rld * 1.5
+
+
         if decision.auction_method == "Interest-rate auction":
-            win = self._win_rate(decision.omo_action, rld)
+            win = self._win_rate(decision.omo_action, bid_rld)
             bid_rates = self._interest_rates(win, decision.omo_action)
             weights = [self.rng.randint(1, 100) / 100 for _ in range(5)]
-            total_cash_bid = self._interest_total_cash_bid(decision.omo_action, rld, decision.volume)
+            total_cash_bid = self._interest_total_cash_bid(decision.omo_action, bid_rld, decision.volume)
             cash_bid_vols = whole_distribution(weights, total_cash_bid)
 
             rows = list(zip(banks, bid_rates, cash_bid_vols))
@@ -584,7 +591,7 @@ class CentralBankGame:
             weights = [5+self.rng.random(), 4+self.rng.random(), 3+self.rng.random(),
                        2+self.rng.random(), 1+self.rng.random()]
             total_cash_bid = self._volume_total_cash_bid_for_action(
-                decision.omo_action, rld, decision.volume, float(decision.repo_rate))
+                decision.omo_action, bid_rld, decision.volume, float(decision.repo_rate))
             cash_bid_vols = whole_distribution(weights, total_cash_bid)
 
         # NEW FLOW: random formula creates CASH BID first, then cash is grossed up
@@ -909,49 +916,38 @@ class CentralBankGame:
         phase_start_date = self.current_date
         phase_end_date = phase_start_date + timedelta(days=self.phase_days)
 
+        
         prev_rate = self.interbank_rate
         unmet = self.previous_liquidity_gap
 
-        # 1. Process maturities due at the start of the phase.
-        maturity_start, maturity_events_start = self.process_maturities(
-            phase_start_date
-        )
+        # Process maturities first.
+        # Positive maturity = liquidity injection.
+        # Negative maturity = liquidity absorption.
+        maturity, maturity_events = self.process_maturities()
 
-        # 2. Execute OMO using the inventory available on the operation date.
-        rld = scenario_liquidity_demand + unmet
-        auction = self.run_auction(decision, rld)
+        # Adjust RLD for the liquidity impact of matured positions.
+        rld = scenario_liquidity_demand + unmet - maturity
+
+        # Run the auction using the adjusted RLD.
+        if decision.auction_enabled:
+            auction = self.run_auction(decision, rld)
+        else:
+            auction = {
+                "bids": [],
+                "win_rate": 0.0,
+                "total_cash_bid_volume": 0.0,
+                "total_bid_volume": 0.0,
+                "total_real_volume": 0.0,
+                "supply": 0.0,
+            }
 
         supply = auction["supply"]
 
-        # 3. Process maturities occurring during the phase,
-        # including those due exactly on the reporting date.
-        maturity_end, maturity_events_end = self.process_maturities(
-            phase_end_date
-        )
+        # Total supply includes both new OMO and maturity cash flows.
+        total_supply = excel_round(supply + maturity, 0)
 
-        # Combine cash flows and events from the full reporting window.
-        maturity = excel_round(
-            maturity_start + maturity_end,
-            2
-        )
-
-        maturity_events = sorted(
-            maturity_events_start + maturity_events_end,
-            key=lambda e: (
-                e.get("maturity_date", ""),
-                e.get("id", "")
-            )
-        )
-
-        # Total supply includes OMO cash flow and maturity cash flows
-        # occurring within this phase's reporting window.
-        total_supply = excel_round(supply + maturity, 2)
-
-        gap = excel_round(rld - total_supply, 2)
-
-        liquidity_pressure = (
-            excel_round(gap / abs(rld), 6) if abs(rld) > 1e-12 else 0.0
-        )
+        # Maturity is already reflected in RLD, so do not subtract it again.
+        gap = excel_round(rld - supply, 0)
 
         # Interbank uses signed Liquidity Gap directly and is constrained
         # to the documented valid range of 0%-20%.
@@ -980,7 +976,6 @@ class CentralBankGame:
             maturity_volume=maturity,
             total_supply=total_supply,
             liquidity_gap=gap,
-            liquidity_pressure=liquidity_pressure,
             previous_interbank_rate=prev_rate,
             interbank_rate=new_rate,
             total_cash_bid_volume=auction["total_cash_bid_volume"],
