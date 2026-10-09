@@ -239,7 +239,6 @@ def run_phase():
             "maturity_volume": result.maturity_volume,
             "total_supply": result.total_supply,
             "liquidity_gap": result.liquidity_gap,
-            "liquidity_pressure": result.liquidity_pressure,
 
             # INTERBANK
             "previous_interbank_rate": result.previous_interbank_rate,
