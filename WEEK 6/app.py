@@ -144,15 +144,17 @@ def run_phase():
         # Tạo Decision
         # -------------------------------------------------
 
+        auction_enabled = data.get("auction_enabled", True)
+
         decision = Decision(
             auction_method=auction_method,
             omo_action=omo_action,
             volume=volume,
             pricing_method=pricing_method,
             repo_rate=repo_rate,
-            expected_inflation=expected_inflation
+            expected_inflation=expected_inflation,
+            auction_enabled=auction_enabled
         )
-
 
         # -------------------------------------------------
         # Engine gọi:
