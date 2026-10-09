@@ -1346,7 +1346,7 @@ function pgDailyRateTimelineSVG(history){
       if(!Number.isFinite(rate))return;
       const kind=item.kind||((Number(item.phase)||0)>0?'result':'opening');
       const phase=Number(item.phase)||0;
-      const slot=kind==='opening'?0:phase-1;
+      const slot=kind==='opening'?0:phase;
       if(slot>=0&&slot<slots.length){
         points.push({slot,rate});
       }
