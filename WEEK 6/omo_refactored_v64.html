@@ -1711,8 +1711,8 @@ function paperDecision(){
     </div>
     <div class="decision-actions">
      <button class="pbtn alt" onclick="paperBrief()">← REVIEW REPORT</button>
-     <button class="pbtn alt" type="button" onclick="paperNoAuction()">NO AUCTION</button>
      <button class="pbtn" type="button" onclick="paperExecute()">ISSUE</button>
+     <button class="pbtn alt" type="button" onclick="paperNoAuction()">NO AUCTION</button>
     </div>
   </div>`;
   pg$('pg-action').value=c.action; pg$('pg-method').value=c.method; pgToggleAuctionFields(); pgShow('pg-decision');
