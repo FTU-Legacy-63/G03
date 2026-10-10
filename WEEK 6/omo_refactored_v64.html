@@ -1018,13 +1018,11 @@ const learningCards={
            The interest rate charged by the Central Bank when banks borrow
            overnight liquidity from the Central Bank.
          </p>
-   
          <p>
            <b>Why does it matter?</b><br>
            It provides a reference for the cost of overnight central bank
            funding and can place an upper boundary on short-term market rates.
          </p>
-   
          <p>
            <b>How to read it?</b><br>
            A higher rate makes overnight central bank funding more expensive,
@@ -1059,8 +1057,7 @@ const learningCards={
        <p>
          <b>What is it?</b><br>
          The rate at which the overall price level of goods and services in the economy increases.
-       </p>
-   
+       </p>   
        <p>
          <b>Why does it matter?</b><br>
          Easing liquidity conditions can support economic activity, but if maintained for too long or applied excessively, it can create additional inflationary pressure.
@@ -1073,8 +1070,7 @@ const learningCards={
        <p>
          <b>What is it?</b><br>
          The growth rate of economic output after removing the effect of changes in the price level.
-       </p>
-   
+       </p>  
        <p>
          <b>Why does it matter?</b><br>
          Easing liquidity conditions can support credit growth and economic activity,
@@ -1393,7 +1389,6 @@ function pgDailyRateTimelineSVG(history){
       >${val.toFixed(2)}%</text>
     `;
   }).join('');
-
   const xaxis=slots.map((slot,i)=>`
     <line
       x1="${x(i)}"
@@ -1492,9 +1487,9 @@ function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
   const slots=[
     {phase:1,label:'PHASE 1 (OPENING)',date:getPhaseDisplayDate(0),timelineIndex:0},
-    {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(2),timelineIndex:2},
-    {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(5),timelineIndex:5},
-    {phase:9,label:'PHASE 9',date:getPhaseDisplayDate(8),timelineIndex:8}
+    {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(4),timelineIndex:2},
+    {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(7),timelineIndex:5},
+    {phase:9,label:'PHASE 9',date:getPhaseDisplayDate(10),timelineIndex:8}
   ];
   const gdpPoints=[],inflationPoints=[];
   rows.forEach(row=>{
@@ -1781,8 +1776,6 @@ async function paperExecute(){
   pg$('pg-send').innerHTML=`<div class="transition-stage"><div class="transition-bids">${bidEntries.map((entry,i)=>pgBidSlipHTML(entry.bid,entry.backendIndex).replace('class="bid-slip"',`class="bid-slip" style="--delay:${(i*.12).toFixed(2)}s"`)).join('')}</div><div class="transition-caption">5 BID SUBMISSIONS RECEIVED · BANKS A → E</div></div>`;
   await pgDelay(1450); paperSort();
 }
-
-
 async function paperNoAuction() {
   if ([1, 4, 7].includes(pgPhase) && !pgHasExpectedInflation()) {
     alert('Expected inflation is required before this phase can be submitted.');
@@ -1790,9 +1783,7 @@ async function paperNoAuction() {
     pgSetNewsPage(1);
     return;
   }
-
   const method = pg$('pg-method').value;
-
   // Giữ các lựa chọn hiện tại, nhưng không thực hiện đấu thầu.
   pgDecision = {
     auction_method: method,
@@ -1809,16 +1800,13 @@ async function paperNoAuction() {
       : null,
     auction_enabled: false
   };
-
   try {
     const data = await pgRunEngine();
-
     // Không cần có 5 bid và không cần qua màn xếp bid.
     pgResult = data;
     pgBackendState = data;
     pgBidEntries = [];
     pgPlayerSortOrder = [];
-
     // Hiển thị trực tiếp bộ 3 trang kết quả.
     paperReport();
   } catch (e) {
@@ -1827,7 +1815,6 @@ async function paperNoAuction() {
     paperDecision();
   }
 }
-
 // ---------------------------------------------------------------------
 // SECTION: SORTING BOARD
 // Purpose: drag the exact five slips into five ranked slots and validate.
@@ -4707,39 +4694,31 @@ function paperNext(){
            <div class="end-summary-card">
              <span>${Number.isFinite(finalInterbankRate)?finalInterbankRate.toFixed(2):'—'}%</span>
              <small>INTERBANK RATE</small>
-           </div>
-         
+           </div>       
            <div class="end-summary-card">
              <span>${Number.isFinite(finalGDPGrowth)?finalGDPGrowth.toFixed(2):'—'}%</span>
              <small>GDP GROWTH</small>
-           </div>
-         
+           </div>      
            <div class="end-summary-card">
              <span>${Number.isFinite(finalInflation)?finalInflation.toFixed(2):'—'}%</span>
              <small>INFLATION</small>
            </div>
-         </div>
-         
-         <section class="end-final-charts">
-         
+         </div>         
+         <section class="end-final-charts">         
            <div class="end-chart-block">
              <div class="end-chart-head">
                <span>INTERBANK RATE</span>
                <strong>Interbank rate trend</strong>
-             </div>
-         
+             </div>        
              ${pgDailyRateTimelineSVG(pgRateHistory)}
-           </div>
-         
+           </div>         
            <div class="end-chart-block">
              <div class="end-chart-head">
                <span>MACROECONOMIC OUTCOME</span>
                <strong>GDP growth & inflation</strong>
-             </div>
-         
+             </div>        
              ${pgMacroTrendSVG(pgMacroHistory,6)}
-           </div>
-         
+           </div>         
          </section>
          <section class="end-assessment">
           <div class="end-assessment-head">
@@ -4773,7 +4752,6 @@ function paperNext(){
         <button class="pbtn" onclick="paperRestart()">
           PLAY AGAIN ↻
         </button>
-
       </div>
     </div>
   `;
