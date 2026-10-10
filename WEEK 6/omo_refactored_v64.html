@@ -1488,7 +1488,7 @@ function pgDailyRateTimelineSVG(history){
 function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
   const slots=[
-    {phase:1,label:'PHASE 1 (OPENING)',date:getPhaseDisplayDate(0),timelineIndex:0},
+    {phase:1,label:'OPENING',date:getPhaseDisplayDate(0),timelineIndex:0},
     {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(3),timelineIndex:3},
     {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(6),timelineIndex:6},
     {phase:9,label:'PHASE 9',date:getPhaseDisplayDate(9),timelineIndex:9}
