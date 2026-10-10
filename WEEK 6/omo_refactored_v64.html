@@ -756,7 +756,7 @@ body{visibility:visible!important}
       </div>
     </div>
      <div class="nameplate-progress">
-       <span id="pg-phase">OPERATING DESK · PHASE 1/6</span>
+       <span id="pg-phase">OPERATING DESK · PHASE 1/9</span>
 <span class="dot on"></span>
 <span class="dot"></span>
 <span class="dot"></span>
@@ -831,7 +831,10 @@ const phaseConfig={
   3:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:1000},matTable:{}},
   4:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
   5:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
-  6:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}}
+  6:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
+  7:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{},matTable:{}},
+  8:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{},matTable:{}},
+  9:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{},matTable:{}}
 };
 function getPhaseDate(pointIndex){const start=new Date(Date.UTC(2025,1,2));start.setUTCDate(start.getUTCDate()+Number(pointIndex||0)*30);return start.toISOString().slice(0,10)}
 function getPhaseDisplayDate(pointIndex){return pgDisplayDate(getPhaseDate(pointIndex))}
@@ -1128,7 +1131,7 @@ function pgShow(id){
 function pgUpdateHead(){
   const phaseEl = pg$('pg-phase');
   if(phaseEl) {
-    phaseEl.textContent = `OPERATING DESK · PHASE ${pgPhase}/6`;
+    phaseEl.textContent = `OPERATING DESK · PHASE ${pgPhase}/9`;
   }
   const deskNameEl = pg$('pg-desk-name');
   if(deskNameEl) {
@@ -4639,7 +4642,7 @@ const reportRule=
   ${page2}
   <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,pgResult,'result')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetReportPage(pgReportPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetReportPage(pgReportPage+1)">→</button>
-    <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<6?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
+    <div class="deck-footer"><button class="pbtn" onclick="paperNext()">${pgPhase<9?'NEXT MONTH →':'VIEW SUMMARY →'}</button></div>
   </div>`;
   pgReportPage=0;pgShow('pg-report');pgSetReportPage(0);
 }
@@ -4649,7 +4652,7 @@ const reportRule=
 // Ends at END PAPER GAME LOGIC.
 // ---------------------------------------------------------------------
 function paperNext(){
-  if(pgPhase<6){
+  if(pgPhase<9){
     pgPhase++;
     currentPhase=pgPhase;
     pgResult=null;
@@ -4691,7 +4694,7 @@ function paperNext(){
         </div>
         <h1>OMO OPERATING RUN COMPLETE</h1>
         <p>
-          <b>${teamName}</b> completed all 6 phases: reading macro signals,
+          <b>${teamName}</b> completed all 9 phases: reading macro signals,
           making OMO decisions, processing the auction, and tracking the
           post-intervention effects.
         </p>
