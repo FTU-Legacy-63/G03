@@ -1329,12 +1329,17 @@ function pgChartSVG(values,highlightLast=false,labels=null){
 }
 function pgDailyRateTimelineSVG(history){
   const raw=Array.isArray(history)?history:[];
-  const slots=Array.from({length:9},(_,i)=>({
+  const slots=Array.from({length:10},(_,i)=>({
     kind:i===0?'opening':'result',
-    phase:i+1,
-    label:i===0?'PHASE 1 (OPENING)':`PHASE ${i+1}`,
+    phase:i,
+    label:i===0?'PHASE 1 (OPENING)':i===9?'END OF PHASE 9':`PHASE ${i+1}`,
     date:getPhaseDisplayDate(i)
   }));
+  const lastCompletedPhase=Math.max(
+    0,...raw.filter(item=>item&&typeof item==='object'&&item.kind==='result')
+      .map(item=>Number(item.phase)||0)
+  );
+  const visibleUntil=Math.max(pgPhase-1,lastCompletedPhase);
   const points=[];
   raw.forEach((item,i)=>{
     if(item&&typeof item==='object'){
@@ -1389,7 +1394,7 @@ function pgDailyRateTimelineSVG(history){
       >${val.toFixed(2)}%</text>
     `;
   }).join('');
-  const xaxis=slots.map((slot,i)=>`
+  const xaxis=slots.map((slot,i)=>i>visibleUntil?'':`
     <line
       x1="${x(i)}"
       y1="${h-b}"
@@ -1451,7 +1456,7 @@ function pgDailyRateTimelineSVG(history){
   `).join('');
   const occupied=new Set(ordered.map(q=>q.slot));
   const pending=slots.map((slot,i)=>
-    occupied.has(i)
+  i>visibleUntil || occupied.has(i)
       ? ''
       : `<circle
            cx="${x(i)}"
@@ -1487,10 +1492,15 @@ function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const rows=Array.isArray(history)?history:[];
   const slots=[
     {phase:1,label:'PHASE 1 (OPENING)',date:getPhaseDisplayDate(0),timelineIndex:0},
-    {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(4),timelineIndex:2},
-    {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(7),timelineIndex:5},
-    {phase:9,label:'PHASE 9',date:getPhaseDisplayDate(10),timelineIndex:8}
+    {phase:3,label:'PHASE 3',date:getPhaseDisplayDate(3),timelineIndex:3},
+    {phase:6,label:'PHASE 6',date:getPhaseDisplayDate(6),timelineIndex:6},
+    {phase:9,label:'PHASE 9',date:getPhaseDisplayDate(9),timelineIndex:9}
   ];
+  const lastCompletedPhase=Math.max(
+    0,...rows.filter(row=>row?.kind==='result')
+      .map(row=>Number(row.phase)||0)
+  );
+  const visibleUntil=Math.max(pgPhase-1,lastCompletedPhase);
   const gdpPoints=[],inflationPoints=[];
   rows.forEach(row=>{
     const phase=Number(row?.phase)||0;
@@ -1505,15 +1515,15 @@ function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   });
   const finite=[...gdpPoints.map(x=>x.value),...inflationPoints.map(x=>x.value)];
   const w=760,h=230,l=58,r=22,t=24,b=58;
-  const x=i=>l+slots[i].timelineIndex*(w-l-r)/8;
+  const x=i=>l+slots[i].timelineIndex*(w-l-r)/9;
   if(!finite.length){
-    const ticks=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
+    const ticks=slots.map((slot,i)=>slot.timelineIndex>visibleUntil?'':`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
     return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation"><line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${ticks}</svg>`;
   }
   let min=Math.min(...finite),max=Math.max(...finite);const pad=Math.max(.35,(max-min)*.25);min-=pad;max+=pad;if(Math.abs(max-min)<.01){min-=.5;max+=.5}const span=max-min;
   const y=v=>t+(max-v)/span*(h-t-b);
   const grid=[0,.333,.666,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="6" y="${yy+4}" font-family=var(--font-ui) font-size="10" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
-  const xaxis=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family=var(--font-ui) font-size="8.5" font-weight="700" fill="#52675f">${i===0
+  const xaxis=slots.map((slot,i)=>slot.timelineIndex>visibleUntil?'':`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family=var(--font-ui) font-size="8.5" font-weight="700" fill="#52675f">${i===0
   ? `<tspan x="${x(i)}" dy="-7">PHASE 1</tspan><tspan x="${x(i)}" dy="11">(OPENING)</tspan>`
   : slot.label
 }</text><text x="${x(i)}" y="${h-16}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
