@@ -1394,7 +1394,7 @@ function pgDailyRateTimelineSVG(history){
       >${val.toFixed(2)}%</text>
     `;
   }).join('');
-  const xaxis=slots.map((slot,i)=>i>visibleUntil?'':`
+  const xaxis=slots.map((slot,i)=>`
     <line
       x1="${x(i)}"
       y1="${h-b}"
@@ -1517,13 +1517,13 @@ function pgMacroTrendSVG(history,uptoPhase=pgPhase){
   const w=760,h=230,l=58,r=22,t=24,b=58;
   const x=i=>l+slots[i].timelineIndex*(w-l-r)/9;
   if(!finite.length){
-    const ticks=slots.map((slot,i)=>slot.timelineIndex>visibleUntil?'':`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
+    const ticks=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-17}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
     return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="GDP growth and inflation"><line x1="${l}" y1="${h-b}" x2="${w-r}" y2="${h-b}" stroke="#52675f"/>${ticks}</svg>`;
   }
   let min=Math.min(...finite),max=Math.max(...finite);const pad=Math.max(.35,(max-min)*.25);min-=pad;max+=pad;if(Math.abs(max-min)<.01){min-=.5;max+=.5}const span=max-min;
   const y=v=>t+(max-v)/span*(h-t-b);
   const grid=[0,.333,.666,1].map(fr=>{const yy=t+fr*(h-t-b),val=max-fr*span;return `<line x1="${l}" y1="${yy}" x2="${w-r}" y2="${yy}" stroke="#c9bea9"/><text x="6" y="${yy+4}" font-family=var(--font-ui) font-size="10" fill="#65736e">${val.toFixed(2)}%</text>`}).join('');
-  const xaxis=slots.map((slot,i)=>slot.timelineIndex>visibleUntil?'':`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family=var(--font-ui) font-size="8.5" font-weight="700" fill="#52675f">${i===0
+  const xaxis=slots.map((slot,i)=>`<line x1="${x(i)}" y1="${h-b}" x2="${x(i)}" y2="${h-b+6}" stroke="#9d927c"/><text x="${x(i)}" y="${h-30}" text-anchor="middle" font-family=var(--font-ui) font-size="8.5" font-weight="700" fill="#52675f">${i===0
   ? `<tspan x="${x(i)}" dy="-7">PHASE 1</tspan><tspan x="${x(i)}" dy="11">(OPENING)</tspan>`
   : slot.label
 }</text><text x="${x(i)}" y="${h-16}" text-anchor="middle" font-family=var(--font-ui) font-size="9" fill="#65736e">${slot.date}</text>`).join('');
