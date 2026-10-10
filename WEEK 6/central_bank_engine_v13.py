@@ -920,11 +920,12 @@ class CentralBankGame:
         prev_rate = self.interbank_rate
         unmet = self.previous_liquidity_gap
 
-        # Process maturities first.
+        # Process maturities through the end of the current phase.
         # Positive maturity = liquidity injection.
         # Negative maturity = liquidity absorption.
-        maturity, maturity_events = self.process_maturities()
-
+        maturity, maturity_events = self.process_maturities(
+            cutoff_date=phase_end_date
+        )
         # Adjust RLD for the liquidity impact of matured positions.
         rld = scenario_liquidity_demand + unmet - maturity
 
@@ -967,7 +968,7 @@ class CentralBankGame:
 
         result = PhaseResult(
             phase=self.phase,
-            phase_date=self.current_date,
+            phase_date=phase_end_date,
             decision=decision,
             scenario_liquidity_demand=scenario_liquidity_demand,
             unmet_from_previous_phase=unmet,
@@ -1005,15 +1006,26 @@ class CentralBankGame:
         """Total T-bill face value still outstanding and not yet matured."""
         return self.market_inventory.total_face_value(self.current_date)
 
+    
     def repo_inventory(self):
-        # Same compact player-facing structure as SBV Bill inventory.
-        # Matured positions are removed from the visible inventory.
+        # Show only active positions that have not reached maturity.
         return [{
-            "repo_id": p.position_id, "bank": p.bank, "action": p.action,
-            "issue_date": p.start_date.isoformat(), "maturity_date": p.maturity_date.isoformat(),
-            "rate": p.transaction_rate, "initial_price": p.initial_cash,
+            "repo_id": p.position_id,
+            "bank": p.bank,
+            "action": p.action,
+            "issue_date": p.start_date.isoformat(),
+            "maturity_date": p.maturity_date.isoformat(),
+            "rate": p.transaction_rate,
+            "initial_price": p.initial_cash,
             "remaining_volume": p.face_value,
-            "securities": [{"sbv_bill_id": x.security_id, "volume": x.face_value,
-                            "sbv_bill_rate": x.tbill_rate, "maturity_date": x.maturity_date.isoformat(),
-                            "price": x.price} for x in p.securities],
-        } for p in self.repo_positions if p.status == "active"]
+            "securities": [{
+                "sbv_bill_id": x.security_id,
+                "volume": x.face_value,
+                "sbv_bill_rate": x.tbill_rate,
+                "maturity_date": x.maturity_date.isoformat(),
+                "price": x.price
+            } for x in p.securities]
+        } for p in self.repo_positions
+          if p.status == "active"
+          and p.maturity_date > self.current_date]
+    
