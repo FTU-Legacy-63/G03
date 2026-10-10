@@ -703,6 +703,46 @@ class CentralBankGame:
             total_real_volume=float(whole(sum(b.real_volume for b in bids))),
             supply=excel_round(sign*cash_abs, 2)
         )
+        
+    def _forecast_maturities(self, cutoff_date):
+        """
+        Estimate net maturity cash flows through cutoff_date
+        without changing inventory or position status.
+        """
+        total = sum(
+            lot.face_value
+            for lot in self.market_inventory.lots
+            if lot.face_value > 1e-9
+            and lot.maturity_date <= cutoff_date
+        )
+    
+        for pos in self.repo_positions:
+            if pos.status != "active":
+                continue
+    
+            # Underlying SBV Bills held under an active Reverse Repo.
+            if pos.action == "Reverse Repo":
+                total += sum(
+                    sec.face_value
+                    for sec in pos.securities
+                    if sec.face_value > 1e-9
+                    and sec.maturity_date <= cutoff_date
+                )
+    
+            # Repo / Reverse Repo contract cash flow.
+            if pos.maturity_date <= cutoff_date:
+                value = repayment(
+                    pos.initial_cash,
+                    pos.transaction_rate,
+                    (pos.maturity_date - pos.start_date).days
+                )
+    
+                if pos.action == "Repo":
+                    total += value
+                else:
+                    total -= value
+    
+        return excel_round(total, 2)
 
     def process_maturities(self, cutoff_date=None):
         """
@@ -909,29 +949,35 @@ class CentralBankGame:
                 )
             self.pending_expected_inflation = float(decision.expected_inflation)
         elif decision.expected_inflation is not None:
-            raise ValueError("Expected Inflation is entered only at Phase 1, 4, 7, ...")
-
+            raise ValueError("Expected Inflation is entered only at Phase 1, 4, 7, ...")        
         
         # Define the reporting window for the current phase.
         phase_start_date = self.current_date
         phase_end_date = phase_start_date + timedelta(days=self.phase_days)
 
-        
         prev_rate = self.interbank_rate
         unmet = self.previous_liquidity_gap
+        base_rld = scenario_liquidity_demand + unmet
 
-        # Process maturities through the end of the current phase.
-        # Positive maturity = liquidity injection.
-        # Negative maturity = liquidity absorption.
-        maturity, maturity_events = self.process_maturities(
+        # 1. Settle only maturities already due at the start of the phase.
+        start_maturity, start_events = self.process_maturities(
+            cutoff_date=phase_start_date
+        )
+
+        # 2. Forecast maturities through phase end without mutating inventory.
+        forecast_maturity = self._forecast_maturities(
             cutoff_date=phase_end_date
         )
-        # Adjust RLD for the liquidity impact of matured positions.
-        rld = scenario_liquidity_demand + unmet - maturity
 
-        # Run the auction using the adjusted RLD.
+        # Use forecast RLD for bid generation.
+        forecast_rld = excel_round(
+            base_rld - start_maturity - forecast_maturity, 2
+        )
+
+        # 3. Run the auction while bills maturing later this phase
+        # are still available in the start-of-phase inventory.
         if decision.auction_enabled:
-            auction = self.run_auction(decision, rld)
+            auction = self.run_auction(decision, forecast_rld)
         else:
             auction = {
                 "bids": [],
@@ -944,11 +990,21 @@ class CentralBankGame:
 
         supply = auction["supply"]
 
-        # Total supply includes both new OMO and maturity cash flows.
-        total_supply = excel_round(supply + maturity, 0)
+        # 4. After the auction, settle maturities through phase end.
+        # Any bills bought outright during the auction have already
+        # left market_inventory, so they are not paid to banks again.
+        end_maturity, end_events = self.process_maturities(
+            cutoff_date=phase_end_date
+        )
 
-        # Maturity is already reflected in RLD, so do not subtract it again.
-        gap = excel_round(rld - supply, 0)
+        maturity = excel_round(start_maturity + end_maturity, 2)
+        maturity_events = start_events + end_events
+
+        # Report actual maturity after the auction, not the forecast.
+        rld = excel_round(base_rld - maturity, 2)
+        total_supply = excel_round(supply + maturity, 0)
+        gap = excel_round(base_rld - total_supply, 0)
+
 
         # Interbank uses signed Liquidity Gap directly and is constrained
         # to the documented valid range of 0%-20%.
