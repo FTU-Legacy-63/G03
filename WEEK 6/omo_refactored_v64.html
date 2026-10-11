@@ -827,14 +827,14 @@ function pgSyncExpectedGate(){
 }
 const phaseConfig={
   1:{method:'Volume auction',action:'Reverse Repo',defaultVol:5000,defaultRate:4.00,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:4000},matTable:{billVol:'10,000',billRate:'—',repoVol:'0',repoRate:'—',revVol:'0',revRate:'—'}},
-  2:{method:'Interest-rate auction',action:'Reverse Repo',defaultVol:6000,defaultRate:4.15,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:2000},matTable:{}},
-  3:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:1000},matTable:{}},
-  4:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
-  5:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
-  6:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
-  7:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{},matTable:{}},
-  8:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{},matTable:{}},
-  9:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{},matTable:{}}
+  2:{method:'Interest-rate auction',action:'Reverse Repo',defaultVol:6000,defaultRate:4.15,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:6000},matTable:{}},
+  3:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:3000},matTable:{}},
+  4:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:2000},matTable:{}},
+  5:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:-4000},matTable:{}},
+  6:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:-5000},matTable:{}},
+  7:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{rate:3.95,liq:-1000},matTable:{}},
+  8:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{rate:3.95,liq:-4000},matTable:{}},
+  9:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[],preMetrics:{rate:3.95,liq:-3000},matTable:{}},
 };
 function getPhaseDate(pointIndex){const start=new Date(Date.UTC(2025,1,2));start.setUTCDate(start.getUTCDate()+Number(pointIndex||0)*30);return start.toISOString().slice(0,10)}
 function getPhaseDisplayDate(pointIndex){return pgDisplayDate(getPhaseDate(pointIndex))}
@@ -1194,7 +1194,7 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Consumption and private investment are weakening, and firms are cautious about expansion plans. <br><br>Inflation pressure remains low. If financial conditions do not improve, the slowdown could persist for around 3–4 months.'
+        'Consumption and private investment are weak, and firms are cautious about expansion plans. <br><br>Inflation pressure remains low. If financial conditions do not improve, the slowdown could persist for around 3–4 months.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
@@ -1209,13 +1209,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Aggregate demand is still weak and the effect of the 02/02/2025 decision has not yet reached GDP.<br><br>A sharp but temporary rise in seasonal cash and payment needs adds to funding pressure; it is not evidence that underlying demand has recovered. The seasonal pressure is assumed to last only around 1–2 months.'
+        'Payment needs, cash demand and short-term funding needs rise sharply, mainly because of seasonal and holiday-related activity. <br><br>However, this is not enough to confirm an economic recovery, as the medium-term outlook for consumption and investment is still weighed down by the earlier slowdown.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Households and firms need more cash and settlement funds for seasonal payments. Underlying credit demand remains soft, so the seasonal need should not be read as the start of a credit boom. <br><br> Seasonal cash and payment demand raises the baseline funding need to +6,000. Any liquidity left over from the 02/02/2025 operation reduces the actual shortage through carry-over, so the decision should be based on the actual LQ Demand reported by the engine.'
+        'Working-capital and cash demand rise during the peak payment season. <br><br>The liquidity shortage becomes much more pronounced, but it is considered temporary and is expected to last only around 1–2 months.'
       ]
-    ]
+    ],
+    preliminaryAssessment:'The key question is whether to meet a temporary need with a temporary instrument, or to lock in longer-lasting liquidity while underlying demand is still weak.'
   },
   3:{
     hero:'Current market position and macroeconomic outlook',
@@ -1223,13 +1224,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Easier financial conditions are supporting sentiment, but the earlier stimulus has not yet transmitted fully to GDP. <br><br> Aggregate demand is still soft, with the first signs of improvement appearing mainly in financing activity rather than in output.'
+        'There is no major new macroeconomic shock.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Firms begin to increase working-capital and credit demand as financing conditions improve. Credit growth is picking up from a low base, but investment and output have not yet responded.<br><br> Higher working-capital demand lifts the baseline funding need to +3,000. This is a moderate shortage linked to the early recovery in credit rather than to a seasonal payment shock.'
+        'Firms begin to increase working-capital and credit demand as financing conditions improve. Credit growth is picking up from a low base, but investment and output have not yet responded. <br><br>Higher working-capital demand creates a moderate funding shortage in the banking system, mainly driven by the recovery in credit.'
       ]
-    ]
+    ],
+    preliminaryAssessment:'The pressure comes from improving credit demand, so the aim is to keep funding conditions supportive without prematurely reversing the transmission already under way or committing to permanent easing.'
   },
   4:{
     hero:'Current market position and macroeconomic outlook',
@@ -1237,13 +1239,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Tax and payment obligations, together with working-capital demand, keep funding pressure elevated. <br><br> Financing conditions are better than before, but the economy is still in the transmission period and GDP has not yet shown the full effect of earlier easing.'
+        'Tax and payment obligations, together with working-capital demand, keep funding pressure elevated. GDP growth remains subdued, and economic activity has not yet picked up.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Firms need cash for tax payments and operating costs while credit demand continues to improve gradually. The pressure is concentrated in short-term funding rather than long-term investment. <br><br> The baseline shortage is +2,000, but the maturity of the 04/03/2025 operation, if any, withdraws liquidity and raises actual LQ Demand. The decision should therefore be based on the actual LQ Demand.'
+        'Firms need cash for tax payments and operating costs while credit demand continues to improve gradually. The pressure is concentrated in short-term funding rather than long-term investment. <br><br>Banks have less spare liquidity as funds move out to tax payments, so the money market is short of funds and interbank funding is tighter.'
       ]
-    ]
+    ],
+    preliminaryAssessment:'Short-term payment pressure still calls for supportive liquidity, but conditions remain those of transmission, so growth should not be treated as already recovered.'
   },
   5:{
     hero:'Current market position and macroeconomic outlook',
@@ -1251,13 +1254,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'The lagged effect of the 02/02/2025 easing now appears: GDP is recovering (the strength of the recovery depends on the 02/02/2025 decision). <br><br> The seasonal and payment pressure of earlier months has faded and earlier easing has left abundant liquidity in the system. At the same time, a new input-cost shock begins to emerge and raises the risk of cost-push inflation.'
+        'Seasonal and payment pressures from earlier months have faded. At the same time, a new input-cost shock is emerging while growth conditions remain uncertain.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Credit and investment are recovering with the economy while firms face higher input costs. Funding is no longer tight, so additional liquidity adds little to credit supply. <br><br> Seasonal pressure has passed and liquidity is abundant, giving a baseline surplus of −4,000. The maturity of the 03/04/2025 operation, if any, withdraws liquidity and reduces the actual surplus, so the decision should rest on the actual LQ Demand.'
+        'Firms face higher input costs. Funding is no longer tight, so additional liquidity adds little to credit supply. <br><br>Seasonal pressure has passed and liquidity in the banking system is now more abundant.'
       ]
-    ]
+    ],
+    preliminaryAssessment:'The first priority is the actual liquidity state. The new cost shock should be treated as a cost-push shock, not as proof that the economy is overheating.'
   },
   6:{
     hero:'Current market position and macroeconomic outlook',
@@ -1265,13 +1269,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Liquidity remains abundant while cost pressure broadens across production, transport, and distribution. <br><br> Inflation expectations are rising and GDP remains fairly solid, which strengthens the case for a more price-stability-oriented stance.'
+        "Liquidity remains abundant while cost pressure broadens across production, transport and distribution. The public's inflation expectations (households and firms) are rising and GDP remains fairly solid, which strengthens the case for a more price-stability-oriented stance."
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Credit conditions remain easy and firms have ample financing. With growth still solid, extra liquidity adds less to activity and more to the risk that cost pressure becomes entrenched in expectations. <br><br> The baseline surplus is −5,000. The maturity of the 03/05/2025 operation, if any, withdraws liquidity, so the actual surplus can be much smaller. The decision should be based on the actual LQ Demand.'
+        'Credit conditions remain easy and firms have ample financing. With growth still solid, extra liquidity adds less to activity and more to the risk that cost pressure becomes entrenched in expectations. <br><br>Liquidity is abundant in the banking system, so interbank funding remains easy.'
       ]
-    ]
+    ],
+    preliminaryAssessment:"The Central Bank board has agreed to prioritize anchoring the public's inflation expectations, which means absorbing more than the surplus and accepting a tighter money market. The target is to leave a liquidity shortage of roughly 2,000–5,000 bn after the operation. This is only appropriate if growth can withstand tighter conditions."
   },
   7:{
     hero:'Current market position and macroeconomic outlook',
@@ -1279,13 +1284,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'A subsidy has been announced but no money has been disbursed yet. <br><br> Firms expect support, so production and borrowing demand rise and the liquidity surplus narrows sharply. Cost pressure and inflation expectations are still elevated.'
+        "A subsidy has been announced but fiscal funds have not yet been disbursed. Firms expect support, so production and borrowing demand rise and the liquidity surplus narrows sharply. <br><br>Cost pressure and the public's inflation expectations are still elevated."
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Firms begin to borrow and build working capital ahead of the expected support. Fiscal funds have not yet arrived, so financing conditions are driven by expectations rather than by a liquidity inflow. <br><br> The baseline is a small surplus of −1,000, but the carry-over from the previous decision (a shortage left by the T-bill issuance) and the maturity of the 02/06/2025 Repo (which returns liquidity) change the actual state. The decision should follow the actual LQ Demand.'
+        'Firms begin to borrow and build working capital ahead of the expected support. Fiscal funds have not yet arrived, so financing conditions are driven by expectations rather than by a liquidity inflow. <br><br>Liquidity in the banking system is in surplus, but the surplus is narrowing as firms borrow more.'
       ]
-    ]
+    ],
+    preliminaryAssessment:'The first priority is the actual liquidity state. A defensive injection during a shortage does not mean the stance has shifted to easing, and the announcement alone does not justify absorbing liquidity.'
   },
   8:{
     hero:'Current market position and macroeconomic outlook',
@@ -1293,13 +1299,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Subsidy tranche 1 is disbursed and fiscal liquidity enters the system. <br><br> Cost burden of the firms starts to fall, easing pressure on production costs. The inflow is a government support payment, not a change in the monetary stance.'
+        "Subsidy tranche 1 is disbursed and fiscal liquidity enters the system. Firms' cost burden starts to fall, easing pressure on production costs. The inflow is a government support payment, not a change in the monetary stance."
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Fiscal funds improve cash positions for firms and reduce their need for bank funding. Financing conditions become easier as the fiscal money arrives. <br><br> Fiscal money enters bank reserves and creates a baseline surplus of −4,000. The disbursement is the main liquidity driver here.'
+        "Fiscal funds improve firms' cash positions and reduce their need for bank funding. Financing conditions become easier as the fiscal money arrives. <br><br>Fiscal money enters bank reserves and creates a surplus. The disbursement is the main liquidity driver here."
       ]
-    ]
+    ],
+    preliminaryAssessment:'The subsidy is meant to support firms, so fully offsetting it would cancel its effect, while leaving all of it in the system risks reviving the public inflation expectations seen earlier. The decision is about how much of the inflow to absorb.'
   },
   9:{
     hero:'Current market position and macroeconomic outlook',
@@ -1307,13 +1314,14 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Subsidy tranche 2 is disbursed and is smaller than tranche 1. <br><br> Fiscal support still adds liquidity but is tapering and the cost burden continues to ease. The macro effect of the 02/07/2025 decision now appears: inflation eases, expectations are more stable, and GDP moderates modestly.'
+        'Subsidy tranche 2 is disbursed and is smaller than tranche 1.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
-        'Fiscal funds still support cash positions of firms, but with a smaller impulse than before. Financing conditions remain comfortable but will soon lose this support. <br><br> The tranche creates a baseline surplus of −3,000. Any surplus left from the 31/08/2025 operation adds to it, while the maturity of the 01/08/2025 Reverse Repo withdraws liquidity, so the decision should rely on the actual LQ Demand.'
+        "Fiscal funds still support firms' cash positions, but with a smaller impulse than before. Financing conditions remain comfortable but will soon lose this support. <br><br>The tranche adds a surplus to bank reserves, though a smaller one."
       ]
-    ]
+    ],
+    preliminaryAssessment:'This is the final decision. Because support is tapering and the subsidy is about to end, absorption should be short-term and should avoid tightening conditions just before the subsidy expires. The macro effect of this decision will not appear within the period under review.'
   }
 };
 function pgChartSVG(values,highlightLast=false,labels=null){
@@ -1640,13 +1648,15 @@ function paperBrief(){
   const c=phaseConfig[pgPhase],base=pgBriefCopy[pgPhase],rate=pgCurrentRate(),liq=pgCurrentLiquidityNeed();
   const x={...base,cards:base.cards.map(a=>[...a])};
   x.cards[2]=[
-  'QUICK INDICATOR',
-  `${rate.toFixed(2)}%`,
-  'Interbank rate',
-  `Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`,
-  '5.00%',
-  '0.50%'
-];
+    'QUICK INDICATOR',
+    `${rate.toFixed(2)}%`,
+    'Interbank rate',
+    [1,2,3,4,5,6,7,8,9].includes(pgPhase)
+  ? `LQ Base: ${(({1:4000,2:6000,3:3000,4:2000,5:-4000,6:-5000,7:-1000,8:-4000,9:-3000})[pgPhase])>=0?'+':''}${pgFmt(({1:4000,2:6000,3:3000,4:2000,5:-4000,6:-5000,7:-1000,8:-4000,9:-3000})[pgPhase])} bn.<br>LQ Demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`
+  : `Scenario liquidity demand: ${liq>=0?'+':''}${pgFmt(liq)} bn.`,
+    '5.00%',
+    '0.50%'
+  ];
   const page2=pgMarketMacroPageHTML({mode:'daily',rate,liquidity:liq});
   pg$('pg-brief').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
@@ -1690,7 +1700,14 @@ function paperBrief(){
                  <span>Required reserve deposit rate</span>
                </div>
           </article>`
-      ).join('')}</div></article>
+      ).join('')}</div>
+     ${x.preliminaryAssessment
+       ? `<div class="out-note">
+            <b>PRELIMINARY ASSESSMENT</b>
+            <p>${x.preliminaryAssessment}</p>
+          </div>`
+       : ''}
+    </article>
     ${page2}
     <article class="paper-page is-hidden long-page">${pgOutstandingHTML(c,null,'daily')}</article>
     <button class="deck-arrow left" data-deck-left type="button" onclick="pgSetNewsPage(pgNewsPage-1)">←</button><button class="deck-arrow right" data-deck-right type="button" onclick="pgSetNewsPage(pgNewsPage+1)">→</button>
