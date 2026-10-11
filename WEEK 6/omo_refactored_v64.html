@@ -826,7 +826,7 @@ function pgSyncExpectedGate(){
   btn.title=locked?'Enter expected inflation on Page 2 before continuing.':'';
 }
 const phaseConfig={
-  1:{method:'Volume auction',action:'Reverse Repo',defaultVol:5000,defaultRate:4.00,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:5000},matTable:{billVol:'10,000',billRate:'—',repoVol:'0',repoRate:'—',revVol:'0',revRate:'—'}},
+  1:{method:'Volume auction',action:'Reverse Repo',defaultVol:5000,defaultRate:4.00,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:4000},matTable:{billVol:'10,000',billRate:'—',repoVol:'0',repoRate:'—',revVol:'0',revRate:'—'}},
   2:{method:'Interest-rate auction',action:'Reverse Repo',defaultVol:6000,defaultRate:4.15,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:2000},matTable:{}},
   3:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:1000},matTable:{}},
   4:{method:'Volume auction',action:'Repo',defaultVol:5000,defaultRate:3.50,chartData:[3.95,3.95,3.95,3.95],preMetrics:{rate:3.95,liq:0},matTable:{}},
@@ -1200,7 +1200,8 @@ const pgBriefCopy = {
         'CREDIT CONDITIONS & MONEY MARKET',
         'Credit demand is growing slowly. Firms are delaying investment and prioritizing cash preservation. <br><br>The money market is experiencing a moderate liquidity shortage, while financial conditions remain too tight to provide meaningful support to aggregate demand.'
       ]
-    ]
+    ],
+    preliminaryAssessment:'The Central Bank board has agreed on a proactive stance to support demand: inject beyond the immediate shortage rather than only covering it. The target is to leave a liquidity surplus of up to about 2,000 bn after the operation.'
   },
   2:{
     hero:'Current market position and macroeconomic outlook',
@@ -1772,7 +1773,7 @@ async function pgRunEngine(){
 // ---------------------------------------------------------------------
 async function paperExecute(){
   const method=pg$('pg-method').value,volume=Number(pg$('pg-volume').value); if(volume<=0)return alert('Offered volume must be greater than 0.');
-  if (!confirm('Are you sure you want to proceed without an auction? This decision cannot be changed once submitted.')) return;
+  if (!confirm('Are you sure you want to issue this OMO announcement? This decision cannot be changed once submitted.')) return;
   if([1,4,7].includes(pgPhase)&&!pgHasExpectedInflation()){alert('Expected inflation is required before the Phase 1 auction can be submitted.');paperBrief();pgSetNewsPage(1);setTimeout(()=>{const el=pg$('pg-expected-inflation-daily');el?.classList.add('invalid');el?.focus()},120);return;}
   pgDecision={auction_method:method,pricing_method:method==='Interest-rate auction'?pg$('pg-pricing').value:null,omo_action:pg$('pg-action').value,volume,repo_rate:method==='Volume auction'?Number(pg$('pg-rate').value):null,expected_inflation:[1,4,7].includes(pgPhase)&&pgHasExpectedInflation()?Number(pgExpectedInflation):null};
   const resultPromise=pgRunEngine();
@@ -1786,6 +1787,7 @@ async function paperExecute(){
   await pgDelay(1450); paperSort();
 }
 async function paperNoAuction() {
+  if (!confirm('Are you sure you want to proceed without an auction? This decision cannot be changed once submitted.')) return;
   if ([1, 4, 7].includes(pgPhase) && !pgHasExpectedInflation()) {
     alert('Expected inflation is required before this phase can be submitted.');
     paperBrief();
@@ -2027,7 +2029,8 @@ function pgAssessmentCase(phase,result,decision){
   if(phase===1){
     if(demand>0){
       if(action==='outright_purchase'){
-        if(gap<0&&!nearZero)return make(4,'Growth priority');
+        if(gap<0 && gap>=-2000)return make(4,'Growth priority');
+        if(gap<-2000)return make(2,'Excessive liquidity injection');
         if(nearZero)return make(3,'Cautious');
         if(gap>0)return make(2,'Insufficient support');
       }
