@@ -559,6 +559,33 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 /* Long backend tables stay fully visible at responsive widths too. */
 @media(max-width:1100px){.paper-page.long-page{height:auto!important;min-height:700px;overflow:visible}}
 @media(max-width:800px){.paper-page.long-page{height:auto!important;min-height:700px;overflow:visible}}
+/* OMO confirmation — paper Learning Card style */
+.omo-confirm-sheet{
+  width:min(600px,92vw);
+  max-height:88vh;
+}
+.omo-confirm-sheet .paper-modal-body{
+  padding:26px 4px 10px;
+  font-size:17px;
+  line-height:1.6;
+}
+.omo-confirm-warning{
+  margin-top:18px!important;
+  padding:13px 16px;
+  border-left:4px solid #9e824a;
+  background:rgba(238,226,201,.64);
+  color:#654f34;
+  font-size:14px;
+}
+.omo-confirm-sheet .btnrow{
+  padding-top:18px;
+  border-top:1px solid #c3b495;
+  margin-top:12px;
+  padding-bottom:8px;
+}
+.omo-confirm-sheet .pbtn{
+  min-width:150px;
+}
 /* CLEAN RUNTIME: the legacy interface has been removed from this build entirely. */
 html,body{background:#54392d url("background.png") center center / cover no-repeat fixed !important}
 body{visibility:visible!important}
@@ -745,6 +772,29 @@ body{visibility:visible!important}
 <div id="learning-card-modal" class="paper-modal" onclick="if(event.target===this)closeLearningCard()" aria-hidden="true">
   <div class="paper-modal-sheet"><div class="paper-modal-head"><div><div class="paper-modal-kicker">LEARNING FILE · OMO</div><h2 id="learning-card-title">Concept</h2></div><button class="paper-modal-close" onclick="closeLearningCard()">×</button></div><div id="learning-card-content" class="paper-modal-body"></div></div>
 </div>
+<div id="omo-confirm-modal" class="paper-modal" aria-hidden="true">
+  <div class="paper-modal-sheet omo-confirm-sheet"
+       role="dialog" aria-modal="true"
+       aria-labelledby="omo-confirm-title">
+    <div class="paper-modal-head">
+      <div>
+        <div class="paper-modal-kicker">CENTRAL BANK · OMO DESK</div>
+        <h2 id="omo-confirm-title">Confirm Decision</h2>
+      </div>
+      <button class="paper-modal-close" type="button" onclick="pgCloseConfirm()">×</button>
+    </div>
+    <div class="paper-modal-body">
+      <p id="omo-confirm-message"></p>
+      <p class="omo-confirm-warning">
+        Once confirmed, this decision cannot be changed.
+      </p>
+    </div>
+    <div class="btnrow">
+      <button class="pbtn alt" type="button" onclick="pgCloseConfirm()">CANCEL</button>
+      <button class="pbtn" type="button" onclick="pgAcceptConfirm()">CONFIRM</button>
+    </div>
+  </div>
+</div>
 <div id="paper-game">
   <header class="desk-nameplate" aria-label="OMO operating desk">
     <div class="nameplate-left">
@@ -756,14 +806,17 @@ body{visibility:visible!important}
       </div>
     </div>
      <div class="nameplate-progress">
-       <span id="pg-phase">OPERATING DESK · PHASE 1/9</span>
-<span class="dot on"></span>
-<span class="dot"></span>
-<span class="dot"></span>
-<span class="dot"></span>
-<span class="dot"></span>
-<span class="dot"></span>
-     </div>
+  <span id="pg-phase">OPERATING DESK · PHASE 1/9</span>
+  <span class="dot on"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+</div>
    </header>
   <main class="desk" id="paper-desk">
     <section id="pg-start" class="screen active"></section>
@@ -1702,6 +1755,42 @@ function paperBrief(){
 // Purpose: one stable four-option form; offered volume is ALWAYS option 3.
 // Ends before EXECUTION TRANSITION.
 // ---------------------------------------------------------------------
+let pgPendingConfirm = null;
+function pgOpenConfirm(type){
+  const modal = document.getElementById('omo-confirm-modal');
+  const title = document.getElementById('omo-confirm-title');
+  const message = document.getElementById('omo-confirm-message');
+  if(!modal || !title || !message) return;
+  pgPendingConfirm = type;
+  if(type === 'issue'){
+    title.textContent = 'Issue OMO Announcement?';
+    message.textContent =
+      'Are you sure you want to issue this OMO announcement and proceed with the auction?';
+  } else if(type === 'no-auction'){
+    title.textContent = 'Proceed Without Auction?';
+    message.textContent =
+      'Are you sure you want to proceed without an auction for this phase?';
+  }
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+}
+function pgCloseConfirm(){
+  const modal = document.getElementById('omo-confirm-modal');
+  if(modal){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+  }
+  pgPendingConfirm = null;
+}
+function pgAcceptConfirm(){
+  const type = pgPendingConfirm;
+  pgCloseConfirm();
+  if(type === 'issue'){
+    paperExecute();
+  } else if(type === 'no-auction'){
+    paperNoAuction();
+  }
+}
 function paperDecision(){
   const c=phaseConfig[pgPhase];
   pg$('pg-decision').innerHTML=`<div class="document-sheet">
@@ -1714,8 +1803,8 @@ function paperDecision(){
     </div>
     <div class="decision-actions">
      <button class="pbtn alt" onclick="paperBrief()">← REVIEW REPORT</button>
-     <button class="pbtn" type="button" onclick="paperExecute()">ISSUE</button>
-     <button class="pbtn alt" type="button" onclick="paperNoAuction()">NO AUCTION</button>
+     <button class="pbtn" type="button" onclick="pgOpenConfirm('issue')">ISSUE</button>
+     <button class="pbtn alt" type="button" onclick="pgOpenConfirm('no-auction')">NO AUCTION</button>
     </div>
   </div>`;
   pg$('pg-action').value=c.action; pg$('pg-method').value=c.method; pgToggleAuctionFields(); pgShow('pg-decision');
@@ -1772,7 +1861,6 @@ async function pgRunEngine(){
 // ---------------------------------------------------------------------
 async function paperExecute(){
   const method=pg$('pg-method').value,volume=Number(pg$('pg-volume').value); if(volume<=0)return alert('Offered volume must be greater than 0.');
-  if (!confirm('Are you sure you want to proceed without an auction? This decision cannot be changed once submitted.')) return;
   if([1,4,7].includes(pgPhase)&&!pgHasExpectedInflation()){alert('Expected inflation is required before the Phase 1 auction can be submitted.');paperBrief();pgSetNewsPage(1);setTimeout(()=>{const el=pg$('pg-expected-inflation-daily');el?.classList.add('invalid');el?.focus()},120);return;}
   pgDecision={auction_method:method,pricing_method:method==='Interest-rate auction'?pg$('pg-pricing').value:null,omo_action:pg$('pg-action').value,volume,repo_rate:method==='Volume auction'?Number(pg$('pg-rate').value):null,expected_inflation:[1,4,7].includes(pgPhase)&&pgHasExpectedInflation()?Number(pgExpectedInflation):null};
   const resultPromise=pgRunEngine();
