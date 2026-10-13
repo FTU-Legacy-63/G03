@@ -3293,26 +3293,7 @@ const pgPhase4ReportRule = () => {
       <p>${comment}</p>
     `
   });
-   const noActionReport = (score, title, comment) => ({
-     auction: `
-       <p>
-         In the current session, the Central Bank does not conduct any
-         operation. Including maturities, net OMO cash flow is
-         <b>${totalSupply > 0 ? '+' : ''}${pgFmt(totalSupply)} bn</b>.
-         The Liquidity Gap stays at
-         <b>${gap > 0 ? '+' : ''}${pgFmt(gap)} bn</b>
-         and the overnight rate moves from
-         <b>${previousON.toFixed(2)}%</b>
-         to <b>${newON.toFixed(2)}%</b>.
-         ${liquidityAssessment}
-       </p>
-     `,
-     macro: `
-       <p><b>${score} – ${title}</b></p>
-       <p>${comment}</p>
-     `
-   });
-
+  
   // No eligible Central Bank bills
   if (
     demand > 0 &&
