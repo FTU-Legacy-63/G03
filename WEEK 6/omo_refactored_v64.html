@@ -666,6 +666,12 @@ body{visibility:visible!important}
   font-size:12px!important;
   line-height:1.4!important;
 }
+.checkpoint-economic-comment {
+margin-top: 14px !important;
+padding-top: 12px;
+border-top: 1px solid #c9bca2;
+font-style: italic;
+}
 </style>
 </head>
 <body class="paper-mode">
@@ -2688,13 +2694,7 @@ function pgPolicyTilt(items){
     text:'The Central Bank adjusts liquidity injections and absorptions as conditions change rather than maintaining a consistently loose or tight stance. Growth support and inflation control are therefore relatively balanced across the sequence.'
   };
 }
-/* ---------- FINAL MACRO OUTCOME ----------
-   Temporary 3-phase test thresholds:
-   GDP >= 6.00% = stable/solid
-   Inflation <= 4.00% = under control / low
-   Change these two constants later if the scenario team adopts
-   different macro classification cut-offs.
-   ---------------------------------------- */
+/* FINAL MACRO OUTCOME */
 function pgFinalEconomicOutcome(result){
   const gdp=Number(result?.gdp_growth);
   const inflation=Number(result?.inflation);
@@ -2730,6 +2730,35 @@ function pgFinalEconomicOutcome(result){
     title:'Stagflation-leaning outcome', text:'Growth remains weak while inflation is still elevated. The outcome reflects both the economic shocks faced during the game and the accumulated policy path, leaving the Central Bank with an unfavourable growth–inflation trade-off.'
   };
 }
+function pgCheckpointEconomicComment(result) {
+  // Show only at the end of Phases 3, 6, 9
+  if (![3, 6, 9].includes(Number(pgPhase))) return '';
+  const readValue = value =>
+    value === null || value === undefined || value === ''
+      ? NaN
+      : Number(value);
+  const gdp = readValue(result?.gdp_growth);
+  const inflation = readValue(result?.inflation);
+  if (!Number.isFinite(gdp) || !Number.isFinite(inflation)) return '';
+  const solid = gdp >= 5;
+  if (solid && inflation >= 3.5 && inflation <= 4.5) {
+    return 'Growth is maintained while price pressure remains under control. The result reflects the accumulated policy path up to the checkpoint.';
+  }
+  if (solid && inflation < 3.5) {
+    return 'Growth is maintained while inflation stays low. The result reflects the accumulated policy path up to the checkpoint. Price pressure is subdued and growth is protected.';
+  }
+  if (solid && inflation > 4.5) {
+    return 'Growth remains solid, while inflation is still elevated. The result reflects the accumulated policy path up to the checkpoint. Growth is better protected, but the inflation trade-off remains visible.';
+  }
+  if (!solid && inflation < 3.5) {
+    return 'Inflation is contained, but growth remains weak. The outcome reflects the accumulated policy path up to the checkpoint. Price stability is stronger, while the recovery remains subdued.';
+  }
+  if (!solid && inflation <= 4.5) {
+    return 'Growth remains weak while inflation stays within the target range. The outcome reflects the accumulated policy path up to the checkpoint. Prices are stable, but the recovery remains subdued.';
+  }
+  return 'Growth remains weak while inflation is still elevated. The outcome reflects the accumulated policy path up to the checkpoint, and it leaves the Central Bank with an unfavourable growth–inflation trade-off.';
+}
+  
 /* ---------- END-PERIOD MONEY-MARKET WARNING ---------- */
 function pgFinalMarketWarning(result){
   const pressure=Number(result?.liquidity_pressure);
@@ -6005,6 +6034,7 @@ const reportRule=
   const p1BidAssessment=pgPhase===1?pgP1BidVolumeAssessment(offeredVolume,totalBid):'';
   const p1LiquidityAssessment=pgPhase===1?pgP1LiquidityOutcomeAssessment(realLiquidityDemand,totalSupply):''; 
   const page2=pgMarketMacroPageHTML({mode:'result',rate:post,liquidity:liquidityPosition});
+  const checkpointEconomicComment = pgCheckpointEconomicComment(pgResult);
   pg$('pg-report').innerHTML=`<div class="paper-deck">
     <article class="paper-page is-active">
      <div class="market-page-head">
@@ -6032,6 +6062,10 @@ const reportRule=
         ${reportRule.macro
           ? `<p>${reportRule.macro}</p>`
           : `<p>Macroeconomic assessment will be available for this phase.</p>`
+        }
+        ${checkpointEconomicComment
+          ? `<p class="checkpoint-economic-comment">${checkpointEconomicComment}</p>`
+          : ''
         }
       </article>
       <article class="clipping quick-result-card">
