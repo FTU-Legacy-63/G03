@@ -2086,7 +2086,81 @@ function pgP1Num(...v){for(const x of v){if(x!==null&&x!==undefined&&x!==''&&Num
 function pgP1ActionType(action){const a=String(action||'').trim().toLowerCase();if(a.includes('reverse repo'))return'reverse_repo';if(a.includes('buy securities')||a.includes('outright purchase')||a.includes('purchase securities'))return'outright_purchase';if(a.includes('t-bill')||a.includes('bill issuance'))return't_bill_issuance';if(a==='repo'||a.includes(' repo'))return'repo';return'other'}
 function pgP1BidVolumeAssessment(offered,totalBid){offered=pgP1Num(offered);totalBid=pgP1Num(totalBid);if(totalBid<=0)return'No valid bid-volume comparison is available for this session.';const r=offered/totalBid;if(r<.95)return'The offered volume was below banks’ bidding demand, suggesting that the Central Bank underestimated demand for the operation.';if(r<=1.05)return'The offered volume was broadly aligned with banks’ bidding demand, suggesting that the Central Bank estimated demand reasonably well.';return'The offered volume exceeded banks’ bidding demand, suggesting that the Central Bank overestimated demand for the operation.'}
 function pgP1LiquidityOutcomeAssessment(demand,totalSupply){demand=pgP1Num(demand);totalSupply=pgP1Num(totalSupply);if(demand>0){if(totalSupply<0)return'The operation withdraws liquidity while the system is already facing a liquidity shortage, further increasing the unmet funding need.';if(totalSupply<.95*demand)return'Total liquidity supply was insufficient to meet the system’s liquidity demand, leaving part of the funding need unmet.';if(totalSupply<=1.05*demand)return'Total liquidity supply was broadly sufficient to meet the system’s liquidity demand, bringing liquidity conditions broadly into balance.';return'Total liquidity supply exceeded the system’s liquidity demand, providing more liquidity than needed and moving the system toward surplus.'}if(demand<0){const d=Math.abs(demand),s=Math.abs(totalSupply);if(totalSupply>0)return'The operation adds liquidity while the system is already in surplus, further increasing excess liquidity.';if(s<.95*d)return'Total liquidity absorption was insufficient to remove the system’s excess liquidity, leaving part of the surplus unabsorbed.';if(s<=1.05*d)return'Total liquidity absorption was broadly sufficient to remove the system’s excess liquidity, bringing liquidity conditions broadly into balance.';return'Total liquidity absorption exceeded the system’s excess liquidity, withdrawing more liquidity than needed and moving the system toward shortage.'}return'The system entered the session broadly balanced.'}
-function pgP1DecisionAssessment(demand,totalSupply,gap,action){demand=pgP1Num(demand);totalSupply=pgP1Num(totalSupply);gap=pgP1Num(gap);const type=pgP1ActionType(action),balanced=demand>0&&totalSupply>=.95*demand&&totalSupply<=1.05*demand;if(demand<=0)return null;if(type==='outright_purchase'){if(gap<0&&!balanced)return{score:4,fit:'Very appropriate',label:'Growth priority'};if(balanced)return{score:3,fit:'Reasonable',label:'Cautious'};if(gap>0)return{score:2,fit:'Less appropriate',label:'Insufficient support'}}if(type==='reverse_repo'&&balanced)return{score:3,fit:'Reasonable',label:'Maturity trade-off'};if(type==='repo')return{score:1,fit:'Not appropriate',label:''};if(type==='t_bill_issuance')return{score:1,fit:'Not appropriate',label:''};return null}
+function pgP1DecisionAssessment(demand, totalSupply, gap, action) {
+  demand = pgP1Num(demand);
+  totalSupply = pgP1Num(totalSupply);
+  gap = pgP1Num(gap);
+  const type = pgP1ActionType(action);
+  // PHASE 1 REPORT RULE
+  if (demand <= 0) return null;
+  // Reverse Repo
+  if (type === 'reverse_repo') {
+    if (gap > 500) {
+      return {
+        score: 2,
+        fit: 'Less appropriate',
+        label: 'Insufficient support'
+      };
+    }
+    if (gap >= -500 && gap <= 500) {
+      return {
+        score: 3,
+        fit: 'Reasonable',
+        label: 'Maturity trade-off'
+      };
+    }
+    if (gap < -500) {
+      return {
+        score: 3,
+        fit: 'Reasonable',
+        label: 'Growth-leaning, temporary'
+      };
+    }
+  }
+  // Outright purchase
+  if (type === 'outright_purchase') {
+    if (gap > 500) {
+      return {
+        score: 2,
+        fit: 'Less appropriate',
+        label: 'Insufficient support'
+      };
+    }
+    if (gap >= -500 && gap <= 500) {
+      return {
+        score: 3,
+        fit: 'Reasonable',
+        label: 'Cautious'
+      };
+    }
+    if (gap >= -2000 && gap < -500) {
+      return {
+        score: 4,
+        fit: 'Very appropriate',
+        label: 'Controlled dynamic easing'
+      };
+    }
+    if (gap < -2000) {
+      return {
+        score: 2,
+        fit: 'Less appropriate',
+        label: 'Over-injection'
+      };
+    }
+  }
+  // Wrong-direction
+  if (
+    type === 'repo' ||
+    type === 't_bill_issuance'
+  ) {
+    return {
+      score: 1,
+      fit: 'Not appropriate',
+      label: 'Opposite to the market state'
+    };
+  }
+  return null;
+}
 function pgP1InstrumentText(action){const type=pgP1ActionType(action);if(type==='outright_purchase')return'the Central Bank purchases Central Bank Bills outright';if(type==='reverse_repo')return'the Central Bank conducts a Reverse Repo';if(type==='repo')return'the Central Bank conducts a Repo';if(type==='t_bill_issuance')return'the Central Bank issues Central Bank Bills';return`the Central Bank conducts ${action}`}
 /* =====================================================================
    ENDING ASSESSMENT · 3-PHASE TEST
@@ -2111,49 +2185,58 @@ function pgAssessmentCase(phase,result,decision){
     label,
     technical_invalid:Number(result?.technical_invalid??0)===1
   });
-  /* ---------------- PHASE 1 ---------------- */
-  if(phase===1){
-    if(demand>0){
-      if(action==='outright_purchase'){
-        if(gap<0&&!nearZero)return make(4,'Growth priority');
-        if(nearZero)return make(3,'Cautious');
-        if(gap>0)return make(2,'Insufficient support');
-      }
-      if(action==='reverse_repo'){
-        if(nearZero)return make(3,'Maturity trade-off');
-        if(gap>0)return make(3,'Cautious');
-        if(gap<0)return make(2,'Injection above actual need');
-      }
-      if(action==='repo')return make(1,'Opposite to the market state');
-      if(action==='t_bill_issuance')return make(1,'Opposite to the market state');
-    }
-    if(demand<0){
-      if(action==='repo'){
-        if(nearZero)return make(3,'Liquidity balance');
-        if(gap<0)return make(3,'Cautious');
-        if(gap>0)return make(2,'Absorption above actual need');
-      }
-      if(action==='t_bill_issuance'){
-        if(nearZero)return make(3,'Longer-term absorption');
-        if(gap<0)return make(3,'Partial absorption');
-        if(gap>0)return make(2,'Absorption above actual need');
-      }
-      if(action==='reverse_repo'||action==='outright_purchase'){
-        return make(1,'Opposite to the market state');
+  /* PHASE 1 */
+  if (phase === 1) {
+    // Case 1: Liquidity demand > 0
+    if (demand > 0) {
+      const p1 = pgP1DecisionAssessment(
+        demand,
+        Number(result?.total_supply ?? 0),
+        gap,
+        decision?.omo_action
+      );
+      if (p1) {
+        return make(p1.score, p1.label);
       }
     }
-    if(Math.abs(demand)<=1){
-      if(action==='reverse_repo'||action==='outright_purchase'){
-        if(nearZero)return make(3,'No material market effect');
-        if(gap<0)return make(2,'Unnecessary injection');
+    // Case 2: Liquidity demand < 0
+    if (demand < 0) {
+      if (action === 'repo') {
+        if (nearZero) return make(3, 'Liquidity balance');
+        if (gap < 0) return make(3, 'Cautious');
+        if (gap > 0) return make(2, 'Absorption above actual need');
       }
-      if(action==='repo'||action==='t_bill_issuance'){
-        if(nearZero)return make(3,'No material market effect');
-        if(gap>0)return make(2,'Unnecessary absorption');
+      if (action === 't_bill_issuance') {
+        if (nearZero) return make(3, 'Longer-term absorption');
+        if (gap < 0) return make(3, 'Partial absorption');
+        if (gap > 0) return make(2, 'Absorption above actual need');
+      }
+      if (
+        action === 'reverse_repo' ||
+        action === 'outright_purchase'
+      ) {
+        return make(1, 'Opposite to the market state');
+      }
+    }
+    // Case 3: Liquidity demand = 0
+    if (Math.abs(demand) <= 1) {
+      if (
+        action === 'reverse_repo' ||
+        action === 'outright_purchase'
+      ) {
+        if (nearZero) return make(3, 'No material market effect');
+        if (gap < 0) return make(2, 'Unnecessary injection');
+      }
+      if (
+        action === 'repo' ||
+        action === 't_bill_issuance'
+      ) {
+        if (nearZero) return make(3, 'No material market effect');
+        if (gap > 0) return make(2, 'Unnecessary absorption');
       }
     }
   }
-  /* ---------------- PHASE 2 ---------------- */
+  /* PHASE 2 */
   if(phase===2){
     if(demand>0){
       if(action==='reverse_repo'){
@@ -2426,138 +2509,173 @@ function paperReport(){
       offeredVolume,
       totalBid
     );
-    const liquidityAssessment=pgLiquidityOutcomeAssessment(
-      realLiquidityDemand,
-      totalSupply
-    );
-    const marketTemplate=(instrumentText)=>`
-      <p>
-        In the current session, the Central Bank ${instrumentText}.
-        The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
-        versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>.
-        ${bidAssessment}
-        <br><br>Including maturities, net OMO cash flow is
-        <b>${pgFmt(totalSupply)} bn</b>.
-        After the operation, Liquidity Gap is
-        <b>${gap>=0?'+':''}${pgFmt(gap)} bn</b>
-        and the overnight rate moves from
-        <b>${previousON.toFixed(2)}%</b>
-        to
-        <b>${newON.toFixed(2)}%</b>.
-        ${liquidityAssessment}
-      </p>
-    `;
-    const nearZero=Math.abs(gap)<=1;
-    if(realLiquidityDemand>0 && action==='Buy Securities' && gap<0){
-      return {
-        auction:marketTemplate('purchases Central Bank Bills outright'),
-        macro:`
-          With weak aggregate demand potentially lasting around 3 months,
-          a more accommodative stance provides stronger support to
-          credit, investment, and growth with a lag.<br><br>The trade-off is
-          a greater risk of price pressure once demand recovers.
-        `
-      };
-    }
-    if(realLiquidityDemand>0 && action==='Buy Securities' && nearZero){
-      return {
-        auction:marketTemplate('purchases Central Bank Bills outright'),
-        macro:`
-          With weak aggregate demand, relieving funding pressure
-          supports credit conditions, although the stimulus to growth
-          is more limited than under a more proactive easing stance.
-        `
-      };
-    }
-    if(realLiquidityDemand>0 && action==='Buy Securities' && gap>0){
-      return {
-        auction:marketTemplate('purchases Central Bank Bills outright'),
-        macro:`
-          With weak aggregate demand, tighter funding conditions may
-          continue to constrain credit and investment.<br><br>The smaller
-          intervention reduces future inflation risk, but provides
-          less support to growth.
-        `
-      };
-    }
-    if(
-     realLiquidityDemand>0 &&
-     action==='Reverse Repo' &&
-     nearZero
-   ){
+   const liquidityAssessment = pgLiquidityOutcomeAssessment(
+     realLiquidityDemand,
+     totalSupply
+   );
+   const marketTemplate = (instrumentText) => `
+     <p>
+       In the current session, the Central Bank ${instrumentText}.
+       The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
+       versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>.
+       ${bidAssessment}
+       <br><br>
+       Including maturities, net OMO cash flow is
+       <b>${pgFmt(totalSupply)} bn</b>.
+       After the operation, Liquidity Gap is
+       <b>${gap >= 0 ? '+' : ''}${pgFmt(gap)} bn</b>
+       and the overnight rate moves from
+       <b>${previousON.toFixed(2)}%</b>
+       to
+       <b>${newON.toFixed(2)}%</b>.
+       ${liquidityAssessment}
+     </p>
+   `;
+   /* OUTRIGHT PURCHASE: BUY SECURITIES */
+   if (
+     realLiquidityDemand > 0 &&
+     action === 'Buy Securities'
+   ) {
+     const auction = marketTemplate(
+       'purchases Central Bank Bills outright'
+     );
+     // Gap > 500
+     if (gap > 500) {
+       return {
+         auction,
+         macro: `
+           Aggregate demand remains weak while funding conditions stay relatively tight. 
+           <br><br>The smaller intervention provides only limited support to credit and investment. 
+           It reduces the risk of excessive easing and later inflation. 
+           However, the recovery may remain weaker or take longer to emerge.
+         `
+       };
+     }
+     // -500 <= Gap <= 500
+     if (gap >= -500 && gap <= 500) {
+       return {
+         auction,
+         macro: `
+           The operation brings the market close to balance without creating a meaningful liquidity surplus.
+           <br><br>Short-term funding pressure is relieved, but support for aggregate demand remains cautious;
+           if weakness persists, credit and investment may recover more slowly than under a more proactive easing stance.
+         `
+       };
+     }
+     // -2000 <= Gap < -500: controlled dynamic easing
+     if (gap >= -2000 && gap < -500) {
+       return {
+         auction,
+         macro: `
+           Weak demand and low inflation justify deliberate over-injection. 
+           <br><br>A controlled surplus supports credit and investment with a lag. 
+           The surplus is slightly supportive, but prolonged excess liquidity may 
+           create price pressure once demand recovers.
+         `
+       };
+     }
+     // Gap < -2000
+     if (gap < -2000) {
+       return {
+         auction,
+         macro: `
+           Weak demand and low inflation justify deliberate over-injection. 
+           <br><br> An excessive liquidity surplus provides stronger support for credit 
+           and investment but creates a higher risk of excess liquidity and 
+           future price pressure. The outcome is overly expansionary relative to 
+           current demand conditions.
+         `
+       };
+     }
+   }
+   /* REVERSE REPO: TEMPORARY LIQUIDITY INJECTION */
+   if (
+     realLiquidityDemand > 0 &&
+     action === 'Reverse Repo'
+   ) {
+     const auction = marketTemplate(
+       'conducts a Reverse Repo'
+     );
+     // Gap > 500
+     if (gap > 500) {
+       return {
+         auction,
+         macro: `
+           The Reverse Repo reduces the shortage but leaves 
+           funding pressure in place while demand is weak. 
+           <br><br>Temporary and partial support does little 
+           for credit and investment. Weak demand calls for 
+           more than a partial, short-lived fix. The recovery 
+           may stay weaker or take longer to emerge.
+         `
+       };
+     }
+     // -500 <= Gap <= 500
+     if (gap >= -500 && gap <= 500) {
+       return {
+         auction,
+         macro: `
+           Temporary liquidity support can stabilize short-term funding conditions 
+           without committing to permanent easing. This limits the risk of 
+           leaving too much liquidity in the system. 
+           <br><br> If economic weakness lasts several months, however, 
+           the support may fade before demand fully recovers. 
+           The choice therefore favors flexibility over stronger growth support.
+         `
+       };
+     }
+     // Gap < -500
+     if (gap < -500) {
+       return {
+         auction,
+         macro: `
+           The Reverse Repo supports credit and investment beyond the immediate shortage, 
+           which suits weak demand. 
+           <br><br> Because the support is temporary, the extra liquidity is withdrawn 
+           at maturity before the recovery is established. The choice leans toward 
+           growth but carries a maturity trade-off.
+         `
+       };
+     }
+   }
+   /* REPO */
+   if (
+     realLiquidityDemand > 0 &&
+     action === 'Repo'
+   ) {
      return {
-       auction:marketTemplate('conducts a Reverse Repo'),
-       macro:`
-         Because the support is temporary, it can stabilize
-         short-term funding conditions while limiting persistent
-         inflation risk.<br><br>If economic weakness lasts around 3 months,
-         however, growth support may fade sooner than under an
-         outright purchase.
+       auction: marketTemplate('conducts a Repo'),
+       macro: `
+         Absorbing liquidity while the market is already short tightens 
+         funding conditions further and adds pressure on credit and 
+         investment when aggregate demand is already weak. 
+         <br><br> It may reduce demand-side inflation pressure, 
+         but the cost to market stability and growth is high.
        `
      };
    }
-   if(
-     realLiquidityDemand>0 &&
-     action==='Reverse Repo' &&
-     gap>0 &&
-     !nearZero
-   ){
+   /* SELL SECURITIES */
+   if (
+     realLiquidityDemand > 0 &&
+     action === 'Sell Securities'
+   ) {
      return {
-       auction:marketTemplate('conducts a Reverse Repo'),
-       macro:`
-         The operation eases part of the liquidity shortage but
-         does not fully normalize funding conditions. Banks still
-         face some short-term funding pressure, which may constrain
-         credit and working-capital demand. <br><br>The cautious intervention
-         limits the risk of excessive liquidity, but provides less
-         support to economic activity.
+       auction: marketTemplate(
+         'issues Central Bank Bills'
+       ),
+       macro: `
+         Absorbing liquidity while the market is already short tightens 
+         funding conditions further and adds pressure on credit and 
+         investment when aggregate demand is already weak. 
+         <br><br> It may reduce demand-side inflation pressure, 
+         but the cost to market stability and growth is high.
        `
      };
    }
-   if(
-     realLiquidityDemand>0 &&
-     action==='Reverse Repo' &&
-     gap<0
-   ){
-     return {
-       auction:marketTemplate('conducts a Reverse Repo'),
-       macro:`
-         The operation provides more liquidity than the system
-         currently needs, creating a liquidity surplus. <br><br>This can
-         temporarily ease funding conditions and support credit,
-         but the excess liquidity may increase future inflation
-         pressure once the temporary funding demand fades.
-       `
-     };
-   }
-    if(realLiquidityDemand>0 && action==='Repo'){
-      return {
-        auction:marketTemplate('conducts a Repo'),
-        macro:`
-          With weak aggregate demand, withdrawing liquidity would
-          add unnecessary pressure to funding costs, credit,
-          investment, and growth, with little near-term
-          macroeconomic justification.
-        `
-      };
-    }
-    if(realLiquidityDemand>0 && action==='Sell Securities'){
-      return {
-        auction:marketTemplate('issues Central Bank Bills'),
-        macro:`
-          Issuing Central Bank Bills while the market is already short
-          withdraws additional liquidity and pushes funding costs
-          higher.<br><br>Central Bank Bills issuance is useful when excess liquidity
-          needs to be absorbed, but in the current state it further
-          weakens credit and aggregate demand.
-        `
-      };
-    }
-    return {
-      auction:'',
-      macro:''
-    };
-  };
+   return {
+     auction: '',
+     macro: ''
+   };
   /* PHASE 2 REPORT RULE */
   const pgPhase2ReportRule=()=>{
     const action=String(pgDecision?.omo_action||'');
@@ -3179,10 +3297,10 @@ function paperReport(){
           offeredVolume,
           totalBid
         );
-        const liquidityAssessment=pgLiquidityOutcomeAssessment(
-          realLiquidityDemand,
-          totalSupply
-        );
+        const liquidityAssessment = pgLiquidityOutcomeAssessment(
+           realLiquidityDemand,
+           totalSupply
+         );
         const auctionTemplate=(instrumentText)=>`
           <p>
             In the current session, the Central Bank ${instrumentText}.
@@ -3317,84 +3435,68 @@ function paperReport(){
             `)
           };
         }
-        if(
-          realLiquidityDemand>0 &&
-          action==='Buy Securities' &&
-          Math.abs(gap)<=1000
-        ){
-          return {
-            auction:auctionTemplate('purchases Central Bank Bills outright'),
-            macro:macroText(`
-              The outright purchase removes the shortage and restores
-              liquidity balance, with longer-lasting support than a Reverse
-              Repo.
-              <br><br>
-              The purchase covers the shortage but leaves a lasting injection
-              for what is a temporary payment need. It supports credit during
-              transmission. The trade-off is less flexibility once payments
-              pass. The final gap remains inside P4’s near-balance tolerance,
-              so no additional magnitude penalty applies.
-            `)
-          };
-        }
-        if(
-          realLiquidityDemand>0 &&
-          action==='Buy Securities' &&
-          gap>1000 &&
-          gap<=4000
-        ){
-          return {
-            auction:auctionTemplate('purchases Central Bank Bills outright'),
-            macro:macroText(`
-              The outright purchase reduces the shortage but does not fully
-              meet the funding need. Only part of the payment-related need
-              is covered.
-              <br><br>
-              Remaining funding pressure keeps short-term rates elevated
-              while the economy is still in transmission. The support is
-              directionally right but incomplete. The residual imbalance is
-              large for P4, so the action is downgraded even if the initial
-              direction is defensible.
-            `)
-          };
-        }
-        if(
-          realLiquidityDemand>0 &&
-          action==='Buy Securities' &&
-          gap>4000
-        ){
-          return {
-            auction:auctionTemplate('purchases Central Bank Bills outright'),
-            macro:macroText(`
-              The outright purchase reduces the shortage but does not fully
-              meet the funding need. Only part of the payment-related need
-              is covered. Remaining funding pressure keeps short-term rates
-              elevated while the economy is still in transmission.
-              <br><br>
-              The support is directionally right but incomplete. The final
-              imbalance is outside P4’s admissible operating range and is
-              treated as an excessive policy shock.
-            `)
-          };
-        }
-        if(realLiquidityDemand>0 &&
-          action==='Buy Securities' &&
-          gap<-1000
-        ){
-          return {
-            auction:auctionTemplate('purchases Central Bank Bills outright'),
-            macro:macroText(`
-              The outright purchase exceeds the shortage and creates a
-              surplus. The injection exceeds the payment-related shortage
-              and leaves a surplus.
-              <br><br>
-              Tax and payment pressure is temporary and does not justify
-              extra accommodation, which may reduce the room for later
-              normalization. The final imbalance is outside P4’s admissible
-              operating range and is treated as an excessive policy shock.
-            `)
-          };
-        }
+         if (
+           realLiquidityDemand > 0 &&
+           action === 'Buy Securities' &&
+           gap > 500
+         ) {
+           return {
+             auction: marketTemplate('purchases Central Bank Bills outright'),
+             macro: `
+               Aggregate demand remains weak while funding conditions stay relatively tight. 
+               <br><br>The smaller intervention provides only limited support to credit and investment. 
+               It reduces the risk of excessive easing and later inflation. 
+               However, the recovery may remain weaker or take longer to emerge.
+             `
+           };
+         }
+         if (
+           realLiquidityDemand > 0 &&
+           action === 'Buy Securities' &&
+           gap >= -500 &&
+           gap <= 500
+         ) {
+           return {
+             auction: marketTemplate('purchases Central Bank Bills outright'),
+             macro: `
+               The operation brings the market close to balance without creating a meaningful liquidity surplus.
+               <br><br>Short-term funding pressure is relieved, but support for aggregate demand remains cautious;
+               if weakness persists, credit and investment may recover more slowly than under a more proactive easing stance.
+             `
+           };
+         }
+         if (
+           realLiquidityDemand > 0 &&
+           action === 'Buy Securities' &&
+           gap >= -2000 &&
+           gap < -500
+         ) {
+           return {
+             auction: marketTemplate('purchases Central Bank Bills outright'),
+             macro: `
+               Weak demand and low inflation justify deliberate over-injection. 
+               <br><br>A controlled surplus supports credit and investment with a lag. 
+               The surplus is slightly supportive, but prolonged excess liquidity may 
+               create price pressure once demand recovers.
+             `
+           };
+         }
+         if (
+           realLiquidityDemand > 0 &&
+           action === 'Buy Securities' &&
+           gap < -2000
+         ) {
+           return {
+             auction: marketTemplate('purchases Central Bank Bills outright'),
+             macro: `
+               Weak demand and low inflation justify deliberate over-injection. 
+               An excessive liquidity surplus provides stronger support for credit 
+               and investment but creates a higher risk of excess liquidity and 
+               future price pressure. The outcome is overly expansionary relative to 
+               current demand conditions.
+             `
+           };
+         }
         if(
           realLiquidityDemand>0 &&
           action==='Repo'
