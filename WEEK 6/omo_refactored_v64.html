@@ -4802,7 +4802,7 @@ const pgPhase7ReportRule = () => {
   };
 };
 
-/* PHASE 8 REPORT RULE — TYPHOON AND REPAIR FINANCING */
+/* PHASE 8 REPORT RULE */
 const pgPhase8ReportRule = () => {
   const action = String(pgDecision?.omo_action || '').trim().toLowerCase();
 
@@ -5245,6 +5245,466 @@ const pgPhase8ReportRule = () => {
     `
   };
 };
+
+/* PHASE 9 REPORT RULE */
+const pgPhase9ReportRule = () => {
+  const action = String(pgDecision?.omo_action || '');
+  const offeredVolume = Number(pgDecision?.volume ?? 0);
+
+  const demand = Number(
+    pgResult?.real_liquidity_demand ??
+    pgResult?.scenario_liquidity_demand ??
+    pgBackendState?.real_liquidity_demand ??
+    pgBackendState?.scenario_liquidity_demand ??
+    0
+  );
+
+  const totalSupply = Number(
+    pgResult?.total_supply ??
+    pgResult?.net_omo_cash_flow ??
+    pgResult?.omo_supply ??
+    0
+  );
+
+  const gap = Number(pgResult?.liquidity_gap ?? 0);
+  const previousON = Number(
+    pgResult?.previous_interbank_rate ?? pre.rate ?? 0
+  );
+  const newON = Number(
+    pgResult?.interbank_rate ?? pre.rate ?? 0
+  );
+
+  const actionType = (() => {
+    const a = action.trim().toLowerCase();
+
+    if (a === 'reverse repo') return 'reverse_repo';
+    if (a === 'repo') return 'repo';
+
+    if (
+      a === 'buy securities' ||
+      a === 'outright purchase' ||
+      a === 'outright purchase of central bank bills'
+    ) return 'outright_purchase';
+
+    if (
+      a === 'sell securities' ||
+      a === 't-bill issuance' ||
+      a === 't-bill issuance of central bank bills' ||
+      a === 'issue bills'
+    ) return 't_bill_issuance';
+
+    if (
+      a === 'no action' ||
+      a === 'no intervention' ||
+      a === 'none' ||
+      a === 'no_omo'
+    ) return 'no_action';
+
+    return 'unknown';
+  })();
+
+  const instrumentText = {
+    reverse_repo: 'conducts a Reverse Repo',
+    outright_purchase: 'purchases bills outright',
+    repo: 'conducts a Repo',
+    t_bill_issuance: 'issues bills'
+  }[actionType] || 'conducts an OMO operation';
+
+  const signed = value =>
+    `${value > 0 ? '+' : ''}${pgFmt(value)}`;
+
+  const bidAssessment = pgBidVolumeAssessment(
+    offeredVolume,
+    totalBid
+  );
+
+  const liquidityAssessment = pgLiquidityOutcomeAssessment(
+    demand,
+    totalSupply
+  );
+
+  const nearBalance = Math.abs(gap) <= 500;
+
+  const state = pgBackendState || pgResult || {};
+  const inventory = state.tbill_inventory;
+  const outstandingBills = Array.isArray(inventory)
+    ? inventory.length
+    : null;
+  const noBills = outstandingBills === 0;
+
+  const auctionTemplate = () => {
+    if (actionType === 'no_action') {
+      return `
+        <p>
+          In the current session, the Central Bank does not conduct any
+          operation. Including maturities, net OMO cash flow is
+          <b>${signed(totalSupply)} bn</b>.
+          The Liquidity Gap stays at <b>${signed(gap)} bn</b>
+          and the overnight rate moves from
+          <b>${previousON.toFixed(2)}%</b> to
+          <b>${newON.toFixed(2)}%</b>.
+          ${liquidityAssessment}
+        </p>
+      `;
+    }
+
+    return `
+      <p>
+        In the current session, the Central Bank ${instrumentText}.
+        The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
+        versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>.
+        ${bidAssessment}
+        <br><br>
+        Including maturities, net OMO cash flow is
+        <b>${signed(totalSupply)} bn</b>.
+        After the operation, Liquidity Gap is
+        <b>${signed(gap)} bn</b>
+        and the overnight rate moves from
+        <b>${previousON.toFixed(2)}%</b> to
+        <b>${newON.toFixed(2)}%</b>.
+        ${liquidityAssessment}
+      </p>
+    `;
+  };
+
+  const result = (score, label, explanation) => ({
+    auction: auctionTemplate(),
+    macro: `<b>${score} – ${label}</b><br>${explanation}`
+  });
+
+  /* NO ACTION */
+
+  if (actionType === 'no_action' && demand > 0 && nearBalance) {
+    return result(
+      3,
+      'Reasonable — No action within tolerance',
+      'No operation is conducted, and the small shortage stays within the tolerance band. The shortage is small and short-term, so leaving it alone is reasonable at quarter-end.'
+    );
+  }
+
+  if (actionType === 'no_action' && demand < 0 && gap < -500) {
+    return result(
+      2,
+      'Less appropriate — Surplus left in place',
+      'No operation is conducted, so the surplus stays in the system. The surplus from loan repayments is expected to fade, so leaving it in place does little harm, but a short-term absorption would fit better.'
+    );
+  }
+
+  if (actionType === 'no_action' && demand < 0 && nearBalance) {
+    return result(
+      3,
+      'Reasonable — No action within tolerance',
+      'No operation is conducted, and the small surplus stays within the tolerance band. The market is close to balance at quarter-end, so leaving it alone is reasonable.'
+    );
+  }
+
+  if (actionType === 'no_action' && demand === 0 && gap === 0) {
+    return result(
+      4,
+      'Very appropriate — No intervention needed',
+      'No operation is conducted, and the market is already balanced. Inaction is the appropriate final decision at the end of the period.'
+    );
+  }
+
+  /* DEMAND > 0: REVERSE REPO */
+
+  if (
+    demand > 0 && actionType === 'reverse_repo' &&
+    noBills && gap > 0
+  ) {
+    return result(
+      3,
+      'Reasonable — Constrained by T-bill availability',
+      'The Reverse Repo could not fully cover the shortage because too few eligible Central Bank bills were available to banks. What can be injected now depends on earlier choices of size and tenor. The unmet part leaves funding tighter than needed.'
+    );
+  }
+
+  if (demand > 0 && actionType === 'reverse_repo' && gap > 500) {
+    return result(
+      3,
+      'Reasonable — Cautious',
+      'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. The remaining shortage mainly affects short-term funding.'
+    );
+  }
+
+  if (
+    demand > 0 && actionType === 'reverse_repo' &&
+    nearBalance
+  ) {
+    return result(
+      4,
+      'Very appropriate — Defensive injection',
+      'The Reverse Repo covers the shortage and brings liquidity back to balance. It meets the funding need without adding liquidity beyond it.'
+    );
+  }
+
+  if (demand > 0 && actionType === 'reverse_repo' && gap < -500) {
+    return result(
+      2,
+      'Less appropriate — Injection above actual need',
+      'The Reverse Repo more than covers the shortage and creates a surplus. The extra liquidity adds little to activity and raises inflation risk.'
+    );
+  }
+
+  /* DEMAND > 0: OUTRIGHT PURCHASE */
+
+  if (
+    demand > 0 && actionType === 'outright_purchase' &&
+    noBills && gap > 0
+  ) {
+    return result(
+      2,
+      'Less appropriate — Constrained by T-bill availability',
+      'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. What can be bought now depends on earlier choices of size and tenor. The unmet part leaves funding tighter than needed.'
+    );
+  }
+
+  if (
+    demand > 0 && actionType === 'outright_purchase' &&
+    gap > 500
+  ) {
+    return result(
+      2,
+      'Less appropriate — Insufficient support',
+      'The outright purchase reduces the shortage but does not fully meet the funding need. Short-term funding remains tight; this is mainly a funding issue rather than a growth risk.'
+    );
+  }
+
+  if (
+    demand > 0 && actionType === 'outright_purchase' &&
+    nearBalance
+  ) {
+    return result(
+      2,
+      'Less appropriate — Longer-lasting support',
+      'The outright purchase removes the shortage with longer-lasting support than a Reverse Repo. Quarter-end repayments reverse as firms borrow again, so a temporary Reverse Repo matches the need better.'
+    );
+  }
+
+  if (
+    demand > 0 && actionType === 'outright_purchase' &&
+    gap < -500
+  ) {
+    return result(
+      1,
+      'Not appropriate — Unnecessary permanent easing',
+      'The outright purchase exceeds the shortage and creates a surplus. The permanent surplus adds little to activity and leaves excess liquidity once borrowing resumes.'
+    );
+  }
+
+  if (demand > 0 && actionType === 'repo' && gap > 0) {
+    return result(
+      1,
+      'Not appropriate — Opposite to the market state',
+      'The Repo withdraws liquidity while the system is already short, worsening the shortage. Withdrawing liquidity tightens funding with no need.'
+    );
+  }
+
+  if (
+    demand > 0 && actionType === 't_bill_issuance' &&
+    gap > 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Opposite to the market state',
+      'T-bill issuance withdraws liquidity while the system already needs funding, worsening the shortage. Withdrawing liquidity tightens funding with no need.'
+    );
+  }
+
+  /* DEMAND < 0: REVERSE REPO */
+
+  if (
+    demand < 0 && actionType === 'reverse_repo' &&
+    noBills && gap < 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Opposite to the market state; not executable',
+      'The Reverse Repo could not be executed because no eligible bills are outstanding for banks to use, so nothing is injected and the surplus remains. Injecting would also point the wrong way for a surplus. The surplus left in place is not needed at the end of the period.'
+    );
+  }
+
+  if (demand < 0 && actionType === 'reverse_repo' && gap < 0) {
+    return result(
+      1,
+      'Not appropriate — Opposite to the market state',
+      'The Reverse Repo injects liquidity while the system is already in surplus, deepening the surplus. Loan repayments already create a surplus, so injecting more adds excess liquidity with no funding need.'
+    );
+  }
+
+  /* DEMAND < 0: OUTRIGHT PURCHASE */
+
+  if (
+    demand < 0 && actionType === 'outright_purchase' &&
+    noBills && gap < 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Opposite to the market state; not executable',
+      'The outright purchase could not be executed because no eligible bills are left in the market, so nothing is injected and the surplus remains. Injecting would also point the wrong way for a surplus. The surplus left in place is not needed at the end of the period.'
+    );
+  }
+
+  if (
+    demand < 0 && actionType === 'outright_purchase' &&
+    gap < 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Opposite to the market state',
+      'The outright purchase injects liquidity while the system is already in surplus, deepening the surplus. Loan repayments already create a surplus, so injecting more permanently adds excess liquidity with no funding need.'
+    );
+  }
+
+  /* DEMAND < 0: REPO */
+
+  if (demand < 0 && actionType === 'repo' && gap > 500) {
+    return result(
+      2,
+      'Less appropriate — Absorption above actual need',
+      'The Repo absorbs more than the surplus and creates a shortage. The surplus comes from loan repayments and will fade, so this adds avoidable funding pressure.'
+    );
+  }
+
+  if (
+    demand < 0 && actionType === 'repo' &&
+    nearBalance
+  ) {
+    return result(
+      4,
+      'Very appropriate — Short-term adjustment',
+      'The Repo removes the surplus and restores liquidity balance without a lasting tightening. The surplus comes from loan repayments that reverse, so a short-term withdrawal removes it without tightening funding beyond what the situation requires.'
+    );
+  }
+
+  if (demand < 0 && actionType === 'repo' && gap < -500) {
+    return result(
+      3,
+      'Reasonable — Cautious',
+      'The Repo absorbs part of the surplus, but some excess liquidity remains. Leaving some liquidity adds little to growth but does not tighten funding too early.'
+    );
+  }
+
+  /* DEMAND < 0: T-BILL ISSUANCE */
+
+  if (
+    demand < 0 && actionType === 't_bill_issuance' &&
+    gap > 500
+  ) {
+    return result(
+      1,
+      'Not appropriate — Excessive longer-term tightening',
+      'T-bill issuance absorbs more than the surplus and creates a shortage with a longer-lasting withdrawal. The surplus comes from loan repayments, so this adds avoidable pressure.'
+    );
+  }
+
+  if (
+    demand < 0 && actionType === 't_bill_issuance' &&
+    nearBalance
+  ) {
+    return result(
+      2,
+      'Less appropriate — Tenor too long for a temporary surplus',
+      'T-bill issuance removes the surplus and restores liquidity balance, with a longer-lasting effect than a Repo. The surplus fades as borrowing resumes, so the withdrawal lasts longer than needed.'
+    );
+  }
+
+  if (
+    demand < 0 && actionType === 't_bill_issuance' &&
+    gap < -500
+  ) {
+    return result(
+      2,
+      'Less appropriate — Tenor too long for a temporary surplus',
+      'T-bill issuance reduces the liquidity surplus but leaves part of it in the system. A longer-lasting absorption does not match a surplus that is expected to fade, and there is little growth reason to leave part of it in place.'
+    );
+  }
+
+  /* DEMAND = 0: REVERSE REPO */
+
+  if (
+    demand === 0 && actionType === 'reverse_repo' &&
+    noBills && gap === 0
+  ) {
+    return result(
+      2,
+      'Less appropriate — Unnecessary and not executable',
+      'The Reverse Repo could not be executed because no eligible bills are outstanding for banks to use. The market is balanced, so no injection was needed and nothing changes. The decision leaves the final state unchanged.'
+    );
+  }
+
+  if (
+    demand === 0 && actionType === 'reverse_repo' &&
+    gap < 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Unnecessary intervention',
+      'The Reverse Repo injects liquidity into a balanced market and creates a surplus with no funding need.'
+    );
+  }
+
+  /* DEMAND = 0: OUTRIGHT PURCHASE */
+
+  if (
+    demand === 0 && actionType === 'outright_purchase' &&
+    noBills && gap === 0
+  ) {
+    return result(
+      2,
+      'Less appropriate — Unnecessary and not executable',
+      'The outright purchase could not be executed because no eligible bills are left in the market. The market is balanced, so no injection was needed and nothing changes. The decision leaves the final state unchanged.'
+    );
+  }
+
+  if (
+    demand === 0 && actionType === 'outright_purchase' &&
+    gap < 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Unnecessary permanent easing',
+      'The outright purchase injects liquidity into a balanced market and creates a surplus. Creating a new permanent surplus in a balanced market adds excess liquidity that is not needed.'
+    );
+  }
+
+  /* DEMAND = 0: REPO */
+
+  if (
+    demand === 0 && actionType === 'repo' &&
+    gap > 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Unnecessary intervention',
+      'The Repo withdraws liquidity from a balanced market and creates a shortage. Absorbing here adds avoidable funding pressure.'
+    );
+  }
+
+  /* DEMAND = 0: T-BILL ISSUANCE */
+
+  if (
+    demand === 0 && actionType === 't_bill_issuance' &&
+    gap > 0
+  ) {
+    return result(
+      1,
+      'Not appropriate — Unnecessary longer-term tightening',
+      'T-bill issuance withdraws liquidity from a balanced market and creates a shortage with a longer-lasting withdrawal. Absorbing here adds avoidable funding pressure.'
+    );
+  }
+
+  /* EXPLICIT FALLBACK */
+  return {
+    auction: auctionTemplate(),
+    macro: `
+      <b>Assessment unavailable</b><br>
+      No Phase 9 rule matches this combination of OMO action,
+      Liquidity Demand and Liquidity Gap. Check the action name
+      and the values returned by the backend.
+    `
+  };
+};
      
 /* Select the phase-specific report rule used by the Results screen. */
 const reportRule=
@@ -5264,7 +5724,9 @@ const reportRule=
                 ? pgPhase7ReportRule()
                 : pgPhase===8
                   ? pgPhase8ReportRule()
-                  : {auction:'',macro:''};
+                  : pgPhase===9
+                    ? pgPhase9ReportRule()
+                    : {auction:'',macro:''};
    
   /* Store one assessment snapshot per completed phase */
   const phaseAssessment=pgAssessmentCase(pgPhase,pgResult,pgDecision);
