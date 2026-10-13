@@ -2140,31 +2140,31 @@ function pgP1FinalCase(demand, action, gap) {
   if (type === 'reverse_repo') {
     if (gap > 500) {
       setCase(2, 'Insufficient support',
-        'The Reverse Repo reduces the shortage but leaves funding pressure in place while demand is weak. Temporary and partial support does little for credit and investment. Weak demand calls for more than a partial, short-lived fix. The recovery may stay weaker or take longer to emerge.',
+        'The Reverse Repo reduces the shortage but leaves funding pressure in place while demand is weak. <br><br> Temporary and partial support does little for credit and investment. Weak demand calls for more than a partial, short-lived fix. The recovery may stay weaker or take longer to emerge.',
         500);
     } else if (gap >= -500) {
       setCase(3, 'Maturity trade-off',
-        'Temporary liquidity support can stabilize short-term funding conditions without committing to permanent easing. This limits the risk of leaving too much liquidity in the system. If economic weakness lasts several months, however, the support may fade before demand fully recovers. The choice therefore favors flexibility over stronger growth support.');
+        'Temporary liquidity support can stabilize short-term funding conditions without committing to permanent easing. <br><br> This limits the risk of leaving too much liquidity in the system. If economic weakness lasts several months, however, the support may fade before demand fully recovers. The choice therefore favors flexibility over stronger growth support.');
     } else {
       setCase(3, 'Growth-leaning, temporary',
-        'The Reverse Repo supports credit and investment beyond the immediate shortage, which suits weak demand. Because the support is temporary, the extra liquidity is withdrawn at maturity before the recovery is established. The choice leans toward growth but carries a maturity trade-off.',
+        'The Reverse Repo supports credit and investment beyond the immediate shortage, which suits weak demand. <br><br> Because the support is temporary, the extra liquidity is withdrawn at maturity before the recovery is established. The choice leans toward growth but carries a maturity trade-off.',
         500);
     }
   }
   else if (type === 'outright_purchase') {
     if (gap > 500 && gap <= 4000) {
       setCase(2, 'Insufficient support',
-        'Aggregate demand remains weak while funding conditions stay relatively tight. The smaller intervention provides only limited support to credit and investment. It reduces the risk of excessive easing and later inflation. However, the recovery may remain weaker or take longer to emerge.',
+        'Aggregate demand remains weak while funding conditions stay relatively tight. <br><br> The smaller intervention provides only limited support to credit and investment. It reduces the risk of excessive easing and later inflation. However, the recovery may remain weaker or take longer to emerge.',
         500);
     } else if (Math.abs(gap) <= 500) {
       setCase(3, 'Cautious',
-        'The operation brings the market close to balance without creating a meaningful liquidity surplus. Short-term funding pressure is relieved, but support for aggregate demand remains cautious; if weakness persists, credit and investment may recover more slowly than under a more proactive easing stance.');
+        'The operation brings the market close to balance without creating a meaningful liquidity surplus. <br><br> Short-term funding pressure is relieved, but support for aggregate demand remains cautious; if weakness persists, credit and investment may recover more slowly than under a more proactive easing stance.');
     } else if (gap >= -2000 && gap < -500) {
       setCase(4, 'Controlled dynamic easing',
-        'Weak demand and low inflation justify deliberate over-injection. A controlled surplus supports credit and investment with a lag. The surplus is slightly supportive, but prolonged excess liquidity may create price pressure once demand recovers.',
+        'Weak demand and low inflation justify deliberate over-injection. A controlled surplus supports credit and investment with a lag. <br><br> The surplus is slightly supportive, but prolonged excess liquidity may create price pressure once demand recovers.',
         500);
     } else if (gap < -2000) {
-      setCase(2, 'Over-injection','Weak demand and low inflation justify deliberate over-injection. An excessive liquidity surplus provides stronger support for credit and investment but creates a higher risk of excess liquidity and future price pressure. The outcome is overly expansionary relative to current demand conditions.',
+      setCase(2, 'Over-injection','Weak demand and low inflation justify deliberate over-injection. <br><br> An excessive liquidity surplus provides stronger support for credit and investment but creates a higher risk of excess liquidity and future price pressure. The outcome is overly expansionary relative to current demand conditions.',
         2000);
     } else {
       return null;
@@ -2173,7 +2173,7 @@ function pgP1FinalCase(demand, action, gap) {
   else if (type === 'repo' || type === 't_bill_issuance') {
     if (gap <= 0) return null;
     setCase(1, 'Opposite to the market state',
-      'Absorbing liquidity while the market is already short tightens funding conditions further and adds pressure on credit and investment when aggregate demand is already weak. It may reduce demand-side inflation pressure, but the cost to market stability and growth is high.');
+      'Absorbing liquidity while the market is already short tightens funding conditions further and adds pressure on credit and investment when aggregate demand is already weak. <br><br> It may reduce demand-side inflation pressure, but the cost to market stability and growth is high.');
   }
   else {
     return null;
@@ -2220,10 +2220,7 @@ function pgP1DecisionAssessment(demand, totalSupply, gap, action) {
   };
 }
 function pgP1InstrumentText(action){const type=pgP1ActionType(action);if(type==='outright_purchase')return'the Central Bank purchases Central Bank Bills outright';if(type==='reverse_repo')return'the Central Bank conducts a Reverse Repo';if(type==='repo')return'the Central Bank conducts a Repo';if(type==='t_bill_issuance')return'the Central Bank issues Central Bank Bills';return`the Central Bank conducts ${action}`}
-/* =====================================================================
-   ENDING ASSESSMENT · 3-PHASE TEST
-   Keeps phase report rendering unchanged.
-   ===================================================================== */
+/* ENDING ASSESSMENT · 3-PHASE TEST */
 function pgAssessmentActionType(action){
   const a=String(action||'').trim().toLowerCase();
   if(a.includes('reverse repo'))return'reverse_repo';
@@ -2257,8 +2254,7 @@ function pgP2FinalCase(result, decision) {
     macro = comment;
     edge = boundary;
   };
-  // Special cases: only when the backend explicitly confirms
-  // no eligible bills were available before the operation.
+  // no eligible bills
   const eligibleBefore = result?.eligible_bills_before;
   const billsUnavailable =
     eligibleBefore !== null &&
@@ -2276,13 +2272,13 @@ function pgP2FinalCase(result, decision) {
       set(
         3,
         'Constrained by T-bill availability',
-        'The Reverse Repo could not fully cover the shortage because too few eligible Central Bank bills were left for banks to use. The earlier outright purchase took securities out of the market for good, so what can be injected now depends on earlier choices of size and instrument. Seasonal payment needs are temporary, but the part left unmet may push short-term funding costs up while the peak lasts.'
+        'The Reverse Repo could not fully cover the shortage because too few eligible Central Bank bills were left for banks to use. <br><br> The earlier outright purchase took securities out of the market for good, so what can be injected now depends on earlier choices of size and instrument. Seasonal payment needs are temporary, but the part left unmet may push short-term funding costs up while the peak lasts.'
       );
     } else {
       set(
         2,
         'Constrained by T-bill availability',
-        'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. Earlier operations have taken securities out of the market, so what can be bought now depends on earlier choices of size and instrument. Seasonal payment needs are temporary, but the part left unmet may push short-term funding costs up while the peak lasts.'
+        'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. <br><br> Earlier operations have taken securities out of the market, so what can be bought now depends on earlier choices of size and instrument. Seasonal payment needs are temporary, but the part left unmet may push short-term funding costs up while the peak lasts.'
       );
     }
   }
@@ -2292,19 +2288,19 @@ function pgP2FinalCase(result, decision) {
         set(
           3,
           'Cautious',
-          'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. Seasonal payment needs are temporary, but leaving part of them unmet raises short-term funding costs while demand is still weak.',
+          'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. <br><br> Seasonal payment needs are temporary, but leaving part of them unmet raises short-term funding costs while demand is still weak.',
           500
         );
       } else if (gap >= -500) {
         set(
           3,
           'Temporary support',
-          'The Reverse Repo closes the shortage for 60 days. The seasonal peak will pass, but demand underneath is still weak, so the support ends while the economy still needs it and has to be renewed. It is a reasonable fit, but less lasting than an outright purchase.'
+          'The Reverse Repo closes the shortage for 60 days. <br><br> The seasonal peak will pass, but demand underneath is still weak, so the support ends while the economy still needs it and has to be renewed. It is a reasonable fit, but less lasting than an outright purchase.'
         );
       } else {
         set(
           2,'Injection above actual need',
-          'The seasonal shortage is temporary, so extra liquidity may push funding conditions too easy once payment pressure fades. This can lower financing costs further in the short run. However, it increases the risk of a surplus after the seasonal shock passes.',
+          'The seasonal shortage is temporary, so extra liquidity may push funding conditions too easy once payment pressure fades. <br><br> This can lower financing costs further in the short run. However, it increases the risk of a surplus after the seasonal shock passes.',
           500
         );
       }
@@ -2314,20 +2310,20 @@ function pgP2FinalCase(result, decision) {
         set(
           2,
           'Insufficient support',
-          'The outright purchase reduces the shortage but does not fully meet the funding need. Seasonal payment needs are temporary, but leaving part of them unmet raises short-term funding costs while demand is still weak.',
+          'The outright purchase reduces the shortage but does not fully meet the funding need. <br><br> Seasonal payment needs are temporary, but leaving part of them unmet raises short-term funding costs while demand is still weak.',
           500
         );
       } else if (gap >= -500) {
         set(
           4,
           'Lasting support',
-          'The outright purchase closes the shortage and keeps supporting credit and funding conditions after the seasonal peak. Demand underneath is still weak, so the injection is unlikely to turn into excess liquidity, and there is no need to renew the support later.'
+          'The outright purchase closes the shortage and keeps supporting credit and funding conditions after the seasonal peak. <br><br> Demand underneath is still weak, so the injection is unlikely to turn into excess liquidity, and there is no need to renew the support later.'
         );
       } else {
         set(
           2,
           'Over-injection',
-          'The outright purchase exceeds the shortage and creates a permanent surplus. Part of the extra liquidity is not needed once the seasonal peak passes, even though demand is still weak.',
+          'The outright purchase exceeds the shortage and creates a permanent surplus. <br><br> Part of the extra liquidity is not needed once the seasonal peak passes, even though demand is still weak.',
           500
         );
       }
@@ -2337,7 +2333,7 @@ function pgP2FinalCase(result, decision) {
       set(
         1,
         'Opposite to the market state',
-        'The Repo withdraws liquidity while the system is already short, worsening the shortage. Seasonal payment needs already push the system into shortage, so withdrawing liquidity raises funding costs and hits weak demand further.'
+        'The Repo withdraws liquidity while the system is already short, worsening the shortage. <br><br> Seasonal payment needs already push the system into shortage, so withdrawing liquidity raises funding costs and hits weak demand further.'
       );
     }
     else if (action === 't_bill_issuance') {
@@ -2345,7 +2341,7 @@ function pgP2FinalCase(result, decision) {
       set(
         1,
         'Opposite to the market state',
-        'T-bill issuance withdraws liquidity while the system already needs funding, worsening the shortage. Seasonal payment needs already push the system into shortage, so withdrawing liquidity raises funding costs and hits weak demand further.'
+        'T-bill issuance withdraws liquidity while the system already needs funding, worsening the shortage. <br><br> Seasonal payment needs already push the system into shortage, so withdrawing liquidity raises funding costs and hits weak demand further.'
       );
     }
   }
@@ -2355,7 +2351,7 @@ function pgP2FinalCase(result, decision) {
       set(
         1,
         'Opposite to the market state',
-        'The Reverse Repo injects liquidity while the system is already in surplus, deepening the surplus. The system is in surplus even during the seasonal peak, so injecting more creates excess liquidity with no funding need to address.'
+        'The Reverse Repo injects liquidity while the system is already in surplus, deepening the surplus. <br><br> The system is in surplus even during the seasonal peak, so injecting more creates excess liquidity with no funding need to address.'
       );
     }
     else if (action === 'outright_purchase') {
@@ -2363,7 +2359,7 @@ function pgP2FinalCase(result, decision) {
       set(
         1,
         'Opposite to the market state',
-        'The outright purchase injects liquidity while the system is already in surplus, deepening the surplus. The system is in surplus even during the seasonal peak, so injecting more creates excess liquidity with no funding need to address.'
+        'The outright purchase injects liquidity while the system is already in surplus, deepening the surplus. <br><br> The system is in surplus even during the seasonal peak, so injecting more creates excess liquidity with no funding need to address.'
       );
        }
     else if (action === 'repo') {
@@ -2371,20 +2367,20 @@ function pgP2FinalCase(result, decision) {
         set(
           2,
           'Absorption above actual need',
-          'The Repo absorbs more than the surplus and creates a shortage. Absorbing more than the surplus creates a shortage at a seasonal peak in cash needs. With demand still weak, this adds avoidable funding pressure. A liquidity correction becomes an unintended tightening.',
+          'The Repo absorbs more than the surplus and creates a shortage. <br><br> Absorbing more than the surplus creates a shortage at a seasonal peak in cash needs. With demand still weak, this adds avoidable funding pressure. A liquidity correction becomes an unintended tightening.',
           500
         );
       } else if (gap >= -500) {
         set(
           4,
           'Short-term absorption',
-          'The Repo removes the surplus and restores liquidity balance without a lasting tightening. The system is in surplus, so a short Repo restores balance. With demand still weak, however, tighter funding reduces support to credit.'
+          'The Repo removes the surplus and restores liquidity balance without a lasting tightening. <br><br> The system is in surplus, so a short Repo restores balance. With demand still weak, however, tighter funding reduces support to credit.'
         );
       } else {
         set(
           3,
           'Cautious',
-          'The Repo absorbs part of the surplus, but some excess liquidity remains. Because demand is still weak, retaining some liquidity is acceptable. The correction is incomplete but does not tighten conditions against the recovery.',
+          'The Repo absorbs part of the surplus, but some excess liquidity remains. <br><br> Because demand is still weak, retaining some liquidity is acceptable. The correction is incomplete but does not tighten conditions against the recovery.',
           500
         );
       }
@@ -2394,20 +2390,20 @@ function pgP2FinalCase(result, decision) {
         set(
           2,
           'Absorption above actual need',
-          'T-bill issuance absorbs more than the surplus and creates a shortage. Absorbing far more than the surplus creates a large shortage at a seasonal peak in cash needs. With demand still weak, this adds heavy funding pressure and turns a liquidity correction into a tightening shock.',
+          'T-bill issuance absorbs more than the surplus and creates a shortage. <br><br> Absorbing far more than the surplus creates a large shortage at a seasonal peak in cash needs. With demand still weak, this adds heavy funding pressure and turns a liquidity correction into a tightening shock.',
           500
         );
       } else if (gap >= -500) {
         set(
           2,
           'Tenor too long for seasonal shock',
-          'T-bill issuance removes the surplus for longer than a temporary Repo would. The absorption lasts much longer than the seasonal shock. With weak demand, locking in tighter funding conditions has a growth cost. This instrument suits a persistent surplus better than this temporary episode.'
+          'T-bill issuance removes the surplus for longer than a temporary Repo would. <br><br> The absorption lasts much longer than the seasonal shock. With weak demand, locking in tighter funding conditions has a growth cost. This instrument suits a persistent surplus better than this temporary episode.'
         );
       } else {
         set(
           2,
           'Tenor too long for seasonal shock',
-          'T-bill issuance reduces the liquidity surplus but leaves part of it in the system. The outcome is directionally appropriate but insufficient in scale.',
+          'T-bill issuance reduces the liquidity surplus but leaves part of it in the system. <br><br> The outcome is directionally appropriate but insufficient in scale.',
           500
         );
       }
@@ -2418,27 +2414,27 @@ function pgP2FinalCase(result, decision) {
       set(
         1,
         'Unnecessary intervention',
-        'Actual liquidity is already balanced. A new Reverse Repo would create surplus liquidity during a temporary seasonal episode, so no intervention is preferable. The remaining imbalance is far too large, so the operation is an excessive shock to the money market.'
+        'Actual liquidity is already balanced. A new Reverse Repo would create surplus liquidity during a temporary seasonal episode, so no intervention is preferable. <br><br> The remaining imbalance is far too large, so the operation is an excessive shock to the money market.'
       );
     }
     else if (action === 'outright_purchase' && gap < 0) {
       set(
         1,
-        'Unnecessary intervention','The outright purchase injects liquidity into a balanced market and creates a surplus. Demand is weak, but extra liquidity does not address that weakness and would have to be withdrawn later.'
+        'Unnecessary intervention','The outright purchase injects liquidity into a balanced market and creates a surplus. <br><br> Demand is weak, but extra liquidity does not address that weakness and would have to be withdrawn later.'
       );
     }
     else if (action === 'repo' && gap > 0) {
       set(
         1,
         'Unnecessary intervention',
-        'The Repo withdraws liquidity from a balanced market and creates a shortage. No shortage or surplus exists, so absorbing creates a shortage at a seasonal peak in cash needs while demand is weak.'
+        'The Repo withdraws liquidity from a balanced market and creates a shortage.<br><br> No shortage or surplus exists, so absorbing creates a shortage at a seasonal peak in cash needs while demand is weak.'
       );
     }
     else if (action === 't_bill_issuance' && gap > 0) {
       set(
         1,
         'Unnecessary intervention',
-        'T-bill issuance withdraws liquidity from a balanced market and creates a shortage. No shortage or surplus exists, so absorbing creates a shortage at a seasonal peak in cash needs while demand is weak.'
+        'T-bill issuance withdraws liquidity from a balanced market and creates a shortage. <br><br> No shortage or surplus exists, so absorbing creates a shortage at a seasonal peak in cash needs while demand is weak.'
       );
     }
   }
@@ -2452,27 +2448,27 @@ function pgP2FinalCase(result, decision) {
       noActionLevel = 1;
       noActionLabel = 'Shortage left unmet';
       noActionMacro =
-        'No operation is conducted, so the shortage stays in the system. Seasonal payment needs go unmet while demand is still weak, which raises short-term funding costs and adds pressure on firms.';
+        'No operation is conducted, so the shortage stays in the system. <br><br> Seasonal payment needs go unmet while demand is still weak, which raises short-term funding costs and adds pressure on firms.';
     } else if (demand > 0 && Math.abs(gap) <= 500) {
       noActionLevel = 3;
       noActionLabel = 'No action within tolerance';
       noActionMacro =
-        'No operation is conducted, and the small shortage stays within the tolerance band. The seasonal need is small enough to leave alone, and the peak will pass.';
+        'No operation is conducted, and the small shortage stays within the tolerance band. <br><br> The seasonal need is small enough to leave alone, and the peak will pass.';
     } else if (demand < 0 && gap < -500) {
       noActionLevel = 2;
       noActionLabel = 'Surplus left in place';
       noActionMacro =
-        'No operation is conducted, so the surplus stays in the system. A surplus after the seasonal peak eases funding, but leaving it without any adjustment keeps liquidity looser than the situation needs.';
+        'No operation is conducted, so the surplus stays in the system. <br><br> A surplus after the seasonal peak eases funding, but leaving it without any adjustment keeps liquidity looser than the situation needs.';
     } else if (demand < 0 && Math.abs(gap) <= 500) {
       noActionLevel = 3;
       noActionLabel = 'No action within tolerance';
       noActionMacro =
-        'No operation is conducted, and the small surplus stays within the tolerance band. The seasonal need is small and the market is close to balance, so leaving it alone is reasonable.';
+        'No operation is conducted, and the small surplus stays within the tolerance band. <br><br> The seasonal need is small and the market is close to balance, so leaving it alone is reasonable.';
     } else if (demand === 0 && gap === 0) {
       noActionLevel = 4;
       noActionLabel = 'No intervention needed';
       noActionMacro =
-        'No operation is conducted, and the market is already balanced. No injection or absorption is needed, so inaction is the right response.';
+        'No operation is conducted, and the market is already balanced. <br><br> No injection or absorption is needed, so inaction is the right response.';
     }
     if (noActionLevel !== null) {
       return {
@@ -3144,7 +3140,7 @@ const pgPhase3ReportRule = () => {
       'issues bills',
       '2',
       'Less appropriate — Unnecessary longer-term tightening',
-      'Credit demand is improving and the earlier easing impulse is still transmitting. Longer-term absorption is unnecessary unless a genuine surplus persists.'
+      'Credit demand is improving and the earlier easing impulse is still transmitting. <br><br> Longer-term absorption is unnecessary unless a genuine surplus persists.'
     );
   }
   if (demand < 0 && action === 'Sell Securities' && gap < -500) {
@@ -3178,7 +3174,7 @@ const pgPhase3ReportRule = () => {
       'conducts a Repo',
       '1',
       'Not appropriate — Unnecessary tightening',
-      'Liquidity is already balanced and credit demand is recovering. Creating a shortage would work against the ongoing transmission of the earlier easing.'
+      'Liquidity is already balanced and credit demand is recovering. <br><br> Creating a shortage would work against the ongoing transmission of the earlier easing.'
     );
   }
   if (demand === 0 && action === 'Sell Securities' && gap > 0) {
@@ -3196,7 +3192,7 @@ const pgPhase3ReportRule = () => {
     return noActionReport(
       '1',
       'Not appropriate — Shortage left unmet',
-      'No operation is conducted, so the shortage stays in the system. Rising working-capital needs stay unmet, which slows the pass-through of easier conditions to credit.'
+      'No operation is conducted, so the shortage stays in the system. <br><br> Rising working-capital needs stay unmet, which slows the pass-through of easier conditions to credit.'
     );
   }
 
@@ -3205,7 +3201,7 @@ const pgPhase3ReportRule = () => {
     return noActionReport(
       '3',
       'Reasonable — No action within tolerance',
-      'No operation is conducted, and the small shortage stays within the tolerance band. The remaining need is small, so leaving it alone does little harm to the credit recovery.'
+      'No operation is conducted, and the small shortage stays within the tolerance band. <br><br> The remaining need is small, so leaving it alone does little harm to the credit recovery.'
     );
   }
 
@@ -3214,7 +3210,7 @@ const pgPhase3ReportRule = () => {
     return noActionReport(
       '2',
       'Less appropriate — Surplus left in place',
-      'No operation is conducted, so the surplus stays in the system. The extra liquidity is not needed for the credit recovery and is left to persist without any adjustment.'
+      'No operation is conducted, so the surplus stays in the system. <br><br> The extra liquidity is not needed for the credit recovery and is left to persist without any adjustment.'
     );
   }
 
@@ -3223,7 +3219,7 @@ const pgPhase3ReportRule = () => {
     return noActionReport(
       '3',
       'Reasonable — No action within tolerance',
-      'No operation is conducted, and the small surplus stays within the tolerance band. The market is close to balance, so leaving it alone is reasonable during the recovery.'
+      'No operation is conducted, and the small surplus stays within the tolerance band. <br><br> The market is close to balance, so leaving it alone is reasonable during the recovery.'
     );
   }
 
@@ -3232,7 +3228,7 @@ const pgPhase3ReportRule = () => {
     return noActionReport(
       '4',
       'Very appropriate — No intervention needed',
-      'No operation is conducted, and the market is already balanced. Funding is not a constraint on the credit recovery, so inaction is appropriate.'
+      'No operation is conducted, and the market is already balanced. <br><br> Funding is not a constraint on the credit recovery, so inaction is appropriate.'
     );
   }
 
@@ -3397,7 +3393,7 @@ const pgPhase4ReportRule = () => {
       'conducts a Reverse Repo',
       '3',
       'Reasonable — Cautious',
-      'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. Extra liquidity would add little to activity while public inflation expectations are rising.'
+      'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. <br><br> Extra liquidity would add little to activity while public inflation expectations are rising.'
     );
   }
   if (
@@ -3421,7 +3417,7 @@ const pgPhase4ReportRule = () => {
       'conducts a Reverse Repo',
       '2',
       'Less appropriate — Injection above actual need',
-      'The Reverse Repo more than covers the shortage and creates a surplus. The surplus adds to liquidity that is already abundant.'
+      'The Reverse Repo more than covers the shortage and creates a surplus. <br><br> The surplus adds to liquidity that is already abundant.'
     );
   }
   if (
@@ -3457,7 +3453,7 @@ const pgPhase4ReportRule = () => {
       'purchases bills outright',
       '2',
       'Less appropriate — Injection above actual need',
-      'The outright purchase exceeds the shortage and creates a surplus. The permanent surplus adds to abundant liquidity while public inflation expectations are rising.'
+      'The outright purchase exceeds the shortage and creates a surplus. <br><br> The permanent surplus adds to abundant liquidity while public inflation expectations are rising.'
     );
   }
   if (
@@ -3581,7 +3577,7 @@ const pgPhase4ReportRule = () => {
       'issues bills',
       '2',
       'Less appropriate — Over-tightening',
-      'T-bill issuance absorbs more than the surplus and creates a shortage. The shortage goes beyond what anchoring public inflation expectations requires.'
+      'T-bill issuance absorbs more than the surplus and creates a shortage. <br><br> The shortage goes beyond what anchoring public inflation expectations requires.'
     );
   }
   if (
@@ -3619,7 +3615,7 @@ const pgPhase4ReportRule = () => {
       'conducts a Reverse Repo',
       '2',
       'Less appropriate — Injection above actual need',
-      'The Reverse Repo injects liquidity into a balanced market and creates a surplus. The market is balanced, so injecting creates a surplus.'
+      'The Reverse Repo injects liquidity into a balanced market and creates a surplus. <br><br> The market is balanced, so injecting creates a surplus.'
     );
   }
   if (
@@ -3631,7 +3627,7 @@ const pgPhase4ReportRule = () => {
       'purchases bills outright',
       '2',
       'Less appropriate — Injection above actual need',
-      'The outright purchase injects liquidity into a balanced market and creates a surplus. The market is balanced, so injecting creates a lasting surplus.'
+      'The outright purchase injects liquidity into a balanced market and creates a surplus. <br><br> The market is balanced, so injecting creates a lasting surplus.'
     );
   }
 
@@ -3714,7 +3710,7 @@ const pgPhase4ReportRule = () => {
     return noActionReport(
       '2',
       'Less appropriate — Shortage left unmet',
-      'No operation is conducted, so the shortage stays in the system. A shortage already tightens funding, but it is not the deliberate tightening the board agreed. Credit demand is already soft, so growth bears the cost without a clear benefit for anchoring inflation expectations.'
+      'No operation is conducted, so the shortage stays in the system. <br><br> A shortage already tightens funding, but it is not the deliberate tightening the board agreed. Credit demand is already soft, so growth bears the cost without a clear benefit for anchoring inflation expectations.'
     );
   }
   // Demand > 0; gap is within tolerance
@@ -3726,7 +3722,7 @@ const pgPhase4ReportRule = () => {
     return noActionReport(
       '3',
       'Reasonable — No action within tolerance',
-      'No operation is conducted, and the small shortage stays within the tolerance band. The board accepts a tighter money market to anchor inflation expectations, so this small shortage is consistent with that stance.'
+      'No operation is conducted, and the small shortage stays within the tolerance band. <br><br> The board accepts a tighter money market to anchor inflation expectations, so this small shortage is consistent with that stance.'
     );
   }
   // Demand < 0; material surplus remains
@@ -3738,7 +3734,7 @@ const pgPhase4ReportRule = () => {
     return noActionReport(
       '2',
       'Less appropriate — Missed dynamic contraction',
-      'No operation is conducted, so the surplus stays in the system. Abundant liquidity stays in place while inflation expectations rise. This misses the board’s decision to absorb more than the surplus and leaves the main risk unaddressed.'
+      'No operation is conducted, so the surplus stays in the system. <br><br> Abundant liquidity stays in place while inflation expectations rise. This misses the board’s decision to absorb more than the surplus and leaves the main risk unaddressed.'
     );
   }
   // Demand < 0; small surplus remains within tolerance
@@ -3750,7 +3746,7 @@ const pgPhase4ReportRule = () => {
     return noActionReport(
       '2',
       'Less appropriate — Missed dynamic contraction',
-      'No operation is conducted, and the small surplus stays within the tolerance band. The small surplus stays in place and the deliberate tightening the board agreed is not carried out, so inflation expectations are not anchored.'
+      'No operation is conducted, and the small surplus stays within the tolerance band. <br><br> The small surplus stays in place and the deliberate tightening the board agreed is not carried out, so inflation expectations are not anchored.'
     );
   }
   // Demand = 0; market is exactly balanced
@@ -3762,7 +3758,7 @@ const pgPhase4ReportRule = () => {
     return noActionReport(
       '2',
       'Less appropriate — Missed dynamic contraction',
-      'No operation is conducted, and the market is already balanced. The board agreed to tighten to anchor inflation expectations, so doing nothing misses that decision.'
+      'No operation is conducted, and the market is already balanced. <br><br> The board agreed to tighten to anchor inflation expectations, so doing nothing misses that decision.'
     );
   }
 
@@ -3896,14 +3892,14 @@ const pgPhase5ReportRule = () => {
         return result(
           1,
           'Not appropriate — Shortage left unmet',
-          'No operation is conducted, so the shortage stays in the system. Firms are borrowing ahead of the subsidy, so the unmet shortage squeezes funding just when borrowing demand is rising.'
+          'No operation is conducted, so the shortage stays in the system. <br><br> Firms are borrowing ahead of the subsidy, so the unmet shortage squeezes funding just when borrowing demand is rising.'
         );
       }
       if (nearBalance) {
         return result(
           3,
           'Reasonable — No action within tolerance',
-          'No operation is conducted, and the small shortage stays within the tolerance band. The shortage is small, so leaving it alone has little effect on firms borrowing ahead of the subsidy.'
+          'No operation is conducted, and the small shortage stays within the tolerance band. <br><br> The shortage is small, so leaving it alone has little effect on firms borrowing ahead of the subsidy.'
         );
       }
     }
@@ -3912,14 +3908,14 @@ const pgPhase5ReportRule = () => {
         return result(
           2,
           'Less appropriate — Surplus left in place',
-          'No operation is conducted, so the surplus stays in the system. The surplus stays in place just before the subsidy payment, which will add more liquidity later.'
+          'No operation is conducted, so the surplus stays in the system. <br><br> The surplus stays in place just before the subsidy payment, which will add more liquidity later.'
         );
       }
       if (nearBalance) {
         return result(
           3,
           'Reasonable — No action within tolerance',
-          'No operation is conducted, and the small surplus stays within the tolerance band. The market is close to balance, so leaving it alone is reasonable before the subsidy payment.'
+          'No operation is conducted, and the small surplus stays within the tolerance band. <br><br> The market is close to balance, so leaving it alone is reasonable before the subsidy payment.'
         );
       }
     }
@@ -3927,7 +3923,7 @@ const pgPhase5ReportRule = () => {
       return result(
         4,
         'Very appropriate — No intervention needed',
-        'No operation is conducted, and the market is already balanced. Inaction is reasonable while borrowing demand rises, with the subsidy payment still to come.'
+        'No operation is conducted, and the market is already balanced. <br><br> Inaction is reasonable while borrowing demand rises, with the subsidy payment still to come.'
       );
     }
   }
@@ -3942,7 +3938,7 @@ const pgPhase5ReportRule = () => {
     return result(
       3,
       'Reasonable — Constrained by T-bill availability',
-      'The Reverse Repo could not fully cover the shortage because too few eligible Central Bank bills were available to banks. Earlier operations are tying up securities until they mature, so what can be injected now depends on earlier choices of size and tenor. Banks are borrowing more ahead of the subsidy, so the unmet part leaves funding tighter than needed.'
+      'The Reverse Repo could not fully cover the shortage because too few eligible Central Bank bills were available to banks. <br><br> Earlier operations are tying up securities until they mature, so what can be injected now depends on earlier choices of size and tenor. Banks are borrowing more ahead of the subsidy, so the unmet part leaves funding tighter than needed.'
     );
   }
   if (
@@ -3954,7 +3950,7 @@ const pgPhase5ReportRule = () => {
     return result(
       2,
       'Less appropriate — Constrained by T-bill availability',
-      'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. Earlier operations have taken securities out of circulation or tied them up until they mature, so what can be bought now depends on earlier choices of size and tenor. Banks are borrowing more ahead of the subsidy, so the unmet part leaves funding tighter than needed.'
+      'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. <br><br> Earlier operations have taken securities out of circulation or tied them up until they mature, so what can be bought now depends on earlier choices of size and tenor. Banks are borrowing more ahead of the subsidy, so the unmet part leaves funding tighter than needed.'
     );
   }
   if (
@@ -3970,8 +3966,8 @@ const pgPhase5ReportRule = () => {
       1,
       'Not appropriate — Opposite to the market state; not executable',
       actionType === 'reverse_repo'
-        ? 'The Reverse Repo could not be executed because no eligible bills are outstanding for banks to use, so nothing is injected and the surplus remains. Injecting would also point the wrong way for a surplus. The surplus left in place keeps liquidity abundant.'
-        : 'The outright purchase could not be executed because no eligible bills are left in the market, so nothing is injected and the surplus remains. Injecting would also point the wrong way for a surplus. The surplus left in place keeps liquidity abundant.'
+        ? 'The Reverse Repo could not be executed because no eligible bills are outstanding for banks to use, so nothing is injected and the surplus remains. <br><br> Injecting would also point the wrong way for a surplus. The surplus left in place keeps liquidity abundant.'
+        : 'The outright purchase could not be executed because no eligible bills are left in the market, so nothing is injected and the surplus remains. <br><br> Injecting would also point the wrong way for a surplus. The surplus left in place keeps liquidity abundant.'
     );
   }
   if (
@@ -3987,8 +3983,8 @@ const pgPhase5ReportRule = () => {
       2,
       'Less appropriate — Unnecessary and not executable',
       actionType === 'reverse_repo'
-        ? 'The Reverse Repo could not be executed because no eligible bills are outstanding for banks to use. The market is balanced, so no injection was needed and nothing changes. Borrowing demand is rising, so a balanced state can quickly turn into a shortage.'
-        : 'The outright purchase could not be executed because no eligible bills are left in the market. The market is balanced, so no injection was needed and nothing changes. Borrowing demand is rising, so a balanced state can quickly turn into a shortage.'
+        ? 'The Reverse Repo could not be executed because no eligible bills are outstanding for banks to use. <br><br> The market is balanced, so no injection was needed and nothing changes. Borrowing demand is rising, so a balanced state can quickly turn into a shortage.'
+        : 'The outright purchase could not be executed because no eligible bills are left in the market. <br><br> The market is balanced, so no injection was needed and nothing changes. Borrowing demand is rising, so a balanced state can quickly turn into a shortage.'
     );
   }
 
@@ -3999,7 +3995,7 @@ const pgPhase5ReportRule = () => {
         return result(
           3,
           'Reasonable — Cautious',
-          'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. The support is still temporary and consistent with higher borrowing demand.'
+          'The Reverse Repo reduces the shortage but leaves part of the funding need unresolved. <br><br> The support is still temporary and consistent with higher borrowing demand.'
         );
       }
 
@@ -4007,14 +4003,14 @@ const pgPhase5ReportRule = () => {
         return result(
           4,
           'Very appropriate — Funding support + useful reversal',
-          'The Reverse Repo covers the shortage and brings liquidity back to balance. It meets the shortage created by stronger expected borrowing. Its maturity withdraws the liquidity once subsidy cash has entered the system.'
+          'The Reverse Repo covers the shortage and brings liquidity back to balance. <br><br> It meets the shortage created by stronger expected borrowing. Its maturity withdraws the liquidity once subsidy cash has entered the system.'
         );
       }
 
       return result(
         2,
         'Less appropriate — Injection above actual need',
-        'The Reverse Repo more than covers the shortage and creates a surplus. The injection goes beyond the shortage just before the subsidy payment. The subsidy will soon add liquidity, so extra accommodation now risks a larger surplus later.'
+        'The Reverse Repo more than covers the shortage and creates a surplus. <br><br> The injection goes beyond the shortage just before the subsidy payment. The subsidy will soon add liquidity, so extra accommodation now risks a larger surplus later.'
       );
     }
     if (actionType === 'outright_purchase') {
@@ -4022,34 +4018,34 @@ const pgPhase5ReportRule = () => {
         return result(
           2,
           'Less appropriate — Insufficient support',
-          'The outright purchase reduces the shortage but does not fully meet the funding need. Part of the expectations-driven funding need stays unmet, so short-term funding remains tight while firms build working capital.'
+          'The outright purchase reduces the shortage but does not fully meet the funding need. <br><br> Part of the expectations-driven funding need stays unmet, so short-term funding remains tight while firms build working capital.'
         );
       }
       if (nearBalance) {
         return result(
           2,
           'Less appropriate — Too persistent for expected funding need',
-          'The outright purchase removes the shortage and restores liquidity balance, with long-lasting support. Firms are increasing expected borrowing before subsidy cash arrives. Permanent easing is less suitable than a temporary instrument because subsidy liquidity is about to arrive.'
+          'The outright purchase removes the shortage and restores liquidity balance, with long-lasting support. <br><br> Firms are increasing expected borrowing before subsidy cash arrives. Permanent easing is less suitable than a temporary instrument because subsidy liquidity is about to arrive.'
         );
       }
       return result(
         2,
         'Less appropriate — Injection above actual need',
-        'The outright purchase exceeds the shortage and creates a surplus. The injection exceeds the shortage just before the subsidy payment. The subsidy itself will soon add liquidity, so extra accommodation now risks a larger surplus later.'
+        'The outright purchase exceeds the shortage and creates a surplus. <br><br> The injection exceeds the shortage just before the subsidy payment. The subsidy itself will soon add liquidity, so extra accommodation now risks a larger surplus later.'
       );
     }
     if (actionType === 'repo') {
       return result(
         1,
         'Not appropriate — Opposite to the market state',
-        'The Repo withdraws liquidity while the system is already short, worsening the shortage. Rising borrowing demand already creates a shortage, so withdrawing liquidity squeezes firms ahead of the subsidy.'
+        'The Repo withdraws liquidity while the system is already short, worsening the shortage. <br><br> Rising borrowing demand already creates a shortage, so withdrawing liquidity squeezes firms ahead of the subsidy.'
       );
     }
     if (actionType === 't_bill_issuance') {
       return result(
         1,
         'Not appropriate — Opposite to the market state',
-        'T-bill issuance withdraws liquidity while the system already needs funding, worsening the shortage. Rising borrowing demand already creates a shortage, so withdrawing liquidity squeezes firms ahead of the subsidy.'
+        'T-bill issuance withdraws liquidity while the system already needs funding, worsening the shortage. <br><br> Rising borrowing demand already creates a shortage, so withdrawing liquidity squeezes firms ahead of the subsidy.'
       );
     }
   }
@@ -4060,14 +4056,14 @@ const pgPhase5ReportRule = () => {
       return result(
         1,
         'Not appropriate — Opposite to the market state',
-        'The Reverse Repo injects liquidity while the system is already in surplus, deepening the surplus. Injecting into a surplus before the subsidy arrives deepens excess liquidity that the subsidy will add to.'
+        'The Reverse Repo injects liquidity while the system is already in surplus, deepening the surplus. <br><br> Injecting into a surplus before the subsidy arrives deepens excess liquidity that the subsidy will add to.'
       );
     }
     if (actionType === 'outright_purchase') {
       return result(
         1,
         'Not appropriate — Opposite to the market state',
-        'The outright purchase injects liquidity while the system is already in surplus, deepening the surplus. Injecting permanently into a surplus before the subsidy arrives deepens excess liquidity that the subsidy will add to.'
+        'The outright purchase injects liquidity while the system is already in surplus, deepening the surplus. <br><br> Injecting permanently into a surplus before the subsidy arrives deepens excess liquidity that the subsidy will add to.'
       );
     }
     if (actionType === 'repo') {
@@ -4075,20 +4071,20 @@ const pgPhase5ReportRule = () => {
         return result(
           1,
           'Not appropriate — Over-tightening before subsidy cash arrives',
-          'The Repo absorbs more than the surplus and creates a shortage. Absorbing more than the surplus tightens funding while firms increase borrowing in expectation of support. It risks choking activity before the subsidy arrives.'
+          'The Repo absorbs more than the surplus and creates a shortage. <br><br> Absorbing more than the surplus tightens funding while firms increase borrowing in expectation of support. It risks choking activity before the subsidy arrives.'
         );
       }
       if (nearBalance) {
         return result(
           3,
           'Reasonable — Defensive absorption',
-          'The Repo removes the surplus and restores liquidity balance without a lasting tightening. Borrowing demand is rising on expectations, so absorption should respond only to the actual liquidity state.'
+          'The Repo removes the surplus and restores liquidity balance without a lasting tightening. <br><br> Borrowing demand is rising on expectations, so absorption should respond only to the actual liquidity state.'
         );
       }
       return result(
         2,
         'Less appropriate — Leaves surplus despite rising loan demand',
-        'The Repo absorbs part of the surplus, but some excess liquidity remains. Part of the surplus is absorbed. The remainder is modest and is partly used up by expectations-driven borrowing.'
+        'The Repo absorbs part of the surplus, but some excess liquidity remains. <br><br> Part of the surplus is absorbed. The remainder is modest and is partly used up by expectations-driven borrowing.'
       );
     }
     if (actionType === 't_bill_issuance') {
@@ -4096,20 +4092,20 @@ const pgPhase5ReportRule = () => {
         return result(
           1,
           'Not appropriate — Excessive longer-term tightening',
-          'T-bill issuance absorbs more than the surplus and creates a shortage. Absorbing more than the surplus tightens funding while firms increase borrowing in expectation of support. It risks choking activity before the subsidy arrives.'
+          'T-bill issuance absorbs more than the surplus and creates a shortage. <br><br> Absorbing more than the surplus tightens funding while firms increase borrowing in expectation of support. It risks choking activity before the subsidy arrives.'
         );
       }
       if (nearBalance) {
         return result(
           2,
           'Less appropriate — Longer-term tightening against expected support',
-          'T-bill issuance removes the surplus and restores liquidity balance, with a long-lasting effect. The surplus is removed, even though subsidy liquidity is about to arrive. The withdrawal now reduces flexibility over how much to absorb later.'
+          'T-bill issuance removes the surplus and restores liquidity balance, with a long-lasting effect. <br><br> The surplus is removed, even though subsidy liquidity is about to arrive. The withdrawal now reduces flexibility over how much to absorb later.'
         );
       }
       return result(
         2,
         'Less appropriate — Longer-term tightening against expected support',
-        'T-bill issuance reduces the liquidity surplus but leaves part of it in the system. The remaining surplus and long tenor make the choice poorly matched to the current situation.'
+        'T-bill issuance reduces the liquidity surplus but leaves part of it in the system. <br><br> The remaining surplus and long tenor make the choice poorly matched to the current situation.'
       );
     }
   }
@@ -4123,7 +4119,7 @@ const pgPhase5ReportRule = () => {
       return result(
         3,
         'Reasonable — Temporary growth support',
-        'The Reverse Repo injects liquidity into a balanced market and creates a surplus. Before subsidy cash arrives, a surplus can support the rise in expected production and borrowing.'
+        'The Reverse Repo injects liquidity into a balanced market and creates a surplus. <br><br> Before subsidy cash arrives, a surplus can support the rise in expected production and borrowing.'
       );
     }
     if (
@@ -4133,7 +4129,7 @@ const pgPhase5ReportRule = () => {
       return result(
         2,
         'Less appropriate — Injection above actual need',
-        'The outright purchase injects liquidity into a balanced market and creates a surplus. The market is balanced ahead of the subsidy payment. Injecting creates a surplus that the subsidy will soon add to.'
+        'The outright purchase injects liquidity into a balanced market and creates a surplus. <br><br> The market is balanced ahead of the subsidy payment. Injecting creates a surplus that the subsidy will soon add to.'
       );
     }
 
@@ -4141,14 +4137,14 @@ const pgPhase5ReportRule = () => {
       return result(
         1,
         'Not appropriate — Tightening against expected funding demand',
-        'The Repo withdraws liquidity from a balanced market and creates a shortage. The market is balanced while firms borrow on expectations of support. Absorbing creates a shortage and risks choking activity before the subsidy arrives.'
+        'The Repo withdraws liquidity from a balanced market and creates a shortage. <br><br> The market is balanced while firms borrow on expectations of support. Absorbing creates a shortage and risks choking activity before the subsidy arrives.'
       );
     }
     if (actionType === 't_bill_issuance' && gap > 0) {
       return result(
         1,
         'Not appropriate — Longer-term tightening against expected funding demand',
-        'T-bill issuance withdraws liquidity from a balanced market and creates a shortage. The market is balanced while firms borrow on expectations of support. Absorbing creates a shortage and risks choking activity before the subsidy arrives.'
+        'T-bill issuance withdraws liquidity from a balanced market and creates a shortage. <br><br> The market is balanced while firms borrow on expectations of support. Absorbing creates a shortage and risks choking activity before the subsidy arrives.'
       );
     }
   }
