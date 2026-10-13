@@ -4084,7 +4084,7 @@ const pgPhase6ReportRule = () => {
       'The Reverse Repo more than covers the shortage and creates a surplus. The injection creates a surplus on top of the subsidy inflow. Extra liquidity adds to the subsidy’s effect and raises inflation risk.'
     );
   }
-     
+}   
   /* OUTRIGHT PURCHASE: DEMAND > 0 */
   if (demand > 0 && actionType === 'outright_purchase') {
     if (noBills && gap > 0) {
@@ -4094,7 +4094,6 @@ const pgPhase6ReportRule = () => {
         'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. Earlier bills have matured or are tied up until they mature, so what can be bought now depends on earlier choices of size and tenor. Subsidy money is entering the system, so a shortage that remains here reflects earlier collateral commitments rather than market conditions.'
       );
     }
-
     if (gap > 500) {
       return result(
         2,
@@ -4102,7 +4101,6 @@ const pgPhase6ReportRule = () => {
         'The outright purchase reduces the shortage but does not fully meet the funding need. Part of the shortage remains even though subsidy money is entering the system. The remaining pressure partly offsets the subsidy’s effect, so stabilization is incomplete.'
       );
     }
-
     if (nearBalance) {
       return result(
         3,
@@ -4117,7 +4115,7 @@ const pgPhase6ReportRule = () => {
          'The outright purchase exceeds the shortage and creates a surplus. The permanent surplus adds to the subsidy inflow. Together they leave more liquidity in the system than firms need, which raises inflation risk.'
        );
      }
-
+   }
   /* REPO: DEMAND > 0 */
   if (demand > 0 && actionType === 'repo' && gap > 0) {
     return result(
