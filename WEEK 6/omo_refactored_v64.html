@@ -2974,7 +2974,7 @@ const pgPhase3ReportRule = () => {
   `;
   const report = (instrumentText, score, title, comment) => ({
     auction: auctionTemplate(instrumentText),
-    macro: `<p><b>${score} – ${title}</b></p><p>${comment}</p>`
+    macro: `${comment}`
   });
   const noActionReport = (score, title, comment) => ({
     auction: `
@@ -2991,7 +2991,6 @@ const pgPhase3ReportRule = () => {
       </p>
     `,
     macro: `
-      <p><b>${score} – ${title}</b></p>
       <p>${comment}</p>
     `
   });
@@ -3302,7 +3301,6 @@ const pgPhase4ReportRule = () => {
   const report = (instrumentText, score, label, comment) => ({
     auction: auctionTemplate(instrumentText),
     macro: `
-      <p><b>${score} – ${label}</b></p>
       <p>${comment}</p>
     `
   });
@@ -3704,7 +3702,6 @@ const pgPhase4ReportRule = () => {
       </p>
     `,
     macro: `
-      <p><b>${score} – ${label}</b></p>
       <p>${comment}</p>
     `
   });
@@ -3881,7 +3878,6 @@ const pgPhase5ReportRule = () => {
   const result = (score, label, explanation) => ({
     auction: auctionTemplate(),
     macro: `
-      <p><b>${score} – ${label}</b></p>
       <p>${explanation}</p>
     `
   });
@@ -4260,7 +4256,6 @@ const pgPhase6ReportRule = () => {
   const result = (score, label, explanation) => ({
     auction: auctionTemplate(),
     macro: `
-      <p><b>${score} – ${label}</b></p>
       <p>${explanation}</p>
     `
   });
@@ -4639,7 +4634,7 @@ const pgPhase7ReportRule = () => {
 
   const result = (score, label, explanation) => ({
     auction: auctionTemplate(),
-    macro: `<b>${score} – ${label}</b><br>${explanation}`
+    macro: `${explanation}`
   });
 
   /* NO ACTION */
@@ -5167,7 +5162,7 @@ const pgPhase8ReportRule = () => {
 
   const result = (score, label, explanation) => ({
     auction: auctionTemplate(),
-    macro: `<b>${score} – ${label}</b><br>${explanation}`
+    macro: `${explanation}`
   });
 
   /* NO ACTION */
@@ -5621,7 +5616,7 @@ const pgPhase9ReportRule = () => {
 
   const result = (score, label, explanation) => ({
     auction: auctionTemplate(),
-    macro: `<b>${score} – ${label}</b><br>${explanation}`
+    macro: `${explanation}`
   });
 
   /* NO ACTION */
