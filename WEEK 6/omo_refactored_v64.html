@@ -2839,12 +2839,7 @@ function paperReport(){
     <p>
       ${isNoAction
         ? 'In the current session, the Central Bank does not conduct any operation.'
-        : `In the current session, the Central Bank ${instrument}.
-          The offered volume is
-          <b>${pgFmt(offeredVolume)} bn</b>
-          versus Total Bid Volume of
-          <b>${pgFmt(totalBid)} bn</b>.
-          ${bidAssessment}`
+        : `In the current session, the Central Bank ${instrument}.`
       }
       <br><br>
       Including maturities, net OMO cash flow is
@@ -2908,12 +2903,7 @@ function paperReport(){
     <p>
       ${isNoAction
         ? 'In the current session, the Central Bank does not conduct any operation.'
-        : `In the current session, the Central Bank ${instrument}.
-          The offered volume is
-          <b>${pgFmt(offeredVolume)} bn</b>
-          versus Total Bid Volume of
-          <b>${pgFmt(totalBid)} bn</b>.
-          ${bidAssessment}`
+        : `In the current session, the Central Bank ${instrument}.`
       }
       <br><br>
       Including maturities, net OMO cash flow is
@@ -2971,9 +2961,6 @@ const pgPhase3ReportRule = () => {
   const auctionTemplate = (instrumentText) => `
     <p>
       In the current session, the Central Bank ${instrumentText}.
-      The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
-      versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>;
-      ${bidAssessment}
       <br><br>
       Including maturities, net OMO cash flow is
       <b>${totalSupply >= 0 ? '+' : ''}${pgFmt(totalSupply)} bn</b>.
@@ -3301,9 +3288,6 @@ const pgPhase4ReportRule = () => {
   const auctionTemplate = (instrumentText) => `
     <p>
       In the current session, the Central Bank ${instrumentText}.
-      The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
-      versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>;
-      ${bidAssessment}
       <br><br>
       Including maturities, net OMO cash flow is
       <b>${totalSupply >= 0 ? '+' : ''}${pgFmt(totalSupply)} bn</b>.
@@ -3882,11 +3866,6 @@ const pgPhase5ReportRule = () => {
       <p>
         In the current session, the Central Bank
         ${instrumentText}.
-        The offered volume is
-        <b>${pgFmt(offeredVolume)} bn</b>
-        versus Total Bid Volume of
-        <b>${pgFmt(totalBid)} bn</b>.
-        ${bidAssessment}
         <br><br>
         Including maturities, net OMO cash flow is
         <b>${signed(totalSupply)} bn</b>.
@@ -4266,11 +4245,6 @@ const pgPhase6ReportRule = () => {
     return `
       <p>
         In the current session, the Central Bank ${instrumentText || 'conducts an OMO operation'}.
-        The offered volume is
-        <b>${pgFmt(offeredVolume)} bn</b>
-        versus Total Bid Volume of
-        <b>${pgFmt(totalBid)} bn</b>.
-        ${bidAssessment}
         <br><br>
         Including maturities, net OMO cash flow is
         <b>${signed(totalSupply)} bn</b>.
@@ -4650,9 +4624,6 @@ const pgPhase7ReportRule = () => {
     return `
       <p>
         In the current session, the Central Bank ${instrumentText}.
-        The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
-        versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>.
-        ${bidAssessment}
         <br><br>
         Including maturities, net OMO cash flow is
         <b>${signed(totalSupply)} bn</b>.
@@ -5635,9 +5606,6 @@ const pgPhase9ReportRule = () => {
     return `
       <p>
         In the current session, the Central Bank ${instrumentText}.
-        The offered volume is <b>${pgFmt(offeredVolume)} bn</b>
-        versus Total Bid Volume of <b>${pgFmt(totalBid)} bn</b>.
-        ${bidAssessment}
         <br><br>
         Including maturities, net OMO cash flow is
         <b>${signed(totalSupply)} bn</b>.
