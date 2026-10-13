@@ -2093,8 +2093,33 @@ function pgP1FinalCase(demand, action, gap) {
   demand = Number(demand);
   gap = Number(gap);
   if (!Number.isFinite(demand) ||
-      !Number.isFinite(gap) ||
-      demand <= 0) return null;
+    !Number.isFinite(gap)) return null;
+  const rawAction = String(action || '')
+    .trim()
+    .toLowerCase();
+  const isNoAction = [
+    'no action',
+    'no intervention',
+    'none',
+    'no_omo'
+  ].includes(rawAction);
+  // NO ACTION
+  if (isNoAction) {
+    if (demand > 0 && gap > 500) {
+      return {
+        level: 1,
+        baseLevel: 1,
+        label: 'Shortage left unmet',
+        macro:
+          'No operation is conducted, so the shortage stays in the system. Funding conditions stay too tight for weak demand, and the board’s decision to support demand is not carried out. The slowdown may last longer.',
+        overshoot: 0,
+        deduction: 0,
+        tradeoff_tag: 'EXCLUDE'
+      };
+    }
+    return null;
+  }
+  if (demand <= 0) return null;
   const type = pgP1ActionType(action);
   let baseLevel = 0;
   let label = '';
@@ -2745,6 +2770,15 @@ function paperReport(){
   const c=phaseConfig[pgPhase],pre={...c.preMetrics,rate:Number(pgResult.previous_interbank_rate??c.preMetrics.rate)},post=Number(pgResult.interbank_rate),delta=post-pre.rate,bids=pgResult.bids||[],totalBid=bids.reduce((s,b)=>s+Number(b.bid_volume||0),0),totalWin=bids.reduce((s,b)=>s+Number(b.real_volume||0),0),maturity=Number(pgResult.maturity_volume||0);
   const pgPhase1ReportRule = () => {
   const action = pgDecision?.omo_action;
+  const actionLower = String(action || '')
+    .trim()
+    .toLowerCase();
+  const isNoAction = [
+    'no action',
+    'no intervention',
+    'none',
+    'no_omo'
+  ].includes(actionLower);
   const offeredVolume = Number(pgDecision?.volume ?? 0);
   const demand = Number(pgResult.real_liquidity_demand ?? 0);
   const supply = Number(pgResult.total_supply ?? 0);
@@ -2774,18 +2808,24 @@ function paperReport(){
     `${value > 0 ? '+' : ''}${pgFmt(value)}`;
   const auction = `
     <p>
-      In the current session, the Central Bank ${instrument}.
-      The offered volume is
-      <b>${pgFmt(offeredVolume)} bn</b>
-      versus Total Bid Volume of
-      <b>${pgFmt(totalBid)} bn</b>.
-      ${bidAssessment}
+      ${isNoAction
+        ? 'In the current session, the Central Bank does not conduct any operation.'
+        : `In the current session, the Central Bank ${instrument}.
+          The offered volume is
+          <b>${pgFmt(offeredVolume)} bn</b>
+          versus Total Bid Volume of
+          <b>${pgFmt(totalBid)} bn</b>.
+          ${bidAssessment}`
+      }
       <br><br>
       Including maturities, net OMO cash flow is
       <b>${signed(supply)} bn</b>.
-      After the operation, Liquidity Gap is
-      <b>${signed(gap)} bn</b>
-      and the overnight rate moves from
+      ${isNoAction
+        ? `The Liquidity Gap stays at <b>${signed(gap)} bn</b>.`
+        : `After the operation, Liquidity Gap is
+          <b>${signed(gap)} bn</b>.`
+      }
+      The overnight rate moves from
       <b>${previousON.toFixed(2)}%</b>
       to <b>${newON.toFixed(2)}%</b>.
       ${liquidityAssessment}
