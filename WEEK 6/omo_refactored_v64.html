@@ -2204,7 +2204,17 @@ function pgAssessmentActionType(action){
 function pgP2FinalCase(result, decision) {
   const demand = Number(result?.real_liquidity_demand);
   const gap = Number(result?.liquidity_gap);
-  const action = pgAssessmentActionType(decision?.omo_action);
+  const rawAction = String(decision?.omo_action || '')
+    .trim()
+    .toLowerCase();
+  const action = [
+    'no action',
+    'no intervention',
+    'none',
+    'no_omo'
+  ].includes(rawAction)
+    ? 'no_action'
+    : pgAssessmentActionType(decision?.omo_action);
   if (!Number.isFinite(demand) || !Number.isFinite(gap)) {
     return null;
   }
@@ -2401,6 +2411,52 @@ function pgP2FinalCase(result, decision) {
       );
     }
   }
+    // NO ACTION
+  if (action === 'no_action') {
+    let noActionLevel = null;
+    let noActionLabel = '';
+    let noActionMacro = '';
+
+    if (demand > 0 && gap > 500) {
+      noActionLevel = 1;
+      noActionLabel = 'Shortage left unmet';
+      noActionMacro =
+        'No operation is conducted, so the shortage stays in the system. Seasonal payment needs go unmet while demand is still weak, which raises short-term funding costs and adds pressure on firms.';
+    } else if (demand > 0 && Math.abs(gap) <= 500) {
+      noActionLevel = 3;
+      noActionLabel = 'No action within tolerance';
+      noActionMacro =
+        'No operation is conducted, and the small shortage stays within the tolerance band. The seasonal need is small enough to leave alone, and the peak will pass.';
+    } else if (demand < 0 && gap < -500) {
+      noActionLevel = 2;
+      noActionLabel = 'Surplus left in place';
+      noActionMacro =
+        'No operation is conducted, so the surplus stays in the system. A surplus after the seasonal peak eases funding, but leaving it without any adjustment keeps liquidity looser than the situation needs.';
+    } else if (demand < 0 && Math.abs(gap) <= 500) {
+      noActionLevel = 3;
+      noActionLabel = 'No action within tolerance';
+      noActionMacro =
+        'No operation is conducted, and the small surplus stays within the tolerance band. The seasonal need is small and the market is close to balance, so leaving it alone is reasonable.';
+    } else if (demand === 0 && gap === 0) {
+      noActionLevel = 4;
+      noActionLabel = 'No intervention needed';
+      noActionMacro =
+        'No operation is conducted, and the market is already balanced. No injection or absorption is needed, so inaction is the right response.';
+    }
+    if (noActionLevel !== null) {
+      return {
+        level: noActionLevel,
+        baseLevel: noActionLevel,
+        label: noActionLabel,
+        macro: noActionMacro,
+        overshoot: 0,
+        deduction: 0,
+        tradeoff_tag: noActionLevel < 3 ? 'EXCLUDE' : 'BALANCED'
+      };
+    }
+    return null;
+  }
+  
   if (!baseLevel) return null;
   // PHASE 2 SCORING: R = 4,000 bn
   const overshoot = Math.max(0, Math.abs(gap) - edge);
@@ -2745,6 +2801,13 @@ function paperReport(){
   /* PHASE 2 REPORT RULE */
   const pgPhase2ReportRule = () => {
   const action = pgDecision?.omo_action;
+  const actionLower = String(action || '').trim().toLowerCase();
+  const isNoAction = [
+    'no action',
+    'no intervention',
+    'none',
+    'no_omo'
+  ].includes(actionLower);
   const offeredVolume = Number(pgDecision?.volume ?? 0);
   const demand = Number(pgResult?.real_liquidity_demand ?? 0);
   const supply = Number(pgResult?.total_supply ?? 0);
@@ -2774,12 +2837,15 @@ function paperReport(){
   );
   const auction = `
     <p>
-      In the current session, the Central Bank ${instrument}.
-      The offered volume is
-      <b>${pgFmt(offeredVolume)} bn</b>
-      versus Total Bid Volume of
-      <b>${pgFmt(totalBid)} bn</b>.
-      ${bidAssessment}
+      ${isNoAction
+        ? 'In the current session, the Central Bank does not conduct any operation.'
+        : `In the current session, the Central Bank ${instrument}.
+          The offered volume is
+          <b>${pgFmt(offeredVolume)} bn</b>
+          versus Total Bid Volume of
+          <b>${pgFmt(totalBid)} bn</b>.
+          ${bidAssessment}`
+      }
       <br><br>
       Including maturities, net OMO cash flow is
       <b>${signed(supply)} bn</b>.
@@ -2791,6 +2857,7 @@ function paperReport(){
       ${liquidityAssessment}
     </p>
   `;
+
   return {
     auction,
     macro: selectedCase
