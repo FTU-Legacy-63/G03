@@ -5,11 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>WHO RUNS THE WORLD? — OMO Simulation</title>
 <style id="paper-game-canonical">
-/* =====================================================================
-   PAPER GAME — CANONICAL STYLES
-   Purpose: all visual rules for the desk, papers, controls and transitions.
-   This is the ONLY paper-game style block. No versioned overrides follow it.
-   ===================================================================== */
+/* PAPER GAME */
 :root{
   --desk-ink:#203a35;
   --desk-teal:#0b8178;
@@ -35,11 +31,7 @@ html,body{min-height:100%}
 body.paper-mode{margin:0!important;padding:0!important;overflow-x:hidden!important;color:#2f403b!important;font-family:var(--font-vintage)!important;background:transparent!important;}
 body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{display:none!important}
 #paper-game{min-height:100vh;position:relative}
-/* ---------------------------------------------------------------------
-   COMPONENT: DESK NAMEPLATE
-   Purpose: title/progress decoration that belongs to the wooden desk.
-   Ends before GLOBAL PAPER primitives.
-   --------------------------------------------------------------------- */
+/* COMPONENT: DESK NAMEPLATE */
 .desk-nameplate{
   width:100%;
   height:150px;
@@ -97,11 +89,7 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
   transform:translateX(-45px);
 }
 .dot{width:9px;height:9px;border-radius:50%;background:rgba(91,66,25,.18);box-shadow:inset 0 0 0 1px rgba(85,60,20,.28)}.dot.on{background:#fff0a9;box-shadow:0 0 0 3px rgba(255,240,169,.34),inset 0 0 0 1px rgba(101,73,21,.3)}
-/* ---------------------------------------------------------------------
-   COMPONENT: GLOBAL PAPER PRIMITIVES
-   Purpose: one shared material/geometry for title, Daily, decision, results.
-   Ends before BUTTONS and HELP.
-   --------------------------------------------------------------------- */
+/* COMPONENT: GLOBAL PAPER PRIMITIVES */
 .desk{width:min(1580px,98vw);margin:18px auto 64px;position:relative;z-index:2}
 .screen{display:none;position:relative}.screen.active{display:block;animation:screenIn .24s ease both}@keyframes screenIn{from{opacity:0}to{opacity:1}}
 .document-sheet,
@@ -694,7 +682,7 @@ body{visibility:visible!important}
       <div class="guide-step">
         <h3>Who are you?</h3>
         <p>
-          You are a member of the <b>Open Market Operations Committee of the Central Bank</b>.
+          You are a member of the <b>Open Market Operations Committee of the Central Bank of a developing country</b>.
         </p>
         <p>
           The banking system is facing new changes: liquidity may become excessive or scarce,
@@ -2811,9 +2799,16 @@ function paperReport(){
   };
 };
    
-/* PHASE 3 REPORT RULE — aligned with the Markdown rubric */
+/* PHASE 3 REPORT RULE */
 const pgPhase3ReportRule = () => {
   const action = String(pgDecision?.omo_action || '');
+  const actionLower = action.trim().toLowerCase();
+  const noAction = [
+     'no action',
+     'no intervention',
+     'none',
+     'no_omo'
+   ].includes(actionLower);
   const offeredVolume = Number(pgDecision?.volume || 0);
   const demand = Number(pgResult?.real_liquidity_demand ?? 0);
   const totalSupply = Number(pgResult?.total_supply ?? 0);
@@ -2857,6 +2852,25 @@ const pgPhase3ReportRule = () => {
   const report = (instrumentText, score, title, comment) => ({
     auction: auctionTemplate(instrumentText),
     macro: `<p><b>${score} – ${title}</b></p><p>${comment}</p>`
+  });
+  const noActionReport = (score, title, comment) => ({
+    auction: `
+      <p>
+        In the current session, the Central Bank does not conduct any
+        operation. Including maturities, net OMO cash flow is
+        <b>${totalSupply > 0 ? '+' : ''}${pgFmt(totalSupply)} bn</b>.
+        The Liquidity Gap stays at
+        <b>${gap > 0 ? '+' : ''}${pgFmt(gap)} bn</b>
+        and the overnight rate moves from
+        <b>${previousON.toFixed(2)}%</b>
+        to <b>${newON.toFixed(2)}%</b>.
+        ${liquidityAssessment}
+      </p>
+    `,
+    macro: `
+      <p><b>${score} – ${title}</b></p>
+      <p>${comment}</p>
+    `
   });
 
   // No eligible bills
@@ -3053,6 +3067,52 @@ const pgPhase3ReportRule = () => {
       'T-bill issuance withdraws liquidity from a balanced market and creates a shortage. <br><br> Funding is balanced, so absorbing creates a shortage just as working-capital demand rises. This tightens conditions before the effect of the earlier decision has reached GDP.'
     );
   }
+  
+  // NO ACTION
+  // Demand > 0
+  if (noAction && demand > 0 && gap > 500) {
+    return noActionReport(
+      '1',
+      'Not appropriate — Shortage left unmet',
+      'No operation is conducted, so the shortage stays in the system. Rising working-capital needs stay unmet, which slows the pass-through of easier conditions to credit.'
+    );
+  }
+
+  // Demand > 0; small shortage within tolerance
+  if (noAction && demand > 0 && nearBalance) {
+    return noActionReport(
+      '3',
+      'Reasonable — No action within tolerance',
+      'No operation is conducted, and the small shortage stays within the tolerance band. The remaining need is small, so leaving it alone does little harm to the credit recovery.'
+    );
+  }
+
+  // Demand < 0; material surplus remains
+  if (noAction && demand < 0 && gap < -500) {
+    return noActionReport(
+      '2',
+      'Less appropriate — Surplus left in place',
+      'No operation is conducted, so the surplus stays in the system. The extra liquidity is not needed for the credit recovery and is left to persist without any adjustment.'
+    );
+  }
+
+  // Demand < 0; small surplus within tolerance
+  if (noAction && demand < 0 && nearBalance) {
+    return noActionReport(
+      '3',
+      'Reasonable — No action within tolerance',
+      'No operation is conducted, and the small surplus stays within the tolerance band. The market is close to balance, so leaving it alone is reasonable during the recovery.'
+    );
+  }
+
+  // Demand = 0; exactly balanced market
+  if (noAction && demand === 0 && gap === 0) {
+    return noActionReport(
+      '4',
+      'Very appropriate — No intervention needed',
+      'No operation is conducted, and the market is already balanced. Funding is not a constraint on the credit recovery, so inaction is appropriate.'
+    );
+  }
 
   return {
     auction: '',
@@ -3063,6 +3123,13 @@ const pgPhase3ReportRule = () => {
 /* PHASE 4 REPORT RULE */
 const pgPhase4ReportRule = () => {
   const action = String(pgDecision?.omo_action || '');
+  const actionLower = action.trim().toLowerCase();
+  const noAction = [
+     'no action',
+     'no intervention',
+     'none',
+     'no_omo'
+   ].includes(actionLower);
   const offeredVolume = Number(pgDecision?.volume || 0);
   const demand = Number(
     pgResult?.real_liquidity_demand ?? 0
@@ -3119,6 +3186,25 @@ const pgPhase4ReportRule = () => {
       <p>${comment}</p>
     `
   });
+   const noActionReport = (score, title, comment) => ({
+     auction: `
+       <p>
+         In the current session, the Central Bank does not conduct any
+         operation. Including maturities, net OMO cash flow is
+         <b>${totalSupply > 0 ? '+' : ''}${pgFmt(totalSupply)} bn</b>.
+         The Liquidity Gap stays at
+         <b>${gap > 0 ? '+' : ''}${pgFmt(gap)} bn</b>
+         and the overnight rate moves from
+         <b>${previousON.toFixed(2)}%</b>
+         to <b>${newON.toFixed(2)}%</b>.
+         ${liquidityAssessment}
+       </p>
+     `,
+     macro: `
+       <p><b>${score} – ${title}</b></p>
+       <p>${comment}</p>
+     `
+   });
 
   // No eligible Central Bank bills
   if (
