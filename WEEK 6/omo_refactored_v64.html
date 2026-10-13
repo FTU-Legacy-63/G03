@@ -3507,9 +3507,11 @@ const pgPhase4ReportRule = () => {
   };
 };
 
-/* PHASE 5 REPORT RULE*/
+/* PHASE 5 REPORT RULE */
 const pgPhase5ReportRule = () => {
-  const action = String(pgDecision?.omo_action || '');
+  const action = String(pgDecision?.omo_action || '')
+    .trim();
+  const actionLower = action.toLowerCase();
   const offeredVolume = Number(pgDecision?.volume ?? 0);
   const demand = Number(
     pgResult?.real_liquidity_demand ??
@@ -3526,33 +3528,44 @@ const pgPhase5ReportRule = () => {
   );
   const gap = Number(pgResult?.liquidity_gap ?? 0);
   const previousON = Number(
-    pgResult?.previous_interbank_rate ?? pre.rate ?? 0
+    pgResult?.previous_interbank_rate ??
+    pre.rate ??
+    0
   );
   const newON = Number(
-    pgResult?.interbank_rate ?? pre.rate ?? 0
+    pgResult?.interbank_rate ??
+    pre.rate ??
+    0
   );
   const bidAssessment = pgBidVolumeAssessment(
     offeredVolume,
     totalBid
   );
-  const liquidityAssessment = pgLiquidityOutcomeAssessment(
-    demand,
-    totalSupply
-  );
+  const liquidityAssessment =
+    pgLiquidityOutcomeAssessment(demand, totalSupply);
   const actionType = (() => {
-    const a = action.trim().toLowerCase();
-    if (a === 'reverse repo') return 'reverse_repo';
-    if (a === 'repo') return 'repo';
     if (
-      a === 'buy securities' ||
-      a === 'outright purchase' ||
-      a === 'outright purchase of central bank bills'
+      actionLower.includes('no action') ||
+      actionLower.includes('no intervention') ||
+      actionLower === 'none' ||
+      actionLower === 'no_omo'
+    ) return 'no_action';
+    if (actionLower.includes('reverse repo')) {
+      return 'reverse_repo';
+    }
+    if (actionLower === 'repo' ||
+        actionLower.includes('conduct a repo')) {
+      return 'repo';
+    }
+    if (
+      actionLower.includes('buy securities') ||
+      actionLower.includes('outright purchase')
     ) return 'outright_purchase';
     if (
-      a === 'sell securities' ||
-      a === 't-bill issuance' ||
-      a === 't-bill issuance of central bank bills' ||
-      a === 'issue bills'
+      actionLower.includes('sell securities') ||
+      actionLower.includes('t-bill') ||
+      actionLower.includes('bill issuance') ||
+      actionLower.includes('issue bills')
     ) return 't_bill_issuance';
     return 'unknown';
   })();
@@ -3564,27 +3577,44 @@ const pgPhase5ReportRule = () => {
   }[actionType] || 'conducts an OMO operation';
   const signed = value =>
     `${value > 0 ? '+' : ''}${pgFmt(value)}`;
-
-  const auctionTemplate = () => `
-    <p>
-      In the current session, the Central Bank ${instrumentText}.
-      The offered volume is
-      <b>${pgFmt(offeredVolume)} bn</b>
-      versus Total Bid Volume of
-      <b>${pgFmt(totalBid)} bn</b>.
-      ${bidAssessment}
-      <br><br>
-      Including maturities, net OMO cash flow is
-      <b>${signed(totalSupply)} bn</b>.
-      After the operation, Liquidity Gap is
-      <b>${signed(gap)} bn</b>
-      and the overnight rate moves from
-      <b>${previousON.toFixed(2)}%</b>
-      to <b>${newON.toFixed(2)}%</b>.
-      ${liquidityAssessment}
-    </p>
-  `;
-
+  const auctionTemplate = () => {
+    if (actionType === 'no_action') {
+      return `
+        <p>
+          In the current session, the Central Bank does not
+          conduct any operation.
+          Including maturities, net OMO cash flow is
+          <b>${signed(totalSupply)} bn</b>.
+          The Liquidity Gap stays at
+          <b>${signed(gap)} bn</b>
+          and the overnight rate moves from
+          <b>${previousON.toFixed(2)}%</b>
+          to <b>${newON.toFixed(2)}%</b>.
+          ${liquidityAssessment}
+        </p>
+      `;
+    }
+    return `
+      <p>
+        In the current session, the Central Bank
+        ${instrumentText}.
+        The offered volume is
+        <b>${pgFmt(offeredVolume)} bn</b>
+        versus Total Bid Volume of
+        <b>${pgFmt(totalBid)} bn</b>.
+        ${bidAssessment}
+        <br><br>
+        Including maturities, net OMO cash flow is
+        <b>${signed(totalSupply)} bn</b>.
+        After the operation, Liquidity Gap is
+        <b>${signed(gap)} bn</b>
+        and the overnight rate moves from
+        <b>${previousON.toFixed(2)}%</b>
+        to <b>${newON.toFixed(2)}%</b>.
+        ${liquidityAssessment}
+      </p>
+    `;
+  };
   const result = (score, label, explanation) => ({
     auction: auctionTemplate(),
     macro: `
@@ -3592,17 +3622,58 @@ const pgPhase5ReportRule = () => {
       <p>${explanation}</p>
     `
   });
-
   const nearBalance = Math.abs(gap) <= 500;
-
-  // Read the remaining eligible bill inventory, when available.
+  // Check  eligible Central Bank bills
   const state = pgBackendState || pgResult || {};
   const inventory = state.tbill_inventory;
   const outstandingBills = Array.isArray(inventory)
     ? inventory.length
     : null;
 
-  /* No eligible bills */
+  // 1. NO ACTION
+  if (actionType === 'no_action') {
+    if (demand > 0) {
+      if (gap > 500) {
+        return result(
+          1,
+          'Not appropriate — Shortage left unmet',
+          'No operation is conducted, so the shortage stays in the system. Firms are borrowing ahead of the subsidy, so the unmet shortage squeezes funding just when borrowing demand is rising.'
+        );
+      }
+      if (nearBalance) {
+        return result(
+          3,
+          'Reasonable — No action within tolerance',
+          'No operation is conducted, and the small shortage stays within the tolerance band. The shortage is small, so leaving it alone has little effect on firms borrowing ahead of the subsidy.'
+        );
+      }
+    }
+    if (demand < 0) {
+      if (gap < -500) {
+        return result(
+          2,
+          'Less appropriate — Surplus left in place',
+          'No operation is conducted, so the surplus stays in the system. The surplus stays in place just before the subsidy payment, which will add more liquidity later.'
+        );
+      }
+      if (nearBalance) {
+        return result(
+          3,
+          'Reasonable — No action within tolerance',
+          'No operation is conducted, and the small surplus stays within the tolerance band. The market is close to balance, so leaving it alone is reasonable before the subsidy payment.'
+        );
+      }
+    }
+    if (demand === 0 && gap === 0) {
+      return result(
+        4,
+        'Very appropriate — No intervention needed',
+        'No operation is conducted, and the market is already balanced. Inaction is reasonable while borrowing demand rises, with the subsidy payment still to come.'
+      );
+    }
+  }
+
+  // NO ELIGIBLE BILLS AVAILABLE
   if (
     outstandingBills === 0 &&
     demand > 0 &&
@@ -3615,7 +3686,6 @@ const pgPhase5ReportRule = () => {
       'The Reverse Repo could not fully cover the shortage because too few eligible Central Bank bills were available to banks. Earlier operations are tying up securities until they mature, so what can be injected now depends on earlier choices of size and tenor. Banks are borrowing more ahead of the subsidy, so the unmet part leaves funding tighter than needed.'
     );
   }
-
   if (
     outstandingBills === 0 &&
     demand > 0 &&
@@ -3628,7 +3698,6 @@ const pgPhase5ReportRule = () => {
       'The outright purchase could not fully cover the shortage because too few eligible Central Bank bills were left in the market. Earlier operations have taken securities out of circulation or tied them up until they mature, so what can be bought now depends on earlier choices of size and tenor. Banks are borrowing more ahead of the subsidy, so the unmet part leaves funding tighter than needed.'
     );
   }
-
   if (
     outstandingBills === 0 &&
     demand < 0 &&
@@ -3646,7 +3715,6 @@ const pgPhase5ReportRule = () => {
         : 'The outright purchase could not be executed because no eligible bills are left in the market, so nothing is injected and the surplus remains. Injecting would also point the wrong way for a surplus. The surplus left in place keeps liquidity abundant.'
     );
   }
-
   if (
     outstandingBills === 0 &&
     demand === 0 &&
@@ -3665,7 +3733,7 @@ const pgPhase5ReportRule = () => {
     );
   }
 
-  // LQ Demand > 0: initial shortage.
+  // 3. INITIAL LIQUIDITY SHORTAGE
   if (demand > 0) {
     if (actionType === 'reverse_repo') {
       if (gap > 500) {
@@ -3690,7 +3758,6 @@ const pgPhase5ReportRule = () => {
         'The Reverse Repo more than covers the shortage and creates a surplus. The injection goes beyond the shortage just before the subsidy payment. The subsidy will soon add liquidity, so extra accommodation now risks a larger surplus later.'
       );
     }
-
     if (actionType === 'outright_purchase') {
       if (gap > 500) {
         return result(
@@ -3699,7 +3766,6 @@ const pgPhase5ReportRule = () => {
           'The outright purchase reduces the shortage but does not fully meet the funding need. Part of the expectations-driven funding need stays unmet, so short-term funding remains tight while firms build working capital.'
         );
       }
-
       if (nearBalance) {
         return result(
           2,
@@ -3707,14 +3773,12 @@ const pgPhase5ReportRule = () => {
           'The outright purchase removes the shortage and restores liquidity balance, with long-lasting support. Firms are increasing expected borrowing before subsidy cash arrives. Permanent easing is less suitable than a temporary instrument because subsidy liquidity is about to arrive.'
         );
       }
-
       return result(
         2,
         'Less appropriate — Injection above actual need',
         'The outright purchase exceeds the shortage and creates a surplus. The injection exceeds the shortage just before the subsidy payment. The subsidy itself will soon add liquidity, so extra accommodation now risks a larger surplus later.'
       );
     }
-
     if (actionType === 'repo') {
       return result(
         1,
@@ -3722,7 +3786,6 @@ const pgPhase5ReportRule = () => {
         'The Repo withdraws liquidity while the system is already short, worsening the shortage. Rising borrowing demand already creates a shortage, so withdrawing liquidity squeezes firms ahead of the subsidy.'
       );
     }
-
     if (actionType === 't_bill_issuance') {
       return result(
         1,
@@ -3732,7 +3795,7 @@ const pgPhase5ReportRule = () => {
     }
   }
 
-  // LQ Demand < 0: initial liquidity surplus.
+  // 4. INITIAL LIQUIDITY SURPLUS
   if (demand < 0) {
     if (actionType === 'reverse_repo') {
       return result(
@@ -3741,7 +3804,6 @@ const pgPhase5ReportRule = () => {
         'The Reverse Repo injects liquidity while the system is already in surplus, deepening the surplus. Injecting into a surplus before the subsidy arrives deepens excess liquidity that the subsidy will add to.'
       );
     }
-
     if (actionType === 'outright_purchase') {
       return result(
         1,
@@ -3749,7 +3811,6 @@ const pgPhase5ReportRule = () => {
         'The outright purchase injects liquidity while the system is already in surplus, deepening the surplus. Injecting permanently into a surplus before the subsidy arrives deepens excess liquidity that the subsidy will add to.'
       );
     }
-
     if (actionType === 'repo') {
       if (gap > 500) {
         return result(
@@ -3758,7 +3819,6 @@ const pgPhase5ReportRule = () => {
           'The Repo absorbs more than the surplus and creates a shortage. Absorbing more than the surplus tightens funding while firms increase borrowing in expectation of support. It risks choking activity before the subsidy arrives.'
         );
       }
-
       if (nearBalance) {
         return result(
           3,
@@ -3766,14 +3826,12 @@ const pgPhase5ReportRule = () => {
           'The Repo removes the surplus and restores liquidity balance without a lasting tightening. Borrowing demand is rising on expectations, so absorption should respond only to the actual liquidity state.'
         );
       }
-
       return result(
         2,
         'Less appropriate — Leaves surplus despite rising loan demand',
         'The Repo absorbs part of the surplus, but some excess liquidity remains. Part of the surplus is absorbed. The remainder is modest and is partly used up by expectations-driven borrowing.'
       );
     }
-
     if (actionType === 't_bill_issuance') {
       if (gap > 500) {
         return result(
@@ -3782,7 +3840,6 @@ const pgPhase5ReportRule = () => {
           'T-bill issuance absorbs more than the surplus and creates a shortage. Absorbing more than the surplus tightens funding while firms increase borrowing in expectation of support. It risks choking activity before the subsidy arrives.'
         );
       }
-
       if (nearBalance) {
         return result(
           2,
@@ -3790,7 +3847,6 @@ const pgPhase5ReportRule = () => {
           'T-bill issuance removes the surplus and restores liquidity balance, with a long-lasting effect. The surplus is removed, even though subsidy liquidity is about to arrive. The withdrawal now reduces flexibility over how much to absorb later.'
         );
       }
-
       return result(
         2,
         'Less appropriate — Longer-term tightening against expected support',
@@ -3799,7 +3855,7 @@ const pgPhase5ReportRule = () => {
     }
   }
 
-  // LQ Demand = 0: initially balanced market.
+  // 5. INITIALLY BALANCED MARKET
   if (demand === 0) {
     if (
       actionType === 'reverse_repo' &&
@@ -3811,7 +3867,6 @@ const pgPhase5ReportRule = () => {
         'The Reverse Repo injects liquidity into a balanced market and creates a surplus. Before subsidy cash arrives, a surplus can support the rise in expected production and borrowing.'
       );
     }
-
     if (
       actionType === 'outright_purchase' &&
       gap < 0
@@ -3822,6 +3877,7 @@ const pgPhase5ReportRule = () => {
         'The outright purchase injects liquidity into a balanced market and creates a surplus. The market is balanced ahead of the subsidy payment. Injecting creates a surplus that the subsidy will soon add to.'
       );
     }
+
     if (actionType === 'repo' && gap > 0) {
       return result(
         1,
@@ -3829,7 +3885,6 @@ const pgPhase5ReportRule = () => {
         'The Repo withdraws liquidity from a balanced market and creates a shortage. The market is balanced while firms borrow on expectations of support. Absorbing creates a shortage and risks choking activity before the subsidy arrives.'
       );
     }
-
     if (actionType === 't_bill_issuance' && gap > 0) {
       return result(
         1,
@@ -3838,13 +3893,12 @@ const pgPhase5ReportRule = () => {
       );
     }
   }
-
+  // 6. FALLBACK
   return {
     auction: auctionTemplate(),
     macro:
-      'No Phase 5 rubric rule matches this combination of opening LQ Demand, OMO instrument, closing Liquidity Gap and bill availability.'
+      'Macroeconomic conditions are being updated.'
   };
-};
 /* PHASE 6 REPORT RULE */
 const pgPhase6ReportRule=()=>{
   const action=String(pgDecision?.omo_action||'');
