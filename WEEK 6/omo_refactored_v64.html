@@ -3500,6 +3500,87 @@ const pgPhase4ReportRule = () => {
       'T-bill issuance withdraws liquidity from a balanced market and creates a shortage. <br><br> The shortage goes beyond what anchoring public inflation expectations requires and raises the cost to growth and credit.'
     );
   }
+  
+  // NO ACTION
+  const noActionReport = (score, label, comment) => ({
+    auction: `
+      <p>
+        In the current session, the Central Bank does not conduct any operation.
+        Including maturities, net OMO cash flow is
+        <b>${totalSupply >= 0 ? '+' : ''}${pgFmt(totalSupply)} bn</b>.
+        The Liquidity Gap stays at
+        <b>${gap >= 0 ? '+' : ''}${pgFmt(gap)} bn</b>
+        and the overnight rate moves from
+        <b>${previousON.toFixed(2)}%</b>
+        to <b>${newON.toFixed(2)}%</b>.
+        ${liquidityAssessment}
+      </p>
+    `,
+    macro: `
+      <p><b>${score} – ${label}</b></p>
+      <p>${comment}</p>
+    `
+  });
+  // Demand > 0; shortage remains materially above tolerance
+  if (
+    demand > 0 &&
+    action === 'No action' &&
+    gap > 500
+  ) {
+    return noActionReport(
+      '2',
+      'Less appropriate — Shortage left unmet',
+      'No operation is conducted, so the shortage stays in the system. A shortage already tightens funding, but it is not the deliberate tightening the board agreed. Credit demand is already soft, so growth bears the cost without a clear benefit for anchoring inflation expectations.'
+    );
+  }
+  // Demand > 0; gap is within tolerance
+  if (
+    demand > 0 &&
+    action === 'No action' &&
+    nearBalance
+  ) {
+    return noActionReport(
+      '3',
+      'Reasonable — No action within tolerance',
+      'No operation is conducted, and the small shortage stays within the tolerance band. The board accepts a tighter money market to anchor inflation expectations, so this small shortage is consistent with that stance.'
+    );
+  }
+  // Demand < 0; material surplus remains
+  if (
+    demand < 0 &&
+    action === 'No action' &&
+    gap < -500
+  ) {
+    return noActionReport(
+      '2',
+      'Less appropriate — Missed dynamic contraction',
+      'No operation is conducted, so the surplus stays in the system. Abundant liquidity stays in place while inflation expectations rise. This misses the board’s decision to absorb more than the surplus and leaves the main risk unaddressed.'
+    );
+  }
+  // Demand < 0; small surplus remains within tolerance
+  if (
+    demand < 0 &&
+    action === 'No action' &&
+    nearBalance
+  ) {
+    return noActionReport(
+      '2',
+      'Less appropriate — Missed dynamic contraction',
+      'No operation is conducted, and the small surplus stays within the tolerance band. The small surplus stays in place and the deliberate tightening the board agreed is not carried out, so inflation expectations are not anchored.'
+    );
+  }
+  // Demand = 0; market is exactly balanced
+  if (
+    demand === 0 &&
+    action === 'No action' &&
+    gap === 0
+  ) {
+    return noActionReport(
+      '2',
+      'Less appropriate — Missed dynamic contraction',
+      'No operation is conducted, and the market is already balanced. The board agreed to tighten to anchor inflation expectations, so doing nothing misses that decision.'
+    );
+  }
 
   return {
     auction: '',
