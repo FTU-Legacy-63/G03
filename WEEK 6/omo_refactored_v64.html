@@ -547,32 +547,83 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
 /* Long backend tables stay fully visible at responsive widths too. */
 @media(max-width:1100px){.paper-page.long-page{height:auto!important;min-height:700px;overflow:visible}}
 @media(max-width:800px){.paper-page.long-page{height:auto!important;min-height:700px;overflow:visible}}
-/* OMO confirmation — paper Learning Card style */
+/* OMO CONFIRMATION — UNIFORM GUIDE / LEARNING CARD */
 .omo-confirm-sheet{
-  width:min(600px,92vw);
+  width:min(820px,92vw);
   max-height:88vh;
+  box-sizing:border-box;
+  padding:28px 32px;
+  border:1px solid #9d8966;
+  border-radius:2px;
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(rgba(93,72,43,.06) .65px,transparent .8px),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.19),
+      rgba(118,91,54,.025),
+      rgba(255,255,255,.12)
+    );
+  background-size:7px 7px,100% 100%;
+  box-shadow:
+    0 28px 65px rgba(31,16,6,.45),
+    inset 0 0 0 8px rgba(255,255,255,.14);
+  color:#35483f;
+  font-family:var(--font-vintage);
+}
+.omo-confirm-sheet .paper-modal-head{
+  padding-bottom:16px;
+  border-bottom:4px double #214b4a;
+}
+.omo-confirm-sheet .paper-modal-head h2{
+  color:#234c43;
+  font-family:var(--font-vintage);
 }
 .omo-confirm-sheet .paper-modal-body{
-  padding:26px 4px 10px;
-  font-size:17px;
-  line-height:1.6;
+  flex:1 1 auto;
+  min-height:0;
+  padding:26px 6px 18px 0;
+  font-size:16px;
+  line-height:1.62;
+  overflow-y:auto;
 }
-.omo-confirm-warning{
-  margin-top:18px!important;
-  padding:13px 16px;
+.omo-confirm-sheet .paper-modal-body p{
+  margin:0 0 12px;
+  color:#40534d;
+}
+.omo-confirm-sheet .omo-confirm-warning{
+  margin-top:18px;
+  padding:12px 15px;
+  border:1px solid #c3b495;
   border-left:4px solid #9e824a;
-  background:rgba(238,226,201,.64);
+  border-radius:0;
+  background:rgba(238,226,201,.44);
   color:#654f34;
   font-size:14px;
+  line-height:1.5;
 }
 .omo-confirm-sheet .btnrow{
-  padding-top:18px;
-  border-top:1px solid #c3b495;
+  position:relative;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
   margin-top:12px;
-  padding-bottom:8px;
+  padding:18px 0 8px;
+  border-top:1px solid #c3b495;
 }
 .omo-confirm-sheet .pbtn{
   min-width:150px;
+  padding:14px 24px;
+}
+@media(max-width:800px){
+  .omo-confirm-sheet{
+    width:92vw;
+    padding:22px 20px;
+  }
+  .omo-confirm-sheet .btnrow{
+    justify-content:center;
+    flex-wrap:wrap;
+  }
 }
 /* CLEAN RUNTIME: the legacy interface has been removed from this build entirely. */
 html,body{background:#54392d url("background.png") center center / cover no-repeat fixed !important}
@@ -1255,7 +1306,7 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Payment needs, cash demand and short-term funding needs rise sharply with the seasonal peak. This is not a recovery: consumption and investment are still weak after the earlier slowdown, so once the season passes, underlying demand will not lift funding conditions on its own.'
+        'Payment needs, cash demand and short-term funding needs rise sharply with the seasonal peak.<br><br>This is not a recovery: consumption and investment are still weak after the earlier slowdown, so once the season passes, underlying demand will not lift funding conditions on its own.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
@@ -2045,34 +2096,40 @@ function pgBidVolumeAssessment(offeredVolume,totalBid){
   }
   return 'The offered volume exceeded banks’ bidding demand, suggesting that the Central Bank overestimated demand for the operation.';
 }
-function pgLiquidityOutcomeAssessment(realLiquidityDemand,totalSupply){
-  const demand=Number(realLiquidityDemand||0);
-  const supply=Number(totalSupply||0);
-  if(demand>0){
-    if(supply<0){
-      return 'The operation withdraws liquidity while the system is already facing a liquidity shortage, further increasing the unmet funding need.';
+function pgLiquidityOutcomeAssessment(realLiquidityDemand, totalSupply) {
+  const demand = Number(realLiquidityDemand || 0);
+  const supply = Number(totalSupply || 0);
+  if (demand > 0) {
+    if (supply < 0) {
+      return 'Including maturities, net OMO cash flow is negative, worsening the existing liquidity shortage.';
     }
-    if(supply<0.95*demand){
-      return 'Total liquidity supply was insufficient to meet the system’s liquidity demand, leaving part of the funding need unmet.';
+    if (supply < 0.95 * demand) {
+      return 'Net liquidity supply, including maturities, is insufficient to meet the system’s funding demand.';
     }
-    if(supply<=1.05*demand){
-      return 'Total liquidity supply was broadly sufficient to meet the system’s liquidity demand, bringing liquidity conditions broadly into balance.';
+    if (supply <= 1.05 * demand) {
+      return 'Net liquidity supply, including maturities, broadly meets the system’s funding demand.';
     }
-    return 'Total liquidity supply exceeded the system’s liquidity demand, providing more liquidity than needed and moving the system toward surplus.';
+    return 'Net liquidity supply, including maturities, exceeds the system’s funding demand and moves liquidity toward surplus.';
   }
-  if(demand<0){
-    if(supply>0){
-      return 'The operation adds liquidity while the system is already in surplus, further increasing excess liquidity.';
+  if (demand < 0) {
+    if (supply > 0) {
+      return 'Net OMO cash flow, including maturities, adds liquidity to a system already in surplus. This does not necessarily mean the current auction injected liquidity; maturing positions may outweigh the current operation.';
     }
-    if(Math.abs(supply)<0.95*Math.abs(demand)){
-      return 'Total liquidity absorption was insufficient to remove the system’s excess liquidity, leaving part of the surplus unabsorbed.';
+    if (Math.abs(supply) < 0.95 * Math.abs(demand)) {
+      return 'Net liquidity absorption, including maturities, is insufficient to remove the system’s existing surplus.';
     }
-    if(Math.abs(supply)<=1.05*Math.abs(demand)){
-      return 'Total liquidity absorption was broadly sufficient to remove the system’s excess liquidity, bringing liquidity conditions broadly into balance.';
+    if (Math.abs(supply) <= 1.05 * Math.abs(demand)) {
+      return 'Net liquidity absorption, including maturities, broadly offsets the system’s existing surplus.';
     }
-    return 'Total liquidity absorption exceeded the system’s excess liquidity, withdrawing more liquidity than needed and moving the system toward shortage.';
+    return 'Net liquidity absorption, including maturities, exceeds the existing surplus and moves the system toward shortage.';
   }
-  return 'Liquidity conditions were broadly balanced before the operation.';
+  if (supply > 0) {
+    return 'Net OMO cash flow, including maturities, injects liquidity into an initially balanced market.';
+  }
+  if (supply < 0) {
+    return 'Net OMO cash flow, including maturities, withdraws liquidity from an initially balanced market.';
+  }
+  return 'Liquidity conditions remain broadly balanced.';
 }
 function pgSetReportPage(n){pgReportPage=pgSetDeck('pg-report',n)}
 /* PHASE 1 · CREDIT CONDITIONS & MONEY MARKET */
@@ -5887,9 +5944,8 @@ const pgPhase9ReportRule = () => {
     `
   };
 };
-     
 /* Select the phase-specific report rule used by the Results screen. */
-const reportRule=
+let reportRule=
   pgPhase===1
     ? pgPhase1ReportRule()
     : pgPhase===2
@@ -5909,7 +5965,66 @@ const reportRule=
                   : pgPhase===9
                     ? pgPhase9ReportRule()
                     : {auction:'',macro:''};
-   
+/* NO AUCTION — RESULTS DISPLAY OVERRIDE
+   No new OMO operation is executed.
+   Existing positions may still mature. */
+if (pgDecision?.auction_enabled === false) {
+  const previousRate = Number(
+    pgResult?.previous_interbank_rate ?? pre.rate
+  );
+
+  const currentRate = Number(
+    pgResult?.interbank_rate ?? pre.rate
+  );
+
+  const netCashFlow = Number(
+    pgResult?.total_supply ?? 0
+  );
+
+  const gap = Number(
+    pgResult?.liquidity_gap ?? 0
+  );
+
+  const signed = value =>
+    `${value > 0 ? '+' : ''}${pgFmt(value)}`;
+
+  const rateText = value =>
+    Number.isFinite(value)
+      ? `${value.toFixed(2)}%`
+      : '—';
+
+  reportRule = {
+    auction: `
+      <p>
+        The Central Bank conducts no new OMO auction
+        in the current session.
+        The offered and awarded volumes are
+        <b>0 bn</b>.
+        <br><br>
+        Existing OMO positions may still mature.
+        Including maturities, net OMO cash flow is
+        <b>${signed(netCashFlow)} bn</b>.
+        After the session, Liquidity Gap is
+        <b>${signed(gap)} bn</b>,
+        and the overnight rate moves from
+        <b>${rateText(previousRate)}</b>
+        to <b>${rateText(currentRate)}</b>.
+      </p>
+    `,
+
+    macro: `
+      <p>
+        No new OMO intervention is undertaken in
+        this phase. Liquidity and funding conditions
+        are determined by existing market pressures
+        and any maturing OMO positions.
+        The absence of a new auction does not
+        prevent the overnight rate or liquidity
+        position from changing.
+      </p>
+    `
+  };
+}
   /* Store one assessment snapshot per completed phase */
   const phaseAssessment=pgAssessmentCase(pgPhase,pgResult,pgDecision);
   const oldAssessmentIndex=pgPhaseAssessments.findIndex(
@@ -6065,7 +6180,7 @@ function paperNext(){
                <span>MACROECONOMIC OUTCOME</span>
                <strong>GDP growth & inflation</strong>
              </div>        
-             ${pgMacroTrendSVG(pgMacroHistory,6)}
+             ${pgMacroTrendSVG(pgMacroHistory,9)}
            </div>         
          </section>
          <section class="end-assessment">
