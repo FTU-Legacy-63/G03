@@ -2593,8 +2593,11 @@ function pgAssessmentCase(phase,result,decision){
       }
     }
   }
-  return make(1,'Opposite to the market state');
-}
+  return {
+  ...make(0, `Unspecified P${phase} case`),
+  unrated: true,
+  tradeoff_tag: 'EXCLUDE'
+};
 /* ---------- TRADE-OFF TAG ---------- */
 function pgTradeoffTag(item){
   if(!item||item.level<3)return'EXCLUDE';
@@ -2774,15 +2777,34 @@ function pgFinalMarketWarning(result){
   return null;
 }
 /* ---------- BUILD ENDING ---------- */
-function pgBuildOverallAssessment(){
-  const items=[...pgPhaseAssessments]
-    .filter(x=>x&&x.phase>=1&&x.phase<=3)
-    .sort((a,b)=>a.phase-b.phase);
-  const quality=pgSequenceQuality(items);
-  const tilt=pgPolicyTilt(items);
-  const outcome=pgFinalEconomicOutcome(pgResult);
-  const warning=pgFinalMarketWarning(pgResult);
-  const invalid=items.some(x=>x.technical_invalid);
+function pgBuildOverallAssessment() {
+  const items = [...pgPhaseAssessments]
+    .filter(x =>
+      x &&
+      x.phase >= 1 &&
+      x.phase <= 9 &&
+      !x.unrated &&
+      Number(x.level) >= 1 &&
+      Number(x.level) <= 4
+    )
+    .sort((a, b) => a.phase - b.phase);
+  const expectedPhases = Math.min(9, Math.max(1, Number(pgPhase) || 1));
+  const complete = items.length === expectedPhases;
+  const quality = complete
+    ? pgSequenceQuality(items)
+    : {
+        title: 'Assessment incomplete',
+        text: 'One or more phases do not yet have an approved decision assessment. The overall policy path cannot be graded reliably.'
+      };
+  const tilt = complete
+    ? pgPolicyTilt(items)
+    : {
+        title: 'Policy trend pending',
+        text: 'The policy trend requires approved assessments for all completed phases.'
+      };
+  const outcome = pgFinalEconomicOutcome(pgResult);
+  const warning = pgFinalMarketWarning(pgResult);
+  const invalid = items.some(x => x.technical_invalid);
   return {
     quality,
     tilt,
