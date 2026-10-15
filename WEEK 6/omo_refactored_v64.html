@@ -666,6 +666,15 @@ body{visibility:visible!important}
 .learning-note b{
   font-weight:800;
 }
+.omo-confirm-warning {
+margin: 12px 0 0;
+padding: 6px 9px;
+border: 1px solid #c3b495;
+background: rgba(238,226,201,.44);
+font: 13px/1.5 var(--font-vintage);
+color: #40534d;
+box-sizing: border-box;
+}
 .guide-step{border-top:1px solid #c7baa0;padding:12px 10px}.guide-step b{color:#234c43}
 /* Expected-inflation input belongs to the macro block, not the four auction options. */
 .macro-input-strip{grid-column:1/-1;margin-top:2px;padding:15px 17px;border:1px solid #c2b494;background:linear-gradient(90deg,rgba(243,232,204,.72),rgba(255,251,240,.48));display:grid;grid-template-columns:1fr minmax(180px,230px);align-items:center;gap:18px}
@@ -830,9 +839,9 @@ font-style: italic;
     </div>
     <div class="paper-modal-body">
       <p id="omo-confirm-message"></p>
-      <p class="omo-confirm-warning">
-        Once confirmed, this decision cannot be changed.
-      </p>
+      <div class="learning-note omo-confirm-warning">
+        <b>Note:</b> Once confirmed, this decision cannot be changed.
+      </div>
     </div>
     <div class="btnrow">
       <button class="pbtn alt" type="button" onclick="pgCloseConfirm()">CANCEL</button>
