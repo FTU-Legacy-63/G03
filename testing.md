@@ -14,7 +14,7 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 
 ## 3. Các trường hợp kiểm thử
 
-| Nội dung                                            | Kết quả mong đợi                                                                                                                            | Kết quả thực tế |   |
+| Nội dung kiểm thử                                   | Kết quả mong đợi                                                                                                                            | Kết quả thực tế |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
 | Khởi tạo trò chơi                                   | Trò chơi khởi tạo thành công với các tham số ban đầu như đã gán trong backend (Interbank Rate = 3.95%, Scenario Liquidity Demand = 4000 bn) | Pass            |
 | Đọc Hướng dẫn chơi và các Learning Card             | Guide và Learning Card hiển thị trên pop-up window                                                                                          | Pass            |
@@ -24,5 +24,5 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 | Lãi suất vượt giới hạn cho phép                     | Hệ thống gửi thông báo dữ liệu không hợp lệ                                                                                                 | Pass            |
 | Sắp xếp thứ tự ưu tiên của các ngân hàng            | Hệ thống chỉ cho phép tiếp tục khi thứ tự ưu tiên được sắp xếp theo đúng quy luật.                                                          | Pass            |
 | Xử lý kết quả đấu thầu                              | Khối lượng dự thầu và kết quả phân bổ đúng theo quy tắc của financial logic và backend                                                      | Pass            |
-| Cập nhật Interbank Rate và các chỉ số kinh tế vĩ mô | Các biến số được tính toán theo đúng quy tắc của financial logics và backend, phù hợp tương đối với quy luật kinh tế.                       | Pass            |   |
-| Giải thích và đánh giá sau phase                    | Giải thích đúng với quy luật đã xây dựng, đúng với diễn biến thanh khoản và kinh tế đã xảy ra trong phase                                   | Pass            |   |
+| Cập nhật Interbank Rate và các chỉ số kinh tế vĩ mô | Các biến số được tính toán theo đúng quy tắc của financial logics và backend, phù hợp tương đối với quy luật kinh tế.                       | Pass            |
+| Giải thích và đánh giá sau phase                    | Giải thích đúng với quy luật đã xây dựng, đúng với diễn biến thanh khoản và kinh tế đã xảy ra trong phase                                   | Pass            |
