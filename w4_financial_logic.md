@@ -92,42 +92,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
 | Supply + Maturity + Real Liquidity Demand | Trạng thái cung-cầu thanh khoản | Supply + Maturity + Real Liquidity Demand → Total Supply Volume → Liquidity Gap | Liquidity Gap |
 | Liquidity Gap + Interbank Rate (T−30) | Áp lực thanh khoản lên thị trường LNH | Liquidity Gap → Liquidity pressure → Liquidity adjusted volume → Interbank Rate (calculated by regression model) | Interbank Rate (T) |
 
-
-- Rule for Auction result:
-
-  _Interest-rate auction_
-    - Tạo Bid Rate:
-        - Win rate = Interbank (T-30) ± Random Spread (dựa theo normal distribution từ dữ liệu thực tế)
-        - Bid Rate = Win rate ± Random Spread (tham khảo theo khoảng giá trị từ dữ liệu đấu thầu tín phiếu kho bạc thực tế)
-    - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1)
-    - Xếp các Bid rate và Bid volume theo thứ tự phù hợp với hướng OMO.
-    - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
-    - Single-price: các bid trúng được áp dụng cùng mức lãi suất trúng thầu.
-    - Multi-price: mỗi bid trúng được áp dụng chính mức lãi suất mà ngân hàng đã bid.
-    
-  _Volume auction_
-    - Tạo Bid Volume: Bid Volumeᵢ = Weightᵢ / Tổng Weight × Total Bid Volume (trong đó Weight được random trong khoảng 0 đến 1 và thêm hệ số từ cao đến thấp)
-    - Phân bổ khối lượng đặt thầu và trúng thầu phù hợp với cách thức đấu thầu và các tình huống kinh tế
-    
-- Rule for post-phase explanation: (Mô tả sự thay đổi các chỉ số kinh tế vĩ mô). Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa].
-[Đánh giá tổng thể về quyết định OMO và các chỉ số kinh tế vĩ mô].
-
-  - [trạng thái]:
-    - |Liquidity Gap| giảm → “được thu hẹp”
-    - |Liquidity Gap| tăng → “bị gia tăng” 
-  - Đánh giá hướng can thiệp:
-    - Real Liquidity Demand + Maturity volume > 0 và OMO = Buy Securities / REPO → Phù hợp
-    - Real Liquidity Demand + Maturity volume > 0 và OMO = Sell Securities / Reverse REPO → Ngược chiều
-    - Real Liquidity Demand + Maturity volume < 0 và OMO = Sell Securities / Reverse REPO → Phù hợp
-    - Real Liquidity Demand + Maturity volume < 0 và OMO = Buy Securities / REPO → Ngược chiều
-  - [Đánh giá tổng thể] (chưa xem xét các yếu tố vĩ mô):
-    Intervention Ratio = |Volume| / |Real Liquidity Demand + Maturity volume|
-    - Đánh giá hướng can thiệp = Ngược → “Can thiệp của NHNN đã làm gia tăng tình trạng thiếu/dư thanh khoản”
-    - Đánh giá hướng can thiệp = Phù hợp và Intervention Ratio < 50% → “Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô nhỏ hơn nhu cầu của hệ thống.”
-    - Đánh giá hướng can thiệp = Phù hợp và Intervention Ratio > 100% → “Can thiệp của NHNN đúng về mặt định hướng nhưng quy mô lớn hơn nhu cầu của hệ thống”
-    - Đánh giá hướng can thiệp = Phù hợp và 50% <= Intervention Ratio <= 100% → “Can thiệp của NHNN có hiệu quả và quy mô tương đối phù hợp”
-
-- Formula:
+- Formula and Rules:
   - Xác định Bid Demand của ngân hàng
     - Banks’ Forecasted Liquidity Demand = Scenario liquidity demand + Unmet liquidity demand - Start Maturity Volume − End Maturity Volume (Cách tính toán từng thành phần ở mục 2)
     - Bid Demand = 1.5 × Forecast Liquidity Demand
@@ -136,7 +101,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
       Sell / Repo khi Forecasted Liquidity Demand < 0 
       Không có nghiệp vụ phù hợp định hướng khi Forecasted LD = 0
   - Xác định Cash Bid và Bid Rate
-    - Đấu thầu lãi suất
+    _Đấu thầu lãi suất_
       - Trọng số phân bổ Cash Bid giữa các ngân hàng Weight: random [0.01, 1]
       - Total Cash Bid = |Bid Demand| nếu nghiệp vụ phù hợp về định hướng
                                 = (Offered Volume × 30-50%) nếu nghiệp vụ không phù hợp về định hướng 
@@ -151,7 +116,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
       d = random [0.01, 0.10]
       - Settlement rate: Single-price: 1 win rate cho tất các các ngân hàng trúng thầu 
                          Multi-price: mỗi ngân hàng trúng thầu ở một mức lãi suất khác nhau
-    - Đấu thầu khối lượng
+    _Đấu thầu khối lượng_
       - Weight = 5+U, 4+U, 3+U, 2+U, 1+U (U random [0,1) ) 
       - Total Cash Bid = Base × Factor 
       - Base = |Bid Demand| nếu nghiệp vụ phù hợp về định hướng 
