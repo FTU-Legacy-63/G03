@@ -1,0 +1,39 @@
+(() => {
+  const originalPhase = pgPhase;
+  try {
+    // Test 1: Chart should ignore Phase 2 and plot only
+    // observations at Phase 1 and Phase 3.
+    pgPhase = 3;
+    const svg = pgMacroTrendSVG([
+      { kind: "result", phase: 1, gdp: 6.1, inflation: 4.0 },
+      { kind: "result", phase: 2, gdp: 7.2, inflation: 5.0 },
+      { kind: "result", phase: 3, gdp: 6.3, inflation: 3.9 }
+    ], 3);
+
+    const chartTest = {
+      svgGenerated: svg.includes("<svg"),
+      plottedPoints: (svg.match(/<circle\b/g) || []).length,
+      phase3LabelPresent: svg.includes("PHASE 3")
+    };
+    // Test 2: Economic commentary should appear at Phase 3
+    // when GDP and inflation are available.
+    const phase3Comment = pgCheckpointEconomicComment({
+      gdp_growth: 6.2,
+      inflation: 4.0
+    });
+    // Test 3: Commentary should not appear at Phase 2.
+    pgPhase = 2;
+
+    const phase2Comment = pgCheckpointEconomicComment({
+      gdp_growth: 6.2,
+      inflation: 4.0
+    });
+    return {
+      chart: chartTest,
+      phase3CommentGenerated: phase3Comment.length > 0,
+      phase2CommentSuppressed: phase2Comment === ""
+    };
+  } finally {
+    pgPhase = originalPhase;
+  }
+})();
