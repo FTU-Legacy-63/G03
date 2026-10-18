@@ -55,3 +55,18 @@ def test_macro_results_are_published_every_three_phases():
     assert result3.gdp_growth is not None
     assert result3.inflation is not None
     assert game.phase == 4
+
+
+def test_macro_calculation_matches_expected_formulas():
+    game = CentralBankGame(
+        start_date=date(2025, 2, 2),
+        initial_interbank_rate=3.95,
+        seed=42,
+    )
+    game.pending_expected_inflation = 4.0
+    result = game._calculate_macro_block(interbank_rate=4.0)
+    assert result["expected_inflation"] == 4.0
+    assert result["real_interest_rate"] == 0.0
+    assert result["output_gap"] == 0.5
+    assert result["gdp_growth"] == 6.5
+    assert result["inflation"] == 3.65
