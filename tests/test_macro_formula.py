@@ -70,3 +70,31 @@ def test_macro_calculation_matches_expected_formulas():
     assert result["output_gap"] == 0.5
     assert result["gdp_growth"] == 6.5
     assert result["inflation"] == 3.65
+
+
+def test_real_rate_above_neutral_reduces_output_gap():
+    game = CentralBankGame(
+        start_date=date(2025, 1, 1),
+        initial_interbank_rate=8.0
+    )
+    game.pending_expected_inflation = 4.0
+    game.last_macro_output_gap = 0.0
+
+    # Real rate = 8% - 4% = 4%, above the neutral rate of 2%.
+    result = game._calculate_macro_block(interbank_rate=8.0)
+
+    assert result["real_interest_rate"] == 4.0
+    assert result["output_gap"] == -0.5
+
+def test_real_rate_below_neutral_increases_output_gap():
+    game = CentralBankGame(
+        start_date=date(2025, 1, 1),
+        initial_interbank_rate=4.0
+    )
+    game.pending_expected_inflation = 4.0
+    game.last_macro_output_gap = 0.0
+
+    # Real rate = 4% - 4% = 0%, below the neutral rate of 2%.
+    result = game._calculate_macro_block(interbank_rate=4.0)
+    assert result["real_interest_rate"] == 0.0
+    assert result["output_gap"] == 0.5
