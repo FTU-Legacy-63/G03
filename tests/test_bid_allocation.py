@@ -57,3 +57,22 @@ def test_interest_rate_auction_allocation_is_consistent():
       result = game.run_auction(decision, rld=4000)
       for bid in result["bids"]:
           assert bid.settlement_rate == bid.bid_rate
+          
+    def test_buy_securities_award_does_not_exceed_available_inventory():
+        game = CentralBankGame(
+            start_date=date(2025, 2, 2),
+            initial_interbank_rate=3.95,
+            seed=42,
+        )
+    
+        decision = Decision(
+            auction_method="Interest-rate auction",
+            omo_action="Buy Securities",
+            volume=100000,
+            pricing_method="Single-price",
+        )
+    
+        result = game.run_auction(decision, rld=4000)
+    
+        assert result["total_real_volume"] <= result["total_bid_volume"]
+        assert result["total_real_volume"] <= decision.volume
