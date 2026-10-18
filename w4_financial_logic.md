@@ -128,12 +128,86 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     - Đánh giá hướng can thiệp = Phù hợp và 50% <= Intervention Ratio <= 100% → “Can thiệp của NHNN có hiệu quả và quy mô tương đối phù hợp”
 
 - Formula:
-  - Total Supply Volume = Supply + Maturity
-  - Liquidity Gap = Real Liquidity Demand − Total Supply Volume
-  - Liquidity Pressure = Liquidity Gap / |Real Liquidity Demand|
-  - Liquidity Adjusted Volume = |Total Supply Volume| x Liquidity Pressure
-  - Interbank Rate (T) = β₀ + β₁ Interbank Rate (T−30) + β₂ Liquidity Adjusted Volume (β₀, β₁, β₂ lấy từ kết quả regression của nhóm kèm sự điều chỉnh cho phù hợp)
-
+  - Xác định Bid Demand của ngân hàng
+    - Banks’ Forecasted Liquidity Demand = Scenario liquidity demand + Unmet liquidity demand - Start Maturity Volume − End Maturity Volume (Cách tính toán từng thành phần ở mục 2)
+    - Bid Demand = 1.5 × Forecast Liquidity Demand
+    - Nghiệp vụ phù hợp với định hướng: 
+      Buy / Reverse Repo khi Forecasted Liquidity Demand > 0 
+      Sell / Repo khi Forecasted Liquidity Demand < 0 
+      Không có nghiệp vụ phù hợp định hướng khi Forecasted LD = 0
+  - Xác định Cash Bid và Bid Rate
+    - Đấu thầu lãi suất
+      - Trọng số phân bổ Cash Bid giữa các ngân hàng Weight: random [0.01, 1]
+      - Total Cash Bid = |Bid Demand| nếu nghiệp vụ phù hợp về định hướng
+                                = (Offered Volume × 30-50%) nếu nghiệp vụ không phù hợp về định hướng 
+      - Cash Bid each bank = Total Cash Bid × Weight(i) / Σ Weights
+      - Win rate = Interbank(prev. phase) + |Z| nếu nghiệp vụ phù hợp về định hướng
+                       = Interbank(prev. phase) - |Z| nếu nghiệp vụ không phù hợp về định hướng
+      Z ~ Normal(mean 0.6, sd 0.58)
+      - Bid rates: Bid rate của ngân hàng ở thứ tự ưu tiên cao nhất = Win rate. 
+      + Đối với nghiệp vụ bơm thanh khoản, các mức lãi suất được sắp xếp từ cao xuống thấp.
+      + Đối với nghiệp vụ hút thanh khoản, các mức lãi suất được sắp xếp từ thấp lên cao.
+      + Bid rate của ngân hàng ở thứ tự ưu tiên tiếp theo = Bid rate của ngân hàng ở thứ tự ưu tiên liền trước - d (Buy / Reverse Repo) hoặc + d (Sell / Repo) 
+      d = random [0.01, 0.10]
+      - Settlement rate: Single-price: 1 win rate cho tất các các ngân hàng trúng thầu 
+                         Multi-price: mỗi ngân hàng trúng thầu ở một mức lãi suất khác nhau
+    - Đấu thầu khối lượng
+      - Weight = 5+U, 4+U, 3+U, 2+U, 1+U (U random [0,1) ) 
+      - Total Cash Bid = Base × Factor 
+      - Base = |Bid Demand| nếu nghiệp vụ phù hợp về định hướng 
+                  = Offered Volume nếu nghiệp vụ không phù hợp về định hướng 
+      - Factor (Floor = 0.5%, Cap = 5.0%): 
+      + OMO Rate < Floor : Factor = 10-30%; nhân thêm 30-50% nếu nghiệp vụ không phù hợp về định hướng 
+      + Floor ≤ OMO Rate ≤ Cap: Factor = 90-100% với các nghiệp vụ bơm thanh khoản; Factor = 80-90% với các nghiệp vụ hút thanh khoản
+      + OMO Rate > Cap: Factor = 80-90% với các nghiệp vụ bơm thanh khoản; Factor = 90-100% với các nghiệp vụ hút thanh khoản
+      - Win rate = OMO rate được người chơi nhập
+  - Xác định Bid Volume, Price
+    Available Inventory for Real Volume : Outright purchase = Tất cả tín phiếu chưa đáo hạn đang lưu hành
+                                          Reverse Repo = TP còn hạn ≥ 60 ngày 
+                                          Sell / Repo = Không giới hạn
+    - Nghiệp vụ bơm thanh khoản: Hệ thống tham chiếu các tín phiếu chưa đáo hạn theo FIFO (từ lô phát hành cũ nhất đến mới nhất), và sử dụng lãi suất cùng số ngày còn lại của từng lô để xác định giá tham chiếu. 
+    Unit Price = 1/ (1 + Bill Rate * Remaining Days / 36500)
+    Bid Volume = Cash Bid / Unit Price
+    - Nghiệp vụ hút thanh khoản: Bid Volume = Cash Bid × (1 + Settlement rate × 90 / 36500).
+    - Tổng khối lượng có thể thực hiện Total Real Volume = min(Offered Volume, Total Bid Volume, Available Inventory)
+    - Awarded Volume của từng ngân hàng
+    + Đấu thầu lãi suất: phân bổ theo thứ tự ưu tiên cho đến khi hết Total Real Volume.
+    + Đấu thầu khối lượng: phân bổ theo tỷ lệ với Bid Volume của từng ngân hàng.
+    - Price: số tiền mặt thực tế NHNN trả (bơm) hoặc thu (hút) cho khối lượng trúng thầu. Tổng Price của 5 ngân hàng (mang dấu + với nghiệp vụ bơm và dấu - với nghiệp vụ hút) chính là Supply. 
+    + Buy Securities: Tổng giá (Unit Price) của các phần tín phiếu được mua, theo FIFO.
+    + Reverse Repo: tính tương tự, nhưng chỉ lấy các tín phiếu còn ít nhất 60 ngày đến khi đáo hạn.
+    + Sell Securities và Repo: Real Volume / (1 + Settlement rate × 90 / 36500).
+    Với Sell Securities: đồng thời bổ sung vào thị trường một lô tín phiếu mới kỳ hạn 90 ngày, với lãi suất bằng Settlement rate.
+  - Khoản đáo hạn
+    - Maturity Volume = Σ dòng tiền của các khoản có ngày đáo hạn ≤ ngày kết thúc phase (> 0: bơm thanh khoản, < 0: hút thanh khoản)
+    - Tín phiếu NHNN (90 ngày) : Maturity Volume = Face value
+    - Repo (60 ngày): Maturity Volume = Price × (1 + Lãi suất giao dịch × 60 / 36500)
+    - Reverse Repo (60 ngày): - Price × (1 + Lãi suất giao dịch × 60 / 36500)
+    Nếu tín phiếu cơ sở đáo hạn trước khi hợp đồng Reverse Repo kết thúc. Khi tín phiếu đó đáo hạn, mệnh giá được ghi nhận thành dòng tiền dương; phần tín phiếu đã đáo hạn được đánh dấu để không tính lại khi hợp đồng Reverse Repo kết thúc. 
+  - Xác định trạng thái thanh khoản thực tế
+    - Unmet Liquidity Demand = Liquidity Gap (prev. phase)
+    - Scenario Liquidity Demand (quyết định bởi scenario designer)
+    - Real Liquidity Demand = Scenario LD + Unmet LD
+    - Supply = Tổng Price mà 5 ngân hàng trả / nhận để NHNN thực hiện nghiệp vụ
+    - Total supply = Supply + Maturity Volume 
+    - Liquidity Gap = Real Liquidity Demand - Total Supply (Gap > 0: thiếu thanh khoản, gap < 0: dư thanh khoản)
+  - Lãi suất liên ngân hàng
+    - Theoretical Interbank Rate: 0.069 × Interbank(prev. phase) + 0.000123 × Liquidity Gap + 3.584
+    - Interbank Rate = MIN( 20, MAX(0, Theoretical Interbank Rate) )
+  - Công thức vĩ mô
+    - User input: Lạm phát kì vọng tại thời điểm cuối 3 phase tiếp theo (%)
+    - Lãi suất thực kì vọng (Không hiển thị cho người chơi) = Lãi suất LNH - Lạm phát kì vọng
+    - Khoảng bù sản lượng Output Gap (Ko hiển thị) = η * Output Gap kì trước − σ(Lãi suất thực kì vọng - Lãi suất thực trung tính)
+    + Output gap đầu phase 1: 0
+    + Hệ số trì trệ của Output Gap (η): 0.6 
+    + Độ nhạy của Output Gap theo khe hở lãi suất thực (σ) = 0.25
+    + LSTTT: 2.0%/năm.
+    - GDP Growth (%) = Potential GDP Growth + (Output Gap kì hiện tại - Output Gap kì trước)
+     Potential GDP Growth = 6%
+    - Lạm phát = β.Lạm phát kì vọng + (1 - β - κ). Lạm phát kì trước + κ.(GDP Growth - Potential GDP Growth)
+    + β = 0.25
+    + Độ nhạy của lạm phát theo chênh lệch GDP Growth so với Potential GDP Growth (κ): 0.1
+  
 - Classification:
   - Supply: Lượng tiền bơm/hút thực tế
     - Supply > 0: NHNN bơm thanh khoản vào hệ thống.
@@ -146,12 +220,6 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     - Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
     - Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
     - Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
-  - Interbank Rate:
-
-    | < Floor | Floor | Floor + 25% × (Cap - Floor) | Middle 50%             | Cap - 25% × (Cap - Floor) | Cap | > Cap |
-    |---------|-------|------------------------------|------------------------|----------------------------|-----|-------|
-    |         | 0.5%  | 1.625%                       |  | 3.875%                     | 5%  |       |
-    | 🔴 Critical | 🟡 Warning | 🟡 Warning | 🟢 Within the corridor | 🟡 Warning | 🟡 Warning | 🔴 Critical |
 
 **Explainability:**
 
