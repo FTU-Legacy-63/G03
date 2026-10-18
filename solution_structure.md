@@ -2,7 +2,7 @@
 
 ## 1. Product Direction
 
-- Sản phẩm là một ứng dụng mô phỏng giáo dục, trong đó người chơi đóng vai **Ban Điều hành Nghiệp vụ Thị trường mở của NHTW tại Quốc gia X**.
+- Sản phẩm là một ứng dụng mô phỏng giáo dục, trong đó người chơi đóng vai **Ban Điều hành Nghiệp vụ Thị trường mở của NHNN** tại một quốc gia đang phát triển.
 - Mục tiêu cốt lõi: giúp người chơi hiểu cách NHTW sử dụng **Nghiệp vụ Thị trường Mở (OMO)**, cụ thể là **đấu thầu tín phiếu**, để điều tiết thanh khoản và tác động đến lãi suất thị trường tiền tệ.
 
 ---
@@ -21,9 +21,6 @@ Kết quả của phase trước được giữ lại và trở thành trạng t
 
 - Real GDP Growth
 - Inflation
-- Unemployment rate 
-- Credit Growth
-- ...
 
 ### Banking & Money Market Indicators
 
@@ -35,7 +32,6 @@ Kết quả của phase trước được giữ lại và trở thành trạng t
 
 - Mua/Bán tín phiếu
 - Khối lượng
-- Kỳ hạn
 - Phương thức đấu thầu
 - Lãi suất áp dụng nếu sử dụng đấu thầu khối lượng
 
@@ -71,46 +67,18 @@ Economic Engine sau đó cập nhật:
 
 Tác động dài hạn được thể hiện theo hướng:
 
-**Lãi suất → Tín dụng/Cung tiền → Tổng cầu → GDP/Lạm phát**
+**Lãi suất → Cung tiền → Tổng cầu → GDP/Lạm phát**
 
 ---
 
 ## 5. MVP Flow for Each Phase
 
-### Phase 1 – Đấu thầu khối lượng
-
-1. Người chơi nhận Market Dashboard và scenario.
-2. Game quy định phương thức **đấu thầu khối lượng**.
-3. Người chơi đưa ra quyết định OMO.
-4. NHTW xác định lãi suất.
-5. NHTM mô phỏng quyết định khối lượng đặt thầu.
-6. Game xác định khối lượng trúng thầu.
-7. Thanh khoản và lãi suất liên ngân hàng được cập nhật.
-8. Game giải thích kết quả.
-
-### Phase 2 – Đấu thầu lãi suất
-
-1. Người chơi nhận scenario mới.
-2. Game quy định phương thức **đấu thầu lãi suất**.
-3. Người chơi đưa ra quyết định OMO.
-4. NHTM mô phỏng gửi khối lượng và lãi suất dự thầu.
-5. Game xác định khối lượng và lãi suất trúng thầu.
-6. Các chỉ số thị trường được cập nhật.
-7. Game giải thích cơ chế hình thành lãi suất.
-
-### Phase 3 – Auction Trade-off
-
-1. Người chơi nhận Market Dashboard và mục tiêu điều hành.
-2. Phân tích điều kiện thị trường.
-3. Quyết định mua/bán tín phiếu.
-4. Quyết định khối lượng và kỳ hạn.
-5. Tự lựa chọn **đấu thầu khối lượng hoặc đấu thầu lãi suất**.
-6. NHTM phản ứng và gửi lệnh dự thầu.
-7. Game chạy Auction Engine.
-8. Xác định kết quả đấu thầu.
-9. Economic Engine cập nhật thanh khoản và lãi suất.
-10. Game trả về Decision-Consequence Card.
-11. Người chơi điều chỉnh chiến lược cho vòng tiếp theo.
+1. Người chơi nhận scenario mới và các chỉ số thị trường đầu phase.
+2. Người chơi đưa ra quyết định OMO.
+3. NHTM mô phỏng gửi khối lượng và lãi suất dự thầu.
+4. Game xác định khối lượng và lãi suất trúng thầu.
+5. Các chỉ số thị trường được cập nhật.
+6. Game giải thích kết quả.
 
 ---
 
@@ -120,7 +88,7 @@ Game gồm 3 phase:
 
 - **Phase 1:** Học cơ chế đấu thầu khối lượng.
 - **Phase 2:** Học cơ chế đấu thầu lãi suất.
-- **Phase 3:** Tự lựa chọn phương thức đấu thầu và kỳ hạn dựa trên điều kiện thị trường.
+- **Phase 3:** Tự lựa chọn phương thức đấu thầu dựa trên điều kiện thị trường.
 
 Phase 3 tập trung vào trade-off giữa:
 
@@ -142,26 +110,23 @@ Không có một phương thức đấu thầu luôn tối ưu trong mọi scena
 
 - Bối cảnh kinh tế
 - Market Dashboard
-- Mục tiêu điều hành
 - Thông tin hướng dẫn
 
 **Decisions**
 
 - Mua/Bán tín phiếu
 - Khối lượng
-- Kỳ hạn
 - Phương thức đấu thầu
 - Lãi suất nếu cần
 
-**Reports**
+**Results**
 
 - Kết quả đấu thầu
 - Khối lượng OMO thực tế
 - Lãi suất sau đấu thầu
 - Thanh khoản hệ thống
 - Lãi suất liên ngân hàng
-- Decision-Consequence Card
-- Các tác động kinh tế ở những kỳ tiếp theo
+- Giải thích kết quả
 
 ---
 
@@ -172,13 +137,11 @@ Không có một phương thức đấu thầu luôn tối ưu trong mọi scena
 - Công cụ quyết định giới hạn ở **mua/bán tín phiếu thông qua đấu thầu**.
 - Đấu thầu khối lượng.
 - Đấu thầu lãi suất.
-- Mô phỏng hành vi đặt thầu của NHTM.
+- Mô phỏng hành vi đặt thầu của NHTM tương đối giống nhau.
 - Auction Engine.
 - Economic Engine tập trung vào:
 
 **OMO → Thanh khoản → Lãi suất liên ngân hàng**
-
-- Decision-Consequence Card.
 - Ba phase có trạng thái liên kết với nhau.
 
 ---
@@ -221,8 +184,7 @@ Nếu dữ liệu hoặc mô hình quá phức tạp:
 - Quyết định lãi suất chính sách.
 - Chính sách tài khóa.
 - Mô phỏng bảng cân đối chi tiết của từng NHTM.
-- Dự báo chính xác GDP từ một phiên OMO.
-- Tái hiện chính xác 100% nền kinh tế thực.
+- Tái hiện hoặc dự báo chính xác 100% nền kinh tế thực.
 - Multiplayer.
 
 ---
