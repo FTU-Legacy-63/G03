@@ -50,3 +50,32 @@ def test_volume_auction_rejects_rate_above_limit():
     )
     with pytest.raises(ValueError, match="between 0 and 10"):
         decision.validate()
+
+def test_phase_two_rejects_expected_inflation():
+    game = CentralBankGame(
+        start_date=date(2025, 2, 2),
+        initial_interbank_rate=3.95,
+        seed=42,
+    )
+    # Complete Phase 1 first
+    phase_one_decision = Decision(
+        auction_method="Interest-rate auction",
+        omo_action="Buy Securities",
+        volume=0,
+        pricing_method="Single-price",
+        expected_inflation=4.0,
+        auction_enabled=False,
+    )
+    game.run_phase(4000, phase_one_decision)
+
+    # Phase 2 should not accept Expected Inflation input
+    phase_two_decision = Decision(
+        auction_method="Interest-rate auction",
+        omo_action="Buy Securities",
+        volume=0,
+        pricing_method="Single-price",
+        expected_inflation=4.0,
+        auction_enabled=False,
+    )
+    with pytest.raises(ValueError):
+        game.run_phase(4000, phase_two_decision)
