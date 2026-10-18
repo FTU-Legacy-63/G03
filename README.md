@@ -43,6 +43,6 @@ Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản tr
 - Indicators: Hiển thị các chỉ tiêu thanh khoản và các chỉ số kinh tế trong phase hiện tại
 - OMO Decision: Cho phép người chơi chọn Auction Type, Pricing Method, OMO Action, Volume và Rate
 - OMO Auction Engine: Mô phỏng phản ứng và lệnh dự thầu của các NHTM; MVP giả định các NHTM có phản ứng tương đối giống nhau.
-- Economic Engine: Mô phỏng chuỗi tác động: OMO → System Liquidity → Interbank Rate → Lending/Deposit Rate, Liquidity và Macroeconomic Indicators.
+- Economic Engine: Mô phỏng chuỗi tác động: OMO → System Liquidity → Interbank Rate → Macroeconomic Indicators.
 - Sử dụng real data làm cơ sở cho các biến kinh tế và dữ liệu OMO; sample/simulated data được sử dụng cho dữ liệu dự thầu NHTM khi dữ liệu thực tế không sẵn có.
 - Outcome / Result: Hiển thị kết quả của quyết định OMO
