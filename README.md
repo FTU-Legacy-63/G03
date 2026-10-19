@@ -40,9 +40,9 @@ Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản tr
 - Cho phép người chơi đóng vai Ban điều hành Nghiệp vụ thị trường mở và điều hành chính sách tiền tệ thông qua nghiệp vụ thị trường mở (OMO).
 - Mô phỏng nền kinh tế thông qua nhiều giai đoạn (phases), trong đó mỗi phase tương đương 30 ngày và kết quả của phase trước được carry forward sang phase tiếp theo.
 - Scenario / News Panel: Cung cấp bối cảnh kinh tế cho người chơi
+- Guide & Learning Cards: Hướng dẫn chơi game và Thẻ học tập cung cấp kiến thức cơ bản về các chỉ số quan trọng.
 - Indicators: Hiển thị các chỉ tiêu thanh khoản và các chỉ số kinh tế trong phase hiện tại
 - OMO Decision: Cho phép người chơi chọn Auction Type, Pricing Method, OMO Action, Volume và Rate
 - OMO Auction Engine: Mô phỏng phản ứng và lệnh dự thầu của các NHTM; MVP giả định các NHTM có phản ứng tương đối giống nhau.
 - Economic Engine: Mô phỏng chuỗi tác động: OMO → System Liquidity → Interbank Rate → Macroeconomic Indicators.
-- Sử dụng real data làm cơ sở cho các biến kinh tế và dữ liệu OMO; sample/simulated data được sử dụng cho dữ liệu dự thầu NHTM khi dữ liệu thực tế không sẵn có.
 - Outcome / Result: Hiển thị kết quả của quyết định OMO
