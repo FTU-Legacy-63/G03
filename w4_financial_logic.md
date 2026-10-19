@@ -226,9 +226,9 @@ Ví dụ: NHNN chào bơm 1.000 tỷ đồng và 900 tỷ đồng được phân
 
 | Input | Expected output | Sample Calculation and Actual Output | Status |
 | --- | --- | --- | --- |
-| **TH1: Liquidity shortage**<br>Real Liquidity Demand = 10,000 <br>Volume = 7,000 <br>Maturity = -2,000<br>Interbank Rate (T-30) = 4% | Unmet Demand (Liquidity Gap) > 0 <br>Interbank Rate (T) ↑<br> | VD: Đấu thầu lãi suất - Mua tín phiếu: <br>NHTM tham gia đấu thầu<br>→ Sắp xếp các NHTM theo thứ tự bid rate phù hợp với OMO Action (giảm dần)<br>→ Phân bổ khối lượng đến khi đạt khối lượng trúng thầu = 7,000<br>→ **Auction Result: Supply = 6,953**<br><br>Total Supply Volume = 6,953 - 2000 = 4,953<br>→ Liquidity Gap = 10,000 - 4,953 = 5,047 <br>→ Liquidity Pressure = 0.5047 <br>→ Liquidity Adjusted Volume = 4,953 * 0.5047 = 2,499.78<br>→ **Interbank Rate (T) = 0.069*Interbank Rate (T-30)+0.000123*Liquidity Adjusted Volume+3.584 = 4.17** | Pass |
-| **TH2 - Liquidity Balance**<br>Real Liquidity Demand = 10,000<br>Volume = 8,000<br>Maturity = 2,000<br>Interbank Rate (T-30) = 4% | Unmet Demand ~ 0 (nhỏ)<br>Interbank Rate (T) ↓ | VD: Đấu thầu lãi suất - Mua tín phiếu: <br>NHTM tham gia đấu thầu<br>→ Sắp xếp các NHTM theo thứ tự bid rate phù hợp với OMO Action (giảm dần)<br>→ Phân bổ khối lượng đến khi đạt khối lượng trúng thầu = 8,000<br>→ **Auction Result: Supply = 7936**<br><br>Total Supply Volume = 9936<br>→ Liquidity Gap = 64<br>→ Liquidity Pressure = 0,006<br>→ Liquidity Adjusted Volume = 63<br>→ **Interbank Rate (T) = 3.87** | Pass |
-| **TH3 - Excess Liquidity**<br>Real Liquidity Demand = 10,000<br>Volume = 10,000<br>Maturity = 2,000<br>Interbank Rate (T-30) = 4% | Unmet Demand < 0<br>Interbank Rate (T) ↓<br> | VD: Đấu thầu Khối lượng - Mua tín phiếu:<br>NHTM tham gia đấu thầu<br>→ Sắp xếp các NHTM theo thứ tự KL dự thầu phù hợp với OMO Action (giảm dần)<br>→ Phân bổ khối lượng đến khi đạt khối lượng trúng thầu = 10,000<br>→ **Auction Result: Supply = 9926**<br><br>Total Supply Volume = 11926<br>→ Liquidity Gap = -1926<br>→ Liquidity Pressure = -0.193<br>→ Liquidity Adjusted Volume = -2297<br>→ **Interbank Rate (T) = 3.58** | Pass |
+| **TH1: Liquidity shortage**<br>Real Liquidity Demand = 10,000 <br>Volume = 7,000 <br>Maturity = -2,000<br>Interbank Rate (T-30) = 4% | Unmet Demand (Liquidity Gap) > 0 <br>Interbank Rate (T) ↑<br> | VD: Đấu thầu lãi suất - Mua tín phiếu: <br>NHTM tham gia đấu thầu<br>→ Sắp xếp các NHTM theo thứ tự bid rate phù hợp với OMO Action (giảm dần)<br>→ Phân bổ khối lượng đến khi đạt khối lượng trúng thầu = 7,000<br>→ **Auction Result: Supply = 6,953**<br><br>Total Supply Volume = 6,953 - 2000 = 4,953<br>→ Liquidity Gap = 10,000 - 4,953 = 5,047 <br>→ **Interbank Rate (T) = 0.069*Interbank Rate (T-30)+0.000123*Liquidity Gap+3.584 = 4.48** | Pass |
+| **TH2 - Liquidity Balance**<br>Real Liquidity Demand = 10,000<br>Volume = 8,000<br>Maturity = 2,000<br>Interbank Rate (T-30) = 4% | Unmet Demand ~ 0 (nhỏ)<br>Interbank Rate (T) ↓ | VD: Đấu thầu lãi suất - Mua tín phiếu: <br>NHTM tham gia đấu thầu<br>→ Sắp xếp các NHTM theo thứ tự bid rate phù hợp với OMO Action (giảm dần)<br>→ Phân bổ khối lượng đến khi đạt khối lượng trúng thầu = 8,000<br>→ **Auction Result: Supply = 7936**<br><br>Total Supply Volume = 9936<br>→ Liquidity Gap = 64<br>→ **Interbank Rate (T) = 3.87** | Pass |
+| **TH3 - Excess Liquidity**<br>Real Liquidity Demand = 10,000<br>Volume = 10,000<br>Maturity = 2,000<br>Interbank Rate (T-30) = 4% | Unmet Demand < 0<br>Interbank Rate (T) ↓<br> | VD: Đấu thầu Khối lượng - Mua tín phiếu:<br>NHTM tham gia đấu thầu<br>→ Sắp xếp các NHTM theo thứ tự KL dự thầu phù hợp với OMO Action (giảm dần)<br>→ Phân bổ khối lượng đến khi đạt khối lượng trúng thầu = 10,000<br>→ **Auction Result: Supply = 9926**<br><br>Total Supply Volume = 11926<br>→ Liquidity Gap = -1926<br>→ **Interbank Rate (T) = 3.62** | Pass |
 
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?gid=1908828182#gid=1908828182)  
 
@@ -237,8 +237,8 @@ Ví dụ: NHNN chào bơm 1.000 tỷ đồng và 900 tỷ đồng được phân
 - Coding environment: VS Code
 - Framework: HTML, CSS, JavaScript
 - Data storage: CSV/JSON
-- Deployment: GitHub Pages
-- AI-assisted coding: ChatGPT/Gemini
+- Deployment: Render
+- AI-assisted coding: ChatGPT
 - Fallback: Excel prototype nếu web chưa hoàn thiện
 
 **→ Đánh giá: Công cụ miễn phí, dễ triển khai và phù hợp với prototype; hạn chế là mô hình chủ yếu chạy phía client và dữ liệu được lưu tĩnh**
