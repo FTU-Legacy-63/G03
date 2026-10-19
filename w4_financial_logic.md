@@ -164,15 +164,14 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     - Lãi suất thực kì vọng (Không hiển thị cho người chơi) = Lãi suất LNH - Lạm phát kì vọng
     - Khoảng bù sản lượng Output Gap (Ko hiển thị) = η * Output Gap kì trước − σ(Lãi suất thực kì vọng - Lãi suất thực trung tính)
     + Output gap đầu phase 1: 0
-    + Hệ số trì trệ của Output Gap (η): 0.5603
-    + Độ nhạy của Output Gap theo khe hở lãi suất thực (σ) = 0.0984
-    + LSTTT: 1.5%/năm.
+    + Hệ số trì trệ của Output Gap (η): 0.6 
+    + Độ nhạy của Output Gap theo khe hở lãi suất thực (σ) = 0.25
+    + LSTTT: 2.0%/năm.
     - Tăng trưởng GDP GDP Growth (%) = Tăng trưởng GDP tiềm năng + (Output Gap kì hiện tại - Output Gap kì trước)
-     Tăng trưởng GDP tiềm năng = 6.5%
-    - CPI = β.Lạm phát kì vọng + (1 - β). Lạm phát kì trước + κ.Output Gap kì hiện tại
-    + β = 0.2254
-    + Độ nhạy của CPI theo Output Gap (κ): 0.2726
-    - Inflation Rate (%) = [CPI(T) - CPI(T-1) / CPI(T-1)] * 100
+     Tăng trưởng GDP tiềm năng = 6%
+    - Tỉ lệ lạm phát Inflation Rate = β.Lạm phát kì vọng + (1 - β - κ). Lạm phát kì trước + κ.(GDP Growth - Potential GDP Growth)
+    + β = 0.25
+    + Độ nhạy của Lạm phát theo chênh lệch Tăng trưởng GDP so với Tăng trưởng GDP tiềm năng (κ): 0.1
   
 - Classification:
   - Supply: Lượng tiền bơm/hút thực tế
@@ -266,4 +265,3 @@ _Individual Contribution_
 | Nguyễn Minh Trang - UI/UX & Learning Experience | Source research, data collection, data cleaning and Working interface demo | Regression Dataset & Database | Develop UI/UX and frontend |
 | Vũ Lưu Minh Ngọc - Game Engine & Backend Developer | Group coordination, data/formula verification, formula revision and regression | Regression & Logic Test | Develop backend/game engine and integrate the financial logic |
 | Nguyễn Khánh Linh - Economic Model | Formula research, model structuring, regression and economic-model development | Regression & Logic Test | Complete and refine the Economic Engine |
-
