@@ -127,10 +127,9 @@ Ví dụ: User nhập Volume = −3,500 hoặc Repo/Reverse repo rate = -4% tron
 
 **Explanation**
 
-(Mô tả sự thay đổi các chỉ số kinh tế vĩ mô). Sau quyết định can thiệp của NHNN, mức [thiếu hụt / dư thừa] thanh khoản trong hệ thống [trạng thái]. Áp lực huy động vốn trên thị trường liên ngân hàng [giảm / tăng], với lãi suất liên ngân hàng giảm xuống/tăng lên [X], cho thấy điều kiện thanh khoản trên thị trường được [nới lỏng / bị thắt chặt]. Sau can thiệp, các ngân hàng báo cáo còn [Y tỷ đồng thanh khoản chưa được đáp ứng / Y tỷ đồng thanh khoản dư thừa].
-[Đánh giá tổng thể về quyết định OMO và các chỉ số kinh tế vĩ mô].
+[Post-phase Assessment Rule](https://docs.google.com/spreadsheets/d/1F29oFFkw-PsIbhjPQ_tk1FUx7LPtVfPh/edit?gid=1369538741#gid=1369538741)
 
-**Limitation: Hiển thị ở cuối Instructions**
+**Limitation: Hiển thị ở cuối Learning Card**
 
 VD Model limitation: Interbank Rate được ước tính bằng mô hình hồi quy dựa trên điều kiện thanh khoản mô phỏng và dữ liệu lãi suất kỳ trước. Đây chỉ là kết quả mô phỏng, không dự báo chính xác biến động lãi suất của nền kinh tế.
 
@@ -138,7 +137,7 @@ VD Model limitation: Interbank Rate được ước tính bằng mô hình hồi
 
 - Submit →
 
-- Continue to Phase 2 →
+- Next month →
 
 ### Interface Explainability
 
