@@ -90,7 +90,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
 | Auction Method + Pricing Method + OMO Action + Rate/Volume | Cơ chế phân bổ OMO | OMO Action + Pricing Method + Auction Method + Rate + Volume → Commercial Banks Submit Bids → Auction Allocation → Khối lượng/lãi suất trúng thầu theo phương thức đấu thầu → Supply | Auction result và Supply |
 | Scenario + Previous Phase Result | Nhu cầu thanh khoản thực tế của hệ thống | Market Conditions + Unmet Liquidity Demand → Real Liquidity Demand | Real Liquidity Demand |
 | Supply + Maturity + Real Liquidity Demand | Trạng thái cung-cầu thanh khoản | Supply + Maturity + Real Liquidity Demand → Total Supply Volume → Liquidity Gap | Liquidity Gap |
-| Liquidity Gap + Interbank Rate (T−30) | Áp lực thanh khoản lên thị trường LNH | Liquidity Gap → Liquidity pressure → Liquidity adjusted volume → Interbank Rate (calculated by regression model) | Interbank Rate (T) |
+| Liquidity Gap + Interbank Rate (T−30) | Áp lực thanh khoản lên thị trường LNH | Liquidity Gap → Interbank Rate (calculated by regression model) | Interbank Rate (T) |
 
 - Formula and Rules:
   - Xác định Bid Demand của ngân hàng
