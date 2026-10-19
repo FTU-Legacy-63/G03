@@ -167,11 +167,12 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pres
     + Hệ số trì trệ của Output Gap (η): 0.6 
     + Độ nhạy của Output Gap theo khe hở lãi suất thực (σ) = 0.25
     + LSTTT: 2.0%/năm.
-    - GDP Growth (%) = Potential GDP Growth + (Output Gap kì hiện tại - Output Gap kì trước)
-     Potential GDP Growth = 6%
-    - Lạm phát = β.Lạm phát kì vọng + (1 - β - κ). Lạm phát kì trước + κ.(GDP Growth - Potential GDP Growth)
+    - Tăng trưởng GDP GDP Growth (%) = Tăng trưởng GDP tiềm năng + (Output Gap kì hiện tại - Output Gap kì trước)
+     Tăng trưởng GDP tiềm năng = 6%
+    - CPI = β.Lạm phát kì vọng + (1 - β - κ). Lạm phát kì trước + κ.(GDP Growth - Potential GDP Growth)
     + β = 0.25
-    + Độ nhạy của lạm phát theo chênh lệch GDP Growth so với Potential GDP Growth (κ): 0.1
+    + Độ nhạy của CPI theo chênh lệch Tăng trưởng GDP so với Tăng trưởng GDP tiềm năng (κ): 0.1
+    - Inflation Rate (%) = [CPI(T) - CPI(T-1) / CPI(T-1)] * 100
   
 - Classification:
   - Supply: Lượng tiền bơm/hút thực tế
