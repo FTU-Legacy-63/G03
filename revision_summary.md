@@ -6,9 +6,9 @@ WHO RUNS THE WORLD? là trò chơi mô phỏng nghiệp vụ thị trường m�
 
 ## 2. Các thành phần chính
 
-- **Giao diện người dùng:** HTML, CSS và JavaScript; cung cấp các màn hình nhập quyết định, xem thông tin thị trường và theo dõi kết quả.
-- **Bộ máy mô phỏng:** Python; xử lý quyết định OMO, đấu thầu, thanh khoản, lãi suất liên ngân hàng, dòng tiền đáo hạn và các biến số kinh tế vĩ mô.
-- **Giao tiếp frontend–backend:** giao diện gửi yêu cầu đến các API để khởi tạo trò chơi và xử lý từng giai đoạn.
+- **Giao diện người dùng (Frontend):** HTML, CSS và JavaScript; cung cấp các màn hình nhập quyết định, xem thông tin thị trường và theo dõi kết quả.
+- **Hệ thống mô phỏng (Backend):** Python; xử lý quyết định OMO, đấu thầu, thanh khoản, lãi suất liên ngân hàng, dòng tiền đáo hạn và các biến số kinh tế vĩ mô.
+- **Kết nối frontend–backend (APIs):** giao diện gửi yêu cầu đến các API để khởi tạo trò chơi và xử lý từng giai đoạn.
 
 ## 3. Các nội dung sửa đổi quan trọng trong quá trình phát triển
 
