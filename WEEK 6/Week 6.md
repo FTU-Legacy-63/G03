@@ -47,7 +47,7 @@ Technical end-to-end flow: Frontend (omo_refactored_v64.html) → Flask API (app
 | Người chơi khó có thể thay đổi trạng thái thanh khoản (Dư / Thiếu) giữa các phase nếu không có cú sốc kịch bản. | Backend | Người chơi có thể bơm hoặc hút quá so với nhu cầu thanh khoản. | Do Total Bid Volume bị giới hạn bởi nhu cầu thanh khoản thực tế và tác động của chiết khấu, trạng thái kinh tế có xu hướng duy trì gần giống phase trước, trừ khi xuất hiện cú sốc kịch bản. | Major | ĐÃ SỬA |
 | Dữ liệu biểu đồ không khớp với Results và backend | Chart GDP/inflation | Các thành phần hiển thị cùng nguồn dữ liệu, cùng phase.| Biểu đồ dùng dữ liệu cũ hoặc không phản ánh kết quả gameplay thực tế. | Major | ĐÃ SỬA |
 | Các bảng inventory trên trang Results không cập nhật sau khi chạy Phase. | Frontend | Các bảng hiển thị đúng trạng thái mới nhất (tính toán với backend) sau khi Phase hoàn tất. | Giao diện vẫn sử dụng dữ liệu cũ thay vì cập nhật theo dữ liệu mới từ Python backend. | Major | ĐÃ SỬA |
-| GDP growth và inflation tăng mạnh khi thiếu thanh khoản nghiêm trọng. | Công thức của các chỉ số vĩ mô | Thiếu thanh khoản nặng hơn thì GDP và lạm phát thấp hơn, và hai chỉ số cùng chiều. | GDP growth và inflation giảm hoặc chỉ tăng nhẹ khi thanh khoản thiếu hụt nghiêm trọng. | Major | ĐÃ SỬA |
+| Các chỉ số không thay đổi theo quy luật kinh tế thông thường | Công thức của các chỉ số vĩ mô | Thiếu thanh khoản nặng hơn thì GDP và lạm phát thấp hơn, và hai chỉ số cùng chiều. | GDP growth và inflation tăng mạnh khi thiếu thanh khoản nghiêm trọng. | Major | ĐÃ SỬA |
 
 **5\. Scope freeze**
 
