@@ -12,23 +12,16 @@ CORS(app)
 # Game instance của phiên chơi hiện tại
 game_instance = None
 
-# STATIC IMAGE FILES
+# STATIC IMAGE
 @app.route("/background.png")
 def background():
     return send_from_directory(".", "background.png")
-
 
 @app.route("/topbar.png")
 def topbar():
     return send_from_directory(".", "topbar.png")
 def _get_next_scenario_liquidity_demand():
-    """Return the next phase demand after run_phase() advances the engine.
-
-    The engine increments ``game_instance.phase`` before returning a PhaseResult,
-    so get_scenario_liquidity_demand() now points at the upcoming phase.
-    After Phase 3 there is no configured next phase, so expose JSON null instead
-    of turning an otherwise successful phase into an API error.
-    """
+    """Return the next phase demand after run_phase() advances the engine."""
     try:
         return game_instance.get_scenario_liquidity_demand()
     except ValueError:
@@ -68,7 +61,7 @@ def start_game():
             cap=5.0
         )
 
-        # Khởi tạo T-Bill ban đầu
+        # Khởi tạo Bill ban đầu
         tb = game_instance.initialize_market_tbill(
             face_value=20000
         )
@@ -77,7 +70,6 @@ def start_game():
         scenario_liquidity_demand = (
             game_instance.get_scenario_liquidity_demand()
         )
-
         return jsonify({
             "status": "success",
             "current_date": game_instance.current_date.strftime("%d/%m/%Y"),
@@ -93,19 +85,13 @@ def start_game():
                     tb.maturity_date.strftime("%d/%m/%Y")
             }
         })
-
     except Exception as e:
-
         return jsonify({
             "status": "error",
             "message": str(e)
         }), 400
 
-
-# =========================================================
 # RUN PHASE
-# =========================================================
-
 @app.route("/api/run-phase", methods=["POST"])
 def run_phase():
     global game_instance
@@ -114,9 +100,7 @@ def run_phase():
             "status": "error",
             "message": "Game has not been started yet."
         }), 400
-
     data = request.get_json(silent=True) or {}
-
     try:
         # Nhận Decision từ frontend
         auction_method = data.get("auction_method")
@@ -133,17 +117,12 @@ def run_phase():
         expected_inflation = data.get(
             "expected_inflation"
         )
-
         if expected_inflation is not None:
             expected_inflation = float(
                 expected_inflation
             )
 
-
-        # -------------------------------------------------
         # Tạo Decision
-        # -------------------------------------------------
-
         auction_enabled = data.get("auction_enabled", True)
 
         decision = Decision(
@@ -156,50 +135,32 @@ def run_phase():
             auction_enabled=auction_enabled
         )
 
-        # -------------------------------------------------
-        # Engine gọi:
-        # get_scenario_liquidity_demand()
-        # -------------------------------------------------
-
+        # Engine gọi: get_scenario_liquidity_demand()
         result = game_instance.run_phase(
             None,
             decision
         )
 
-        # -------------------------------------------------
         # Auction bids
-        # -------------------------------------------------
-
         bids = []
-
         for b in result.auction_bids:
-
             bids.append({
-
                 "rank":
                     b.rank,
-
                 "bank":
                     b.bank,
-
                 "bid_rate":
                     b.bid_rate,
-
                 "settlement_rate":
                     b.settlement_rate,
-
                 "bid_volume":
                     b.bid_volume,
-
                 "real_volume":
                     b.real_volume,
-
                 "price":
                     b.price,
-
                 "won":
                     b.won,
-
                 "status":
                     "Trúng thầu"
                     if b.won
@@ -208,28 +169,18 @@ def run_phase():
 
             })
 
-
-        # -------------------------------------------------
         # DEBUG REPO INVENTORY
-        # -------------------------------------------------
-
         repo_debug = game_instance.repo_inventory()
-
         print("========== DEBUG REPO INVENTORY ==========")
         print("Number of repo positions:", len(repo_debug))
         print("Repo inventory:", repo_debug)
         print("==========================================")
 
-
-        # -------------------------------------------------
         # JSON trả về frontend
-        # -------------------------------------------------
-
         response = {
             "status": "success",
             "phase": result.phase,
             "phase_date": result.phase_date.strftime("%d/%m/%Y"),
-
 
             # LIQUIDITY
             "scenario_liquidity_demand": result.scenario_liquidity_demand,
@@ -244,87 +195,59 @@ def run_phase():
 
             # INTERBANK
             "previous_interbank_rate": result.previous_interbank_rate,
-
             "interbank_rate":
                 result.interbank_rate,
-
 
             # AUCTION
             "total_cash_bid_volume":
                 result.total_cash_bid_volume,
-
             "total_bid_volume":
                 result.total_bid_volume,
-
             "total_real_volume":
                 result.total_real_volume,
-
             "win_rate":
                 result.win_rate,
-
             "bids":
                 bids,
-
 
             # INVENTORY
             "tbill_inventory":
                 game_instance.tbill_inventory(),
-
             "repo_inventory":
                 game_instance.repo_inventory(),
-
             "maturity_events":
                 result.maturity_events,
-
 
             # MACRO
             "expected_inflation":
                 result.expected_inflation,
-
             "real_interest_rate":
                 result.real_interest_rate,
-
             "output_gap":
                 result.output_gap,
-
             "gdp_growth":
                 result.gdp_growth,
-
             "inflation":
                 result.inflation
         }
-
-
         return jsonify(response)
-
-
+        
     except Exception as e:
-
         return jsonify({
-
             "status":
                 "error",
-
             "message":
                 str(e)
-
         }), 400
 
-
-# =========================================================
 # RUN SERVER
-# =========================================================
-
 if __name__ == "__main__":
-
     print(
         "Central Bank OMO Server running at:"
     )
-
     print(
         "http://127.0.0.1:5000"
     )
-
     app.run(
         host="127.0.0.1",
         port=5000,
