@@ -57,5 +57,3 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 | Số trường hợp đạt           | 30      |
 | Số trường hợp không đạt     | 0       |
 | Tỷ lệ đạt                   | 100%    |
-
-Kết luận: Cả 30 trường hợp kiểm thử đều đạt. Kết quả này xác nhận các điều kiện được nêu trong bộ kiểm thử đã hoạt động đúng với kỳ vọng. Tuy nhiên, chưa thể kết luận toàn bộ trò chơi không còn lỗi, vì giao diện, báo cáo sau mỗi giai đoạn và tính hợp lý kinh tế của mọi kịch bản chưa được kiểm thử đầy đủ.
