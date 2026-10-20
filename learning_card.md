@@ -182,7 +182,7 @@ Liquidity demand helps players assess the liquidity position of the system befor
 
 **What is it?**
 
-Expected Inflation is the inflation rate that the Central Bank expects to occur in the future.
+Expected Inflation is the Central Bank's forecasted year-on-year inflation rate expected at the end of the upcoming 3-phase cycle, compared to the same quarter of the previous year.
 
 **Why is it important?**
 
@@ -197,7 +197,7 @@ The input of Expected Inflation is required once every 3 phases in the game. The
 
 **What is it?**
 
-The rate at which the overall price level of goods and services in the economy increases.
+The realized year-on-year percentage increase in the overall price level of goods and services, measured at the end of every 3-phase cycle relative to the same quarter of the previous year.
 
 **Why does it matter?**
 
@@ -208,7 +208,7 @@ Easing liquidity conditions can support economic activity, but if maintained for
 
 **What is it?** 
 
-The growth rate of economic output after removing the effect of changes in the price level.
+The annualized growth rate of economic output after removing the effect of changes in the price level, measured at the end of every 3-phase cycle relative to the economy's Potential Real GDP Growth benchmark of 6.0%.
 
 **Why does it matter?**
 
