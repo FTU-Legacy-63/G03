@@ -14,8 +14,6 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 
 ## 3. Test table
 
-## Bảng tổng hợp kết quả kiểm thử bộ máy trò chơi OMO
-
 | Case                                                        | Input                                                                                      | Expected                                                                                                     | Actual                                                       | Status |
 | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------- |
 | Chấp nhận quyết định đấu thầu lãi suất hợp lệ                        | Đấu thầu lãi suất; Mua chứng khoán; khối lượng 1.000; định giá một mức                        | Quyết định hợp lệ; giữ nguyên khối lượng và phương thức định giá                                                     | Các điều kiện kiểm tra đều đạt                                        | ĐẠT        |
@@ -48,12 +46,24 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 | Vẫn xử lý đáo hạn khi không tổ chức đấu thầu                         | Không đấu thầu; tín phiếu 1.000 đáo hạn; một giai đoạn dài 30 ngày                            | Không có hồ sơ dự thầu; vẫn xử lý đáo hạn; tổng cung = 1.000; khoảng cách thanh khoản = 3.000                        | Các giá trị khớp yêu cầu; tồn kho còn 0                               | ĐẠT        |
 | Tín phiếu cơ sở của Reverse Repo đáo hạn trước hợp đồng              | Tín phiếu cơ sở 100 đáo hạn sau 30 ngày; hợp đồng Reverse Repo đáo hạn sau 60 ngày            | Không ghi nhận trùng dòng tiền tín phiếu; hợp đồng vẫn hoạt động trước ngày đáo hạn                                  | Dòng tiền lần đầu = 100; tín phiếu được xử lý; hợp đồng vẫn hoạt động | ĐẠT        |
 | Hoàn trả tín phiếu cơ sở chưa đáo hạn                                | Tín phiếu cơ sở 250 đáo hạn sau 120 ngày; hợp đồng Reverse Repo đáo hạn sau 60 ngày           | Khi hợp đồng đáo hạn, dòng tiền mang dấu âm và tín phiếu chưa đáo hạn được trả lại tồn kho                           | Dòng tiền âm; có sự kiện Reverse Repo đáo hạn; tồn kho = 250          | ĐẠT        |
+| Kiểm tra danh sách Learning Card                          | Kiểm tra tất cả mục trong danh sách Learning Card                             | Mỗi mục có tiêu đề và nội dung                                          | Tất cả mục đều có tiêu đề và nội dung                   | ĐẠT    |
+| Mở Learning Card hợp lệ                                   | Mở Learning Card bằng khóa hợp lệ                                             | Bảng thẻ mở và hiển thị đúng tiêu đề, nội dung                          | Tiêu đề và nội dung được cập nhật; bảng thẻ mở          | ĐẠT    |
+| Xử lý khóa Learning Card không hợp lệ                     | Sử dụng khóa không tồn tại khi nội dung hiện tại đã có                        | Không mở thẻ không hợp lệ hoặc ghi đè nội dung hiện tại                 | Trạng thái mở và nội dung hiện tại được giữ nguyên      | ĐẠT    |
+| Đóng Learning Card                                        | Thực hiện thao tác đóng Learning Card                                         | Trạng thái mở của bảng thẻ được xóa                                     | Trạng thái mở được xóa                                  | ĐẠT    |
+| Mở và đóng Guide                                          | Thực hiện thao tác mở và đóng Guide                                           | Guide mở và đóng chính xác                                              | Cả hai thao tác hoạt động đúng                          | ĐẠT    |
+| Đóng Guide và Learning Card bằng phím Escape              | Mở Guide và Learning Card, sau đó nhấn `Escape`                               | Cả hai bảng được đóng                                                   | Trạng thái mở của cả hai bảng được xóa                  | ĐẠT    |
+| Bỏ qua các phase không công bố dữ liệu trên biểu đồ vĩ mô | Cung cấp dữ liệu cho các phase không thuộc mốc công bố                        | Biểu đồ không hiển thị dữ liệu ở các phase này                          | Các phase không thuộc mốc công bố được bỏ qua           | ĐẠT    |
+| Chỉ vẽ dữ liệu vĩ mô đã công bố                           | Cung cấp dữ liệu tại các mốc công bố và yêu cầu hiển thị đến một phase cụ thể | Chỉ hiển thị dữ liệu đã công bố đến phase được yêu cầu                  | Chỉ các quan sát hợp lệ được hiển thị                   | ĐẠT    |
+| Bỏ qua giá trị GDP và lạm phát bị thiếu                   | Cung cấp giá trị `null` hoặc chuỗi rỗng tại các mốc công bố                   | Giá trị thiếu không được biểu diễn thành 0 trên biểu đồ                 | Giá trị `null` và rỗng được bỏ qua, không bị vẽ thành 0 | ĐẠT    |
+| Xử lý kết quả kinh tế khi thiếu dữ liệu vĩ mô             | GDP hoặc lạm phát có giá trị `null` hoặc chuỗi rỗng                           | Trả về trạng thái `Economic outcome pending` (Đang chờ kết quả kinh tế) | Hàm trả về trạng thái chờ kết quả kinh tế               | ĐẠT    |
+
 
 **Tổng kết kết quả kiểm thử**
 
 | Chỉ tiêu                    | Kết quả |
 | --------------------------- | ------- |
-| Tổng số trường hợp kiểm thử | 30      |
-| Số trường hợp đạt           | 30      |
+| Tổng số trường hợp kiểm thử | 40      |
+| Số trường hợp đạt           | 40      |
 | Số trường hợp không đạt     | 0       |
 | Tỷ lệ đạt                   | 100%    |
+
