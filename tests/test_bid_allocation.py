@@ -2,6 +2,8 @@ import pytest
 from datetime import date
 from central_bank_engine_v13 import Decision, CentralBankGame
 
+START = date(2025, 1, 1)
+
 def test_interest_rate_injection_bids_are_sorted_highest_first():
     g = game()
     g.initialize_market_tbill(face_value=20_000, rate=4.0)
