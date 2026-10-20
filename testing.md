@@ -1,10 +1,10 @@
 # TESTING
 
-## 1. Mục đích
+## 1. Objective
 
 Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của cơ chế đấu thầu, việc tính toán thanh khoản và lãi suất liên ngân hàng, cũng như quá trình cập nhật các biến số kinh tế vĩ mô qua các giai đoạn.
 
-## 2. Môi trường kiểm thử
+## 2. Platforms
 
 - Ngôn ngữ lập trình: Python và JavaScript.
 - Giao diện: HTML, CSS và JavaScript.
@@ -12,7 +12,7 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 - Công cụ kiểm thử tự động: pytest.
 - Môi trường triển khai: Render
 
-## 3. Các trường hợp kiểm thử
+## 3. Test table
 
 | Nội dung kiểm thử                                   | Kết quả mong đợi                                                                                                                            | Kết quả thực tế |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
