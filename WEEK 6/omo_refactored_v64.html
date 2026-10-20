@@ -2762,9 +2762,14 @@ function pgPolicyTilt(items){
 }
 /* FINAL MACRO OUTCOME */
 function pgFinalEconomicOutcome(result){
-  const gdp=Number(result?.gdp_growth);
-  const inflation=Number(result?.inflation);
-  if(!Number.isFinite(gdp)||!Number.isFinite(inflation)){
+  const readValue = value =>
+    value === null || value === undefined || value === ''
+      ? NaN
+      : Number(value);
+  const gdp = readValue(result?.gdp_growth);
+  const inflation = readValue(result?.inflation);
+
+  if (!Number.isFinite(gdp) || !Number.isFinite(inflation)) {
     return {
       title:'Economic outcome pending',
       text:'The final macroeconomic block is not available, so the economic outcome cannot yet be classified.'
