@@ -11,7 +11,7 @@
 * **Economic model development:** Financial logic and input–financial / logic–output mapping, Sample calculations  
 * **Learning card development:** learning\_card.md  
 * **Backend testing:** Backend Testing (Evidence Links)  
-* **Frontend support and API integration:** app.py (WEEK 6 folder), omo\_refraction\_v64.html (contribution \~10%) (WEEK 6 folder)
+* **Frontend support and API integration:** app.py (WEEK 6 folder), omo\_refactored\_v64.html (contribution \~10%) (WEEK 6 folder)
 
 
 ## **Evidence Links**
