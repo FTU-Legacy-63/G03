@@ -68,7 +68,7 @@
 | 5 | Chọn OMO Action | Hệ thống xác định hướng tác động: bơm hoặc hút thanh khoản | Decision Area |
 | 6 | Nhập Volume và nếu chọn Volume Auction nhập Repo/Reverse Repo Rate | Hệ thống kiểm tra tính hợp lệ của input | Input validation |
 | 7 | Nhấn Submit | Hệ thống chạy auction engine và xác định winning bids / real volume | Auction Result |
-| 8 | Xem kết quả đấu thầu và các chỉ số thanh khoản sau can thiệp| Hiển thị Real Volume và Execution Rate.  Hệ thống tính Total Supply, Liquidity Gap, Liquidity Pressure và Interbank Rate (T) và hiển thị kết quả Interbank Rate (T) | Auction Result, Outcome Dashboard |
+| 8 | Xem kết quả đấu thầu và các chỉ số thanh khoản sau can thiệp| Hiển thị Real Volume và Execution Rate.  Hệ thống tính Total Supply, Liquidity Gap và Interbank Rate (T) và hiển thị kết quả Interbank Rate (T) | Auction Result, Outcome Dashboard |
 | 9 | Đọc Explanation | Hệ thống tóm tắt kết quả sau can thiệp, giải thích tại sao Liquidity và Interbank rate thay đổi và hệ quả | Explanation |
 | 10 | Nhấn Continue to Phase 2 | Kết quả hiện tại được lưu làm trạng thái cho lượt tiếp theo | Transaction Log + Updated State |
 
