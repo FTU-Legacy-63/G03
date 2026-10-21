@@ -6194,10 +6194,17 @@ function paperNext(){
     currentPhase=pgPhase;
     pgResult=null;
     pgDecision=null;
+    // Reset expected inflation at the start of each
+    // new required checkpoint: Phase 4 and Phase 7.
+    if ([4, 7].includes(pgPhase)) {
+      pgExpectedInflation = null;
+    }
     pgBidEntries=[];
     pgPlayerSortOrder=[];
     pgSyncPhaseFallbacks();
     paperBrief();
+    // Refresh the Continue button's required-input state.
+    pgSyncExpectedGate();
     return;
   }
   const overall=pgBuildOverallAssessment();
