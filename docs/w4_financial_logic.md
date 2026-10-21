@@ -181,10 +181,10 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Interbank Rate
     - Maturity Volume > 0: KL đáo hạn làm tăng thanh khoản trong hệ thống
     - Maturity Volume = 0: Không có khối lượng giao dịch đáo hạn.
     - Maturity Volume < 0: KL đáo hạn làm giảm thanh khoản trong hệ thống.
-  - Real Liquidity Demand/Gap/Pressure:
-    - Real Liquidity Demand/Gap/Pressure > 0: Thiếu thanh khoản.
-    - Real Liquidity Demand/Gap/Pressure = 0: Cân bằng thanh khoản.
-    - Real Liquidity Demand/Gap/Pressure < 0: Thừa thanh khoản.
+  - Real Liquidity Demand/Gap:
+    - Real Liquidity Demand/Gap > 0: Thiếu thanh khoản.
+    - Real Liquidity Demand/Gap = 0: Cân bằng thanh khoản.
+    - Real Liquidity Demand/Gap < 0: Thừa thanh khoản.
 
 **Explainability:**
 
