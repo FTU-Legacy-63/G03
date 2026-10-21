@@ -67,9 +67,9 @@ _Product information_
 
 Quyết định bơm/hút tiền qua OMO làm thay đổi thanh khoản hệ thống, từ đó tác động đến lãi suất liên ngân hàng.
 
-_Logic: User’s OMO Decision → Commercial Banks Submit Bids → Auction Allocation → Realized Supply / Withdrawal + Maturity → Total Supply Volume → Liquidity Gap → Liquidity Pressure → Liquidity adjusted volume (Total Supply Volume adjusted by Liquidity pressure) → Interbank Rate_
+_Logic: User’s OMO Decision → Commercial Banks Submit Bids → Auction Allocation → Realized Supply / Withdrawal + Maturity → Total Supply Volume → Liquidity Gap → Interbank Rate_
 
-Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Liquidity Pressure phản ánh mức độ mất cân đối; Interbank Rate được ước lượng từ trạng thái thanh khoản bằng mô hình hồi quy.
+Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Interbank Rate được ước lượng từ trạng thái thanh khoản bằng mô hình hồi quy.
 
 **Main output:**
 
