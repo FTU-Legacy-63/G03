@@ -14,6 +14,8 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 
 ## 3. Test table
 
+[Auto-testing files](https://github.com/FTU-Legacy-63/G03/tree/main/tests)
+
 | Case                                                        | Input                                                                                      | Expected                                                                                                     | Actual                                                       | Status |
 | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------- |
 | Chấp nhận quyết định đấu thầu lãi suất hợp lệ                        | Đấu thầu lãi suất; Mua chứng khoán; khối lượng 1.000; định giá một mức                        | Quyết định hợp lệ; giữ nguyên khối lượng và phương thức định giá                                                     | Các điều kiện kiểm tra đều đạt                                        | ĐẠT        |
