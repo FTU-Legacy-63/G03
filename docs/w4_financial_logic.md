@@ -188,7 +188,7 @@ Trong đó, Liquidity Gap đo mức thiếu/thừa thanh khoản; Interbank Rate
 
 **Explainability:**
 
-_Liquidity Gap (không hiển thị cho người chơi)_
+_Liquidity Gap _
 
 Ví dụ: Liquidity Gap sau OMO = +600 tỷ đồng.
 
