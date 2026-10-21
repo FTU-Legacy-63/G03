@@ -1028,6 +1028,22 @@ const learningCards={
            </tbody>
          </table>
        </div>
+
+       <div style="margin-top:16px; line-height:1.6;">
+         <b>Auction Priority</b>
+
+         <p style="margin:6px 0;">
+           <b>Interest-rate auction:</b>
+           Bids are ranked from highest to lowest interest rate
+           for liquidity injection,
+           and from lowest to highest for liquidity absorption.
+         </p>
+
+         <p style="margin:6px 0;">
+           <b>Volume auction:</b>
+           Bids are prioritized from highest to lowest bid volume.
+         </p>
+       </div>
      `
    },
   volume:{title:'Offered volume',content:`<p>The scale of securities or funds offered in the OMO operation.</p><ul><li>Larger offered volume can create a larger liquidity effect.</li><li>The realized effect still depends on awarded volume and maturity cash flows.</li></ul>`},
