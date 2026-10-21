@@ -46,3 +46,51 @@ Sinh viên/HSSV quan tâm đến lĩnh vực Ngân hàng Nhà nước, quản tr
 - OMO Auction Engine: Mô phỏng phản ứng và lệnh dự thầu của các NHTM; MVP giả định các NHTM có phản ứng tương đối giống nhau.
 - Economic Engine: Mô phỏng chuỗi tác động: OMO → System Liquidity → Interbank Rate → Macroeconomic Indicators.
 - Outcome / Result: Hiển thị kết quả của quyết định OMO
+
+## Hướng dẫn sử dụng
+
+### 1. Sử dụng qua URL trực tiếp (Online)
+
+Người chơi có thể truy cập trò chơi trực tiếp thông qua trình duyệt mà không cần cài đặt phần mềm.
+
+1. Mở đường dẫn: [https://who-runs-the-world-xajm.onrender.com/](https://who-runs-the-world-xajm.onrender.com/)
+2. Nhập tên đội chơi (**Team Name**) và chọn **Start Operations**.
+3. Đọc báo cáo để nắm bắt tình hình kinh tế vĩ mô, thanh khoản và lãi suất liên ngân hàng. Người chơi có thể tham khảo Guide và các Learning Cards (nhấn vào biểu tượng ? bên cạnh các chỉ số) để tìm hiểu thêm về các khái niệm và chỉ số kinh tế.
+4. Đưa ra quyết định nghiệp vụ thị trường mở (OMO), bao gồm lựa chọn công cụ, phương thức đấu thầu, khối lượng và lãi suất. Tại các phase 1, 4, 7, người chơi cần phải nhập Expected Inflation.
+5. Sắp xếp hồ sơ dự thầu theo đúng thứ tự ưu tiên của nghiệp vụ tương ứng (tham khảo Learning Card của OMO Instrument).
+6. Xem kết quả đấu thầu, phê duyệt giao dịch và theo dõi tác động của quyết định lên thị trường.
+7. Tiếp tục thực hiện các giai đoạn (Phase) cho đến khi hoàn thành trò chơi.
+
+### 2. Sử dụng trên máy chủ
+
+Đối với người dùng muốn chạy trò chơi trực tiếp từ mã nguồn trên máy tính:
+
+**Bước 1: Chuẩn bị môi trường**
+
+- Cài đặt Python 3 trên máy tính.
+
+- Tải toàn bộ mã nguồn dự án về máy, giữ nguyên cấu trúc thư mục và đảm bảo các file cần thiết như app.py, central_bank_engine_v13.py, omo_refactored_v64.html, requirements.txt và các asset được đặt đúng vị trí.
+
+**Bước 2: Cài đặt thư viện**
+
+Mở Terminal tại thư mục chứa dự án và chạy:
+
+```bash
+pip install -r requirements.txt
+```
+
+**Bước 3: Khởi động máy chủ**
+
+```bash
+python app.py
+```
+
+**Bước 4: Truy cập trò chơi**
+
+Mở trình duyệt và truy cập địa chỉ máy chủ được hiển thị trong Terminal (thông thường là `http://127.0.0.1:5000`).
+
+**Bước 5: Bắt đầu chơi**
+
+Nhập tên đội, chọn **Start Operations** và thực hiện các bước tương tự như hướng dẫn sử dụng trực tuyến.
+
+**Lưu ý:** Khi chạy trên máy chủ cục bộ, cần duy trì Terminal và tiến trình Python trong suốt thời gian chơi.
