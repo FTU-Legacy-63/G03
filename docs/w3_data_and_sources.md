@@ -160,7 +160,7 @@ Scenario (with Liquidity Demand) → Users determines OMO amount (→ Commercial
 | :---- | :---- | :---- | :---- |
 | **TH1: Liquidity Shortage**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 7,000<br><br>Maturity = -2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand (Liquidity Gap) > 0<br><br>Interbank Rate (T) ↑ | **Total Supply Volume = 7,000 - 2,000 = 5,000**<br><br>→ Liquidity Gap = 10,000 - 5,000 = 5,000<br><br>→ **Interbank Rate (T) = 0.069 × Interbank Rate (T-30) + 0.000123 × Liquidity Gap + 3.584 = 4.48** | Pass |
 | **TH2: Liquidity Balance**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 8,000<br><br>Maturity = 2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand = 0<br><br>Interbank Rate (T) ↓ | Total Supply Volume = 10,000<br><br>→ Liquidity Gap = 0<br><br> **Interbank Rate (T) = 3.86** | Pass |
-| **TH3: Excess Liquidity**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 10,000<br><br>Maturity = 2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand < 0<br><br>Interbank Rate (T) ↓ | Total Supply Volume = 12,000<br><br>→ Liquidity Gap = -2,000<br><br>→ **Interbank Rate (T) = 3.56** | Pass |
+| **TH3: Excess Liquidity**<br><br>Real Liquidity Demand = 10,000<br><br>Supply = 10,000<br><br>Maturity = 2,000<br><br>Interbank Rate (Previous Phase) = 4% | Unmet Demand < 0<br><br>Interbank Rate (T) ↓ | Total Supply Volume = 12,000<br><br>→ Liquidity Gap = -2,000<br><br>→ **Interbank Rate (T) = 3.61** | Pass |
 
 [Logic Test.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?usp=sharing&ouid=117177009192919491601&rtpof=true&sd=true)  
 
