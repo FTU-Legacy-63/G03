@@ -6,10 +6,10 @@ Kiểm tra tính hợp lệ của dữ liệu đầu vào, hoạt động của 
 
 ## 2. Platforms
 
-- Ngôn ngữ lập trình: Python và JavaScript.
-- Giao diện: HTML, CSS và JavaScript.
-- Backend: Python.
-- Công cụ kiểm thử tự động: pytest.
+- Ngôn ngữ lập trình: Python, JavaScript
+- Giao diện: HTML, CSS, JavaScript.
+- Backend: Python
+- Công cụ kiểm thử tự động: pytest
 - Môi trường triển khai: Render
 
 ## 3. Test table
