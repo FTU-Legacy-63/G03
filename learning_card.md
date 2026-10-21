@@ -20,15 +20,19 @@ Read the economic conditions and consider what the indicators are telling you.
 
 Choose the OMO instrument, auction method, offered volume, pricing method OMO offer rate that best fit the current conditions. At the start of each new three-phase period, enter your expected inflation assumption before making your policy decision.
 
-**3\. Review the auction results.**
+**3\. Rank the bids.**
+
+Review the bids submitted by commercial banks and arrange them in the correct priority order based on the selected auction method.
+
+**4\. Review the auction results.**
 
 See how commercial banks participated, which banks won, and how the awarded volume was allocated.
 
-**4\. Review the consequences.**
+**5\. Review the consequences.**
 
 How did system liquidity change? How did the interbank rate respond? How did the economic indicators move?
 
-**5\. Move to the next phase.**
+**6\. Move to the next phase.**
 
 The effects of your decisions carry over into subsequent phases. Always review your previous decision and its consequences before making the next one.
 
@@ -48,6 +52,10 @@ OMO can be used for different purposes. Two important types are **Dynamic OMO** 
 | **Can it inject liquidity?** | Yes | Yes |
 | **Can it absorb liquidity?** | Yes | Yes |
 
+**Auction Priority:**
+- **Interest-rate auction:** Bids are ranked from highest to lowest interest rate for liquidity injection, and from lowest to highest for liquidity absorption.
+- **Volume auction:** Bids are prioritized from highest to lowest bid volume.
+  
 ## 
 
 
