@@ -31,19 +31,19 @@
 
 ### **5\. Integration, Testing and Revision**
 
-- ### **Group Coordination:** Coordinated task allocation, communication, and feedback across team members. Reviewed the feedback and integrated it in the backend, economic model, and frontend, and followed up on necessary revisions during the final checks**.**
+- **Group Coordination:** Coordinated task allocation, communication, and feedback across team members. Reviewed the feedback and integrated it in the backend, economic model, and frontend, and followed up on necessary revisions during the final checks**.**
 
-- ### **Backend development and testing:** Integrated the economic model, financial formulas, and game rules into the backend file, which will be connected to the frontend by API file. Members tested the backend against the relevant game scenarios and gave feedback. Suitable adjustments will be implemented into the file to ensure consistency with the economic model.
+- **Backend development and testing:** Integrated the economic model, financial formulas, and game rules into the backend file, which will be connected to the frontend by API file. Members tested the backend against the relevant game scenarios and gave feedback. Suitable adjustments will be implemented into the file to ensure consistency with the economic model.
 
-- ### **Economic Model:** Integrated the finalized interbank regression into the economic model, which will be integrated into the backend. Team members  checked the consistency between model assumptions, regression outputs, and implemented calculations through Logic Test 2.0 and Logic Test 3.0, then revisions and adjustments will be done where necessary. 
+- **Economic Model:** Integrated the finalized interbank regression into the economic model, which will be integrated into the backend. Team members  checked the consistency between model assumptions, regression outputs, and implemented calculations through Logic Test 2.0 and Logic Test 3.0, then revisions and adjustments will be done where necessary. 
 
-- ### **Frontend Support:** Contributed to the background, top-bar and overall design and coordinated their integration with the game interface. Reviewed the visual presentation and refined the components based on feedback.
+- **Frontend Support:** Contributed to the background, top-bar and overall design and coordinated their integration with the game interface. Reviewed the visual presentation and refined the components based on feedback.
 
 **6\. Remaining Limitation**
 
-A key limitation is that the economic model remains a simplified representation of real-world economic relationships. 
+  A key limitation is that the economic model remains a simplified representation of real-world economic relationships. 
 
-Although historical data, regression analysis, and economic research informed its development, some relationships and coefficients were adjusted to make the intended monetary policy transmission mechanism more visible in the simulation. 
+  Although historical data, regression analysis, and economic research informed its development, some relationships and coefficients were adjusted to make the intended monetary policy transmission mechanism more visible in the simulation. 
 
-The model has not yet been fully empirically validated, so its outcomes should be interpreted as educational illustrations rather than precise forecasts of actual macroeconomic developments.
+  The model has not yet been fully empirically validated, so its outcomes should be interpreted as educational illustrations rather than precise forecasts of actual macroeconomic developments.
 
