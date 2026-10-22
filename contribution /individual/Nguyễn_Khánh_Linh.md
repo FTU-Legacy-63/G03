@@ -1,4 +1,4 @@
-## **Individual Contribution Report – Vũ Lưu Minh Ngọc**
+## **Individual Contribution Report - Nguyễn Khánh Linh**
 
 ### **1\. My Main Responsibility**
 
