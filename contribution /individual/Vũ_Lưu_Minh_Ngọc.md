@@ -16,10 +16,10 @@
 
 ### **3\. Evidence Links**
 
-- ### **Group coordination**: [GROUP COORDINATOR](https://drive.google.com/drive/u/1/folders/1lsXOd0_-NexrzgyhQUKMaGx0UEFfjKte?fbclid=IwY2xjawUPmT9wZG9mA2V4dG4DYWVtAjExAHNydGMGYXBwX2lkATAAAR5yuuR6N53ApqqTQ3321LWSzuKP6dShmM8bVuxARnFUX-2COIvlDJxjl1lfbA_aem_BVqBZcdnn_cm3OlRWQUfXA)
+- **Group coordination**: [GROUP COORDINATOR](https://drive.google.com/drive/u/1/folders/1lsXOd0_-NexrzgyhQUKMaGx0UEFfjKte?fbclid=IwY2xjawUPmT9wZG9mA2V4dG4DYWVtAjExAHNydGMGYXBwX2lkATAAAR5yuuR6N53ApqqTQ3321LWSzuKP6dShmM8bVuxARnFUX-2COIvlDJxjl1lfbA_aem_BVqBZcdnn_cm3OlRWQUfXA)
 
 - **Backend system and testing:** [LINK GITHUB BACKEND](https://github.com/FTU-Legacy-63/G03/blob/main/app/central_bank_engine_v13.py); [LINK GITHUB BACKEND TEST](https://github.com/FTU-Legacy-63/G03/blob/main/tests/test_engine_v2.py)  
-- **Economic model:** [Regression.xlsx](https://docs.google.com/spreadsheets/d/1eN3w-isF81GoeVL2Vetykxyp2056th1-/edit?gid=2130499797#gid=2130499797); [LOGIC TEST 2.0](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?rtpof=true); [LINK GITHUB MODEL](https://github.com/FTU-Legacy-63/G03/blob/main/docs/w4_financial_logic.md); [LOGIC TEST 3.0.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?gid=1654191935#gid=1654191935)  
+- **Economic model:** [REGRESSION](https://docs.google.com/spreadsheets/d/1eN3w-isF81GoeVL2Vetykxyp2056th1-/edit?gid=2130499797#gid=2130499797); [LOGIC TEST 2.0](https://docs.google.com/spreadsheets/d/1h-B_Q1Yzh-WT_OCM6hdJqnkMXHDwMgyo/edit?rtpof=true); [LINK GITHUB MODEL](https://github.com/FTU-Legacy-63/G03/blob/main/docs/w4_financial_logic.md); [LOGIC TEST 3.0.xlsx](https://docs.google.com/spreadsheets/d/1ZoAsCYlYXYfGKCg94ibXo2z694SpF1s7/edit?gid=1654191935#gid=1654191935)  
 - **Frontend support:** [BG AND TOPBAR](https://drive.google.com/file/d/1faW8OVMWWpNv_xBmucmyuPpJMMtbUUMb/view?usp=sharing); [LINK GITHUB TOPBAR](https://github.com/FTU-Legacy-63/G03/blob/main/app/topbar.png); [LINK GITHUB BG](https://github.com/FTU-Legacy-63/G03/blob/main/app/background.png)
 
 ### **4\. How My Work Is Used**
