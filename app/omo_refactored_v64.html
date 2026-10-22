@@ -1321,7 +1321,6 @@ function renderTitleScreen(){
   pg$('pg-start').innerHTML = `<div class="document-sheet title-sheet"><div class="title-inner">
     <div class="game-title">WHO RUNS THE W<span class="earth-o">🌐︎</span>RLD?</div>
     <div class="title-rule"></div>
-    <h1>OPEN MARKET OPERATIONS (OMO) SIMULATION</h1>
     <p>You play as a member of the OMO Desk, analyzing market conditions, making OMO decisions, reviewing bank bids, and monitoring how your decisions affect liquidity, macroeconomic indicators and interbank rate over time.</p>
     <div class="title-team"><label>TEAM NAME</label><input id="pg-team" value="${teamName || 'Team 1 – Central Bankers'}"></div>
     <button class="pbtn" onclick="paperStart()">START OPERATIONS →</button>
@@ -1357,7 +1356,7 @@ const pgBriefCopy = {
     cards:[
       [
         'MACROECONOMY',
-        'Consumption and private investment are weak, and firms are cautious about expansion plans. Inflation pressure remains low. If financial conditions do not improve, the slowdown could persist for around three months.'
+        'Consumption and private investment are weak, and firms are cautious about expansion plans. <br><br>Inflation pressure remains low. If financial conditions do not improve, the slowdown could persist for around three months.'
       ],
       [
         'CREDIT CONDITIONS & MONEY MARKET',
