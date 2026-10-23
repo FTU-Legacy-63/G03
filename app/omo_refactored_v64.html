@@ -113,6 +113,46 @@ body.paper-mode>#guide-modal.hidden,body.paper-mode>#learning-card-modal.hidden{
     0 3px 7px rgba(0,0,0,.25),
     inset 0 0 0 8px rgba(255,255,255,.14); 
     position:relative;
+
+/* Faint vintage stamp at the bottom of every paper */
+.document-sheet,
+.paper-page,
+.bid-slip,
+.paper-modal-sheet {
+    isolation: isolate;
+}
+
+.bid-slip {
+    position: relative;
+}
+
+.document-sheet::after,
+.paper-page::after,
+.bid-slip::after,
+.paper-modal-sheet::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+
+    width: 68px;
+    height: 68px;
+
+    background-image: url("./paper_stamp.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    opacity: 0.12;
+    filter: sepia(1) saturate(0.5) hue-rotate(350deg);
+    mix-blend-mode: multiply;
+
+    transform: translateX(-50%) rotate(-8deg);
+    transform-origin: center;
+    pointer-events: none;
+    z-index: -1;
+}
+  
 }
 /* Light antique corner ornaments */
 .document-sheet:before,
