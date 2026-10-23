@@ -763,43 +763,23 @@ border-top: 1px solid #c9bca2;
 font-style: italic;
 }
 
-
-/* Vintage watermark — decorative only, does not alter page layout */
+/* Stamp watermark: background only, no stacking-layer changes */
 .document-sheet,
 .paper-page {
-    position: relative;
-}
+    background-image:
+        url("./paper_stamp.png"),
+        radial-gradient(rgba(93,72,43,.06) .65px, transparent .8px),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.19),
+            rgba(118,91,54,.025),
+            rgba(255,255,255,.12)
+        );
 
-.document-sheet::after,
-.paper-page::after {
-    content: "";
-    position: absolute;
-    right: 24px;
-    bottom: 24px;
-    width: 180px;
-    height: 180px;
-
-    background: url("./paper_stamp.png") center / contain no-repeat;
-    opacity: 0.15;
-    filter: sepia(1) saturate(0.5) hue-rotate(350deg);
-    mix-blend-mode: multiply;
-
-    transform: rotate(15deg);
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Keep paper text and controls above the watermark */
-.document-sheet > *,
-.paper-page > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Keep the existing corner ornaments visible */
-.document-sheet::before,
-.paper-page::before {
-    z-index: 2;
+    background-repeat: no-repeat, repeat, no-repeat;
+    background-position: right 24px bottom 24px, 0 0, center;
+    background-size: 180px 180px, 7px 7px, 100% 100%;
+    background-blend-mode: multiply, normal, normal;
 }
 
 </style>
