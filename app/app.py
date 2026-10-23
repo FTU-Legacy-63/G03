@@ -31,6 +31,14 @@ def _get_next_scenario_liquidity_demand():
 def paper_stamp():
     return send_from_directory(str(BASE_DIR), "paper_stamp.png")
     
+@app.route("/paper_building.png")
+def paper_building():
+    return send_from_directory(
+        str(BASE_DIR),
+        "paper_building.png"
+    )
+
+    
 @app.route("/paper_corner_tl_v3.png")
 def corner_tl():
     return send_from_directory(str(BASE_DIR), "paper_corner_tl_v3.png")
