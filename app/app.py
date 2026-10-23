@@ -26,7 +26,11 @@ def _get_next_scenario_liquidity_demand():
         return game_instance.get_scenario_liquidity_demand()
     except ValueError:
         return None
-
+        
+@app.route("/paper_stamp.png")
+def paper_stamp():
+    return send_from_directory(str(BASE_DIR), "paper_stamp.png")
+    
 @app.route("/paper_corner_tl_v3.png")
 def corner_tl():
     return send_from_directory(str(BASE_DIR), "paper_corner_tl_v3.png")
