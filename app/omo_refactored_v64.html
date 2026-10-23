@@ -782,6 +782,25 @@ font-style: italic;
     background-blend-mode: multiply, normal, normal;
 }
 
+/* Building watermark — bottom-left */
+.document-sheet::marker {
+    content: "";
+}
+
+.document-sheet,
+.paper-page {
+    background-image:
+        url("./paper_building.png"),
+        radial-gradient(
+            rgba(93,72,43,.06) .65px,
+            transparent .8px
+        );
+    background-repeat: no-repeat, repeat;
+    background-position: left 24px bottom 24px, 0 0;
+    background-size: 220px 150px, 7px 7px;
+    background-blend-mode: multiply, normal;
+}
+
 </style>
 </head>
 <body class="paper-mode">
