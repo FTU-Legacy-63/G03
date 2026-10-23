@@ -763,56 +763,42 @@ border-top: 1px solid #c9bca2;
 font-style: italic;
 }
 
-/* Vintage stamp watermark — inside the paper frame */
+
+/* Vintage watermark — decorative only, does not alter page layout */
 .document-sheet,
-.paper-page,
-.bid-slip,
-.paper-modal-sheet {
+.paper-page {
     position: relative;
-    isolation: isolate;
 }
 
 .document-sheet::after,
-.paper-page::after,
-.bid-slip::after,
-.paper-modal-sheet::after {
+.paper-page::after {
     content: "";
     position: absolute;
-    left: auto;
     right: 24px;
     bottom: 24px;
-    
-    width: 200px;
-    height: 200px;
-    
-    background-image: url("./paper_stamp.png");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    
+    width: 180px;
+    height: 180px;
+
+    background: url("./paper_stamp.png") center / contain no-repeat;
     opacity: 0.15;
     filter: sepia(1) saturate(0.5) hue-rotate(350deg);
     mix-blend-mode: multiply;
-    
+
     transform: rotate(15deg);
-    transform-origin: center;
     pointer-events: none;
     z-index: 0;
 }
 
-/* Keep paper content above the watermark */
+/* Keep paper text and controls above the watermark */
 .document-sheet > *,
-.paper-page > *,
-.bid-slip > *,
-.paper-modal-sheet > * {
+.paper-page > * {
     position: relative;
     z-index: 1;
 }
 
-/* Keep corner ornaments above the watermark */
+/* Keep the existing corner ornaments visible */
 .document-sheet::before,
-.paper-page::before,
-.paper-modal-sheet::before {
+.paper-page::before {
     z-index: 2;
 }
 
