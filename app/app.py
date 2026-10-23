@@ -27,6 +27,22 @@ def _get_next_scenario_liquidity_demand():
     except ValueError:
         return None
 
+@app.route("/paper_corner_tl_v3.png")
+def corner_tl():
+    return send_from_directory(str(BASE_DIR), "paper_corner_tl_v3.png")
+
+@app.route("/paper_corner_tr_v3.png")
+def corner_tr():
+    return send_from_directory(str(BASE_DIR), "paper_corner_tr_v3.png")
+
+@app.route("/paper_corner_bl_v3.png")
+def corner_bl():
+    return send_from_directory(str(BASE_DIR), "paper_corner_bl_v3.png")
+
+@app.route("/paper_corner_br_v3.png")
+def corner_br():
+    return send_from_directory(str(BASE_DIR), "paper_corner_br_v3.png")
+
 # FRONTEND
 @app.route("/")
 def index():
