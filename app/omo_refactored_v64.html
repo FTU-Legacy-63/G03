@@ -778,22 +778,23 @@ font-style: italic;
 .paper-modal-sheet::after {
     content: "";
     position: absolute;
-    left: 50%;
-    bottom: 14px;
-
-    width: 68px;
-    height: 68px;
-
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+    
+    width: 150px;
+    height: 150px;
+    
     background-image: url("./paper_stamp.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-
+    
     opacity: 0.12;
     filter: sepia(1) saturate(0.5) hue-rotate(350deg);
     mix-blend-mode: multiply;
-
-    transform: translateX(-50%) rotate(-8deg);
+    
+    transform: rotate(8deg);
     transform-origin: center;
     pointer-events: none;
     z-index: 0;
