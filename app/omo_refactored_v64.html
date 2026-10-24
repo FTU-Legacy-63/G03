@@ -2047,7 +2047,7 @@ async function pgRunEngine(){
 // ---------------------------------------------------------------------
 async function paperExecute(){
   const method=pg$('pg-method').value,volume=Number(pg$('pg-volume').value); if(volume<=0)return alert('Offered volume must be greater than 0.');
-  if([1,4,7].includes(pgPhase)&&!pgHasExpectedInflation()){alert('Expected inflation is required before the Phase 1 auction can be submitted.');paperBrief();pgSetNewsPage(1);setTimeout(()=>{const el=pg$('pg-expected-inflation-daily');el?.classList.add('invalid');el?.focus()},120);return;}
+  if([1,4,7].includes(pgPhase)&&!pgHasExpectedInflation()){alert('Expected inflation is required before this phase can be submitted.');paperBrief();pgSetNewsPage(1);setTimeout(()=>{const el=pg$('pg-expected-inflation-daily');el?.classList.add('invalid');el?.focus()},120);return;}
   pgDecision={auction_method:method,pricing_method:method==='Interest-rate auction'?pg$('pg-pricing').value:null,omo_action:pg$('pg-action').value,volume,repo_rate:method==='Volume auction'?Number(pg$('pg-rate').value):null,expected_inflation:[1,4,7].includes(pgPhase)&&pgHasExpectedInflation()?Number(pgExpectedInflation):null};
   const resultPromise=pgRunEngine();
   const option4=method==='Interest-rate auction'?(pgDecision.pricing_method||'Single-price'):`${Number(pgDecision.repo_rate||0).toFixed(2)}%`;
