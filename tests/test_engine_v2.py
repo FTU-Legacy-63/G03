@@ -1,17 +1,3 @@
-"""Expanded regression tests for central_bank_engine_v13.py.
-
-Run from the folder containing both files:
-    python -m pytest -v test_engine_v2.py
-
-Coverage report (requires coverage.py):
-    python -m coverage run -m pytest -q test_engine_v2.py
-    python -m coverage report -m central_bank_engine_v13.py
-
-Scope note: frontend-managed input validation is not expanded here. The
-existing macro formula expectations are retained as regression checks; this
-suite focuses on auction mechanics, inventory, maturities, and phase flow.
-"""
-
 import pytest
 from datetime import date, timedelta
 from central_bank_engine_v13 import (
