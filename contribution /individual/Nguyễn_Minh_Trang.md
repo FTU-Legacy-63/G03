@@ -20,7 +20,7 @@
 * **Data collection and cleaning:**[DATABASE 2.0.xlsx](https://docs.google.com/spreadsheets/d/1GDpEZRkXhVWKvsum6EEYFXGNjwku5HiF/edit?gid=520085657#gid=520085657)  
 * **UI/UX design:** [LINK GITHUB HTML](https://github.com/FTU-Legacy-63/G03/blob/main/app/central_bank_engine_v13.py)  
 * **Design prototype:** [LINK TO INITIAL PROTOTYPE](https://github.com/kipSoos/WTFAID/blob/main/index.html)  
-* **Frontend development:** [LINK GITHUB FRONTEND](https://github.com/FTU-Legacy-63/G03/blob/main/app/central_bank_engine_v13.py)   
+* **Frontend development:** [LINK GITHUB FRONTEND](https://github.com/FTU-Legacy-63/G03/blob/main/app/omo_refactored_v64.html)  
 * **Test frontend**: [LINK FRONTEND TEST](https://github.com/FTU-Legacy-63/G03/blob/main/tests/test_frontend_v2.cjs)
 
 ### **4\. How My Work Is Used**
